@@ -1,7 +1,5 @@
-# jupyterlab-commenting
-
-Commenting and annotation for JupyterLab
-
+# JupyterLab Commenting and Annotation
+[![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 
 ## Prerequisites
 
@@ -29,4 +27,3 @@ To rebuild the package and the JupyterLab app:
 npm run build
 jupyter lab build
 ```
-
