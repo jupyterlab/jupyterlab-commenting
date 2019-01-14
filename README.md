@@ -40,11 +40,11 @@ as a package inside the `jupyterlab` repo:
 
 ```bash
 conda create -n jupyterlab-commenting -c conda-forge notebook
-git clone git@github.com:jupyterlab/jupyterlab.git jupyterlab-commenting
+git clone https://github.com/jupyterlab/jupyterlab.git jupyterlab-commenting
 cd jupyterlab-commenting
 conda activate jupyterlab-commenting
 pip install -e .
-jlpm run add:sibling git@github.com:jupyterlab/jupyterlab-commenting.git
+jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
 jlpm run build
 ```
 
