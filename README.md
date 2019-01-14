@@ -34,6 +34,23 @@ npm run build
 jupyter lab build
 ```
 
+### JupyterLab master
+To develop against an unreleased version of `JupyterLab` requires that you add this extension
+as a package inside the `jupyterlab` repo:
+
+```bash
+conda create -n jupyterlab-commenting -c conda-forge notebook
+git clone git@github.com:jupyterlab/jupyterlab.git jupyterlab-commenting
+cd jupyterlab-commenting
+conda activate jupyterlab-commenting
+pip install -e .
+jlpm run add:sibling git@github.com:jupyterlab/jupyterlab-commenting.git
+jlpm run build
+```
+
+Edit the files in the package in `./package/jupterlab-commenting` and run `jupyter lab --watch --dev` in the 
+top level directory to run JupyterLab with this package enabled.
+
 ### Contributing
 
 To contribute to the project, please read the [contributor documentation](CONTRIBUTING.md).
