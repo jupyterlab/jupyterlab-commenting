@@ -48,7 +48,7 @@ jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
 jlpm run build
 ```
 
-Edit the files in the package in `./package/jupterlab-commenting` and run `jupyter lab --watch --dev` in the 
+Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the 
 top level directory to run JupyterLab with this package enabled.
 
 ### Contributing
