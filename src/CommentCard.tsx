@@ -53,7 +53,7 @@ export class CommentCard extends React.Component<
 
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
-    let allComments: any = this.props.data.commentStream.allComments;
+    let allComments: any = this.props.data['allComments'];
 
     for (let key in allComments) {
       comments.push(
@@ -74,11 +74,11 @@ export class CommentCard extends React.Component<
       <div className={this.bsc.card} style={this.styles.card}>
         <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
           <CommentHeader
-            name={this.props.data.commentStream.startComment.name}
-            context={this.props.data.commentStream.startComment.context}
-            timestamp={this.props.data.commentStream.startComment.timestamp}
-            photo={this.props.data.commentStream.startComment.photoMain}
-            tag={this.props.data.commentStream.startComment.tag}
+            name={this.props.data['startComment'].name}
+            context={this.props.data['startComment'].context}
+            timestamp={this.props.data['startComment'].timestamp}
+            photo={this.props.data['startComment'].photoMain}
+            tag={this.props.data['startComment'].tag}
             expanded={this.state.expanded}
             expandFunc={this.handleExpand}
           />
