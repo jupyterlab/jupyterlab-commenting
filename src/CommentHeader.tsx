@@ -7,7 +7,7 @@ interface ICommentHeaderProps {
   photo?: string;
   tag?: string;
   expanded?: boolean;
-  expandFunc?: any;
+  expandFunc?: VoidFunction;
 }
 
 export class CommentHeader extends React.Component<ICommentHeaderProps> {

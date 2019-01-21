@@ -2,10 +2,10 @@ import * as React from 'react';
 
 interface ICommentFooter {
   expanded?: boolean;
-  handleExpand?: any;
+  handleExpand?: VoidFunction;
   replyActive?: boolean;
-  handleReplyActive?: any;
-  expandAndReply?: any;
+  handleReplyActive?: VoidFunction;
+  expandAndReply?: VoidFunction;
   resolved?: boolean;
   active?: boolean;
 }
