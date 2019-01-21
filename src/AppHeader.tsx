@@ -37,7 +37,7 @@ interface IAppHeaderProps {
   header?: string;
 }
 
-class AppHeader extends React.Component<IAppHeaderProps> {
+export class AppHeader extends React.Component<IAppHeaderProps> {
   constructor(props: any) {
     super(props);
   }
@@ -69,8 +69,6 @@ class AppHeader extends React.Component<IAppHeaderProps> {
     );
   }
 }
-
-export default AppHeader;
 
 // App header menu component
 class AppHeaderOptions extends React.Component {

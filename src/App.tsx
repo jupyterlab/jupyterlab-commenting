@@ -4,14 +4,21 @@ import { AppBody } from './AppBody';
 
 import { CommentCard } from './CommentCard';
 
+import { AppHeader } from './AppHeader';
+
 export default class App extends React.Component {
   render() {
     return (
       <div>
         <div>
-          <h1 className="card text-center">Header</h1>
+          <AppHeader header="" />
         </div>
-        <AppBody cards={[<CommentCard data={testData} />]} />
+        <AppBody
+          cards={[
+            <CommentCard data={testData} />,
+            <CommentCard data={testData} />
+          ]}
+        />
       </div>
     );
   }
