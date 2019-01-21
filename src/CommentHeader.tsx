@@ -6,7 +6,6 @@ interface ICommentHeaderProps {
   timestamp?: string;
   photo?: string;
   tag?: string;
-  button?: string;
   expanded?: boolean;
   expandFunc?: any;
 }
@@ -37,14 +36,17 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             </div>
           </div>
           <div>
-            <button
-              type="button"
-              className={this.bsc.cornerButton}
+            <input
+              type="image"
               style={this.styles.cornerButton}
+              src={
+                this.props.expanded
+                  ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Resize_small_font_awesome.svg/1024px-Resize_small_font_awesome.svg.png'
+                  : 'http://cdn.onlinewebfonts.com/svg/img_72157.png'
+              }
+              alt="Expand"
               onClick={this.props.expandFunc}
-            >
-              {this.props.button}
-            </button>
+            />
           </div>
         </div>
         <div
@@ -63,7 +65,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   bsc = {
     upperHeader: 'row',
     nameArea: 'col',
-    cornerButton: 'btn-secondary',
     tag: 'badge badge-secondary row-offset-1',
     name: 'row-offset-1',
     timestamp: 'row-offset-1'
@@ -115,13 +116,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       paddingRight: '10px'
     },
     cornerButton: {
-      background: '#E0E0E0',
-      color: 'black',
-      borderRadius: '2px',
-      border: 'none',
-      outline: '0px',
       marginTop: '5px',
-      marginRight: '25px'
+      marginRight: '25px',
+      width: '1.3em',
+      height: '1.3em'
     },
     tag: {
       background: '#E0E0E0',

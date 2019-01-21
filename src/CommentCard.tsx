@@ -14,6 +14,9 @@ interface ICommentCardProps {
 
 interface ICommentCardStates {
   expanded?: boolean;
+  replyActive?: boolean;
+  resolved?: boolean;
+  active?: boolean;
 }
 
 export class CommentCard extends React.Component<
@@ -23,17 +26,24 @@ export class CommentCard extends React.Component<
   constructor(props: any) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: false,
+      replyActive: false
     };
 
     this.handleExpand = this.handleExpand.bind(this);
+    this.handleReplyActive = this.handleReplyActive.bind(this);
+    this.expandAndReply = this.expandAndReply.bind(this);
     this.getAllComments = this.getAllComments.bind(this);
   }
 
-  handleExpand() {
-    console.log('Expand');
-    let curState = this.state.expanded;
-    this.setState({ expanded: !curState });
+  handleExpand = () => this.setState({ expanded: !this.state.expanded });
+
+  handleReplyActive = () =>
+    this.setState({ replyActive: !this.state.replyActive });
+
+  expandAndReply() {
+    this.handleReplyActive();
+    this.handleExpand();
   }
 
   getAllComments(): React.ReactNode[] {
@@ -64,7 +74,6 @@ export class CommentCard extends React.Component<
             timestamp={this.props.data.commentStream.startComment.timestamp}
             photo={this.props.data.commentStream.startComment.photoMain}
             tag={this.props.data.commentStream.startComment.tag}
-            button={this.state.expanded ? 'Resolve' : 'Expand'}
             expanded={this.state.expanded}
             expandFunc={this.handleExpand}
           />
@@ -73,7 +82,13 @@ export class CommentCard extends React.Component<
           <CommentBody comments={this.getAllComments()} />
         </div>
         <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
-          <CommentFooter expanded={this.state.expanded} />
+          <CommentFooter
+            expanded={this.state.expanded}
+            replyActive={this.state.replyActive}
+            handleReplyActive={this.handleReplyActive}
+            handleExpand={this.handleExpand}
+            expandAndReply={this.expandAndReply}
+          />
         </div>
       </div>
     );
