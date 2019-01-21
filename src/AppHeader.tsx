@@ -96,10 +96,7 @@ class AppHeaderOptions extends React.Component {
   state = {
     isOpen: false,
     isResolved: false,
-    latest: true,
-    date: false,
-    mostReplies: false,
-    position: false
+    sorted: 'latest'
   };
 
   itemPicked = 'Latest Reply';
@@ -126,28 +123,9 @@ class AppHeaderOptions extends React.Component {
     return table;
   }
 
-  setSortState(state?: any, name?: string) {
-    this.resetState();
-    if (state === 'latest') {
-      this.itemPicked = name;
-      this.setState({ latest: !this.state.latest });
-    } else if (state === 'date') {
-      this.itemPicked = name;
-      this.setState({ date: !this.state.date });
-    } else if (state === 'mostReplies') {
-      this.itemPicked = name;
-      this.setState({ mostReplies: !this.state.mostReplies });
-    } else if (state === 'position') {
-      this.itemPicked = name;
-      this.setState({ position: !this.state.position });
-    }
-  }
-
-  resetState() {
-    this.setState({ latest: false });
-    this.setState({ date: false });
-    this.setState({ mostReplies: false });
-    this.setState({ position: false });
+  setSortState(state: string, name: string) {
+    this.itemPicked = name;
+    this.setState({ sorted: state });
   }
 
   render() {
