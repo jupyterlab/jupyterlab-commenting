@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 const bsc = {
-  checkbox: 'form-check col-lg-5 col-md-5 col-sm-5 py-1 text-center',
-  checkboxLabel: 'row-lg-6',
-  dropdown: 'col-lg-2 col-md-2 col-sm-2 px-0',
+  checkbox: 'col-lg-5 col-md-5 col-sm-5 form-check text-center',
+  checkboxLabel: '',
+  dropdown: 'col-lg-1 col-md-1 col-sm-1 px-0',
   dropdownLable:
-    'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark py-1 my-0 px-0',
-  dropdownButton: 'btn dropdown-toggle col-lg-12 col-md-12 col-sm-12'
+    'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark my-0',
+  dropdownButton: 'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
 };
 
 const sortItems = [
@@ -18,13 +18,25 @@ const sortItems = [
 
 const styles = {
   optionBar: {
-    height: '38px'
+    height: '28px',
+    borderRadius: 0
   },
-  dropdown: {
-    height: '38px'
+  dropdownLable: {
+    height: '28px',
+    lineHeight: 'normal',
+    fontSize: '13px',
+    paddingTop: '5px'
+  },
+  dropdownButton: {
+    height: '28px'
+  },
+  checkbox: {
+    paddingBottom: '5px'
   },
   checkboxLabel: {
-    paddingRight: '24px'
+    paddingRight: '24px',
+    lineHeight: 'normal',
+    fontSize: '13px'
   },
   emptyHeader: {
     background: 'white',
@@ -83,13 +95,13 @@ class AppHeaderOptions extends React.Component {
   state = {
     isOpen: false,
     isResolved: false,
-    latest: false,
+    latest: true,
     date: false,
     mostReplies: false,
     position: false
   };
 
-  itemPicked = '';
+  itemPicked = 'Latest Reply';
 
   toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
   toggleResolved = () => this.setState({ isResolved: !this.state.isResolved });
@@ -144,7 +156,8 @@ class AppHeaderOptions extends React.Component {
     return (
       <div className="card" style={styles.optionBar}>
         <div className="card-title row" style={styles.optionBar}>
-          <div className={bsc.checkbox}>
+          {/* Checkbox start */}
+          <div className={bsc.checkbox} style={styles.checkbox}>
             <label
               className={bsc.checkboxLabel}
               htmlFor="contols"
@@ -159,21 +172,25 @@ class AppHeaderOptions extends React.Component {
               onClick={this.toggleResolved}
             />
           </div>
-          <label className={bsc.dropdownLable} style={styles.dropdown}>
+          {/* Checkbox End */}
+          {/* Dropdown Start */}
+          <label className={bsc.dropdownLable} style={styles.dropdownLable}>
             Sort By: {this.itemPicked}
           </label>
           <div
             className={bsc.dropdown}
-            style={styles.dropdown}
+            style={styles.dropdownButton}
             onClick={this.toggleOpen}
           >
             <button
               type="button"
               className={bsc.dropdownButton}
+              style={styles.dropdownButton}
               data-toggle="dropdown"
             />
             <div className={menuClass}>{this.getSortItems()}</div>
           </div>
+          {/* Dropdown End */}
         </div>
       </div>
     );
