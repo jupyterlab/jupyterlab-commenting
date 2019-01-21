@@ -48,6 +48,7 @@ const testData = {
         name: 'Igor Derke',
         context:
           'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
+          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
         timestamp: 'Aug 15th 5:35pm',
         photoMain:
           'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
@@ -62,6 +63,7 @@ const testData = {
       },
       c3: {
         name: 'Bus Yonkers',
+        name: 'Igor Derke',
         context:
           'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
         timestamp: 'Aug 15th 5:35pm',
