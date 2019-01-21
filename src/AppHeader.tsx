@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 const bsc = {
-  checkbox: 'form-check col-lg-6 my-1',
-  checkboxLabel: 'col-lg-10 row-lg-6 my-0',
-  dropdown: 'dropdown col-lg-6 border-left border-dark px-0',
+  checkbox: 'form-check col-lg-6 col-md-6 col-sm-6 my-1 text-center',
+  checkboxLabel: 'row-lg-6 px-4 my-0',
+  dropdown: 'dropdown col-lg-6 col-md-6 col-sm-6 border-left border-dark px-0',
   dropdownButton: 'btn dropdown-toggle col-lg-12 row-lg-6'
 };
 
