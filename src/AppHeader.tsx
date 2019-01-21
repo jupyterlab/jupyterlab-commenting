@@ -5,7 +5,6 @@ const bsc = {
   checkboxLabel: '',
   dropdown: 'col-lg-1 col-md-1 col-sm-1 px-0',
   dropdownLable:
-    'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark my-0',
     'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark my-0 px-0',
   dropdownButton: 'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
 };
@@ -29,7 +28,6 @@ const styles = {
     paddingTop: '5px'
   },
   dropdownButton: {
-    height: '28px'
     height: '28px',
     width: '40px'
   },
