@@ -36,7 +36,12 @@ export class CommentCard extends React.Component<
     this.getAllComments = this.getAllComments.bind(this);
   }
 
-  handleExpand = () => this.setState({ expanded: !this.state.expanded });
+  handleExpand() {
+    this.setState({ expanded: !this.state.expanded });
+    if (this.state.replyActive) {
+      this.handleReplyActive();
+    }
+  }
 
   handleReplyActive = () =>
     this.setState({ replyActive: !this.state.replyActive });
@@ -66,7 +71,7 @@ export class CommentCard extends React.Component<
 
   render() {
     return (
-      <div className={this.bsc.card}>
+      <div className={this.bsc.card} style={this.styles.card}>
         <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
           <CommentHeader
             name={this.props.data.commentStream.startComment.name}
@@ -102,6 +107,9 @@ export class CommentCard extends React.Component<
   };
 
   styles = {
+    card: {
+      marginBottom: '5px'
+    },
     cardHeading: {
       padding: '0px'
     },

@@ -24,7 +24,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
 
   bodyStyle = {
     width: '100%',
-    maxHeight: '85vh',
+    maxHeight: '83vh',
     overflowY: 'scroll' as 'scroll',
     overflowX: 'hidden' as 'hidden',
     justifyContent: 'center',
