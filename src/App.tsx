@@ -11,7 +11,7 @@ export default class App extends React.Component {
     return (
       <div>
         <div>
-          <AppHeader header="" />
+          <AppHeader />
         </div>
         <AppBody
           cards={[

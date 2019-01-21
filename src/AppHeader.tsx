@@ -1,10 +1,12 @@
 import * as React from 'react';
 
 const bsc = {
-  checkbox: 'form-check col-lg-6 col-md-6 col-sm-6 my-1 text-center',
-  checkboxLabel: 'row-lg-6 px-4 my-0',
-  dropdown: 'dropdown col-lg-6 col-md-6 col-sm-6 border-left border-dark px-0',
-  dropdownButton: 'btn dropdown-toggle col-lg-12 row-lg-6'
+  checkbox: 'form-check col-lg-5 col-md-5 col-sm-5 py-1 text-center',
+  checkboxLabel: 'row-lg-6',
+  dropdown: 'col-lg-2 col-md-2 col-sm-2 px-0',
+  dropdownLable:
+    'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark py-1 my-0 px-0',
+  dropdownButton: 'btn dropdown-toggle col-lg-12 col-md-12 col-sm-12'
 };
 
 const sortItems = [
@@ -20,6 +22,9 @@ const styles = {
   },
   dropdown: {
     height: '38px'
+  },
+  checkboxLabel: {
+    paddingRight: '24px'
   },
   emptyHeader: {
     background: 'white',
@@ -43,16 +48,19 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   }
 
   renderAppHeader(): React.ReactNode {
-    if (this.props.header === '') {
+    if (this.props.header === undefined) {
       return (
-        <h5 className="card-header text-center" style={styles.emptyHeader}>
+        <h5
+          className="card-header text-center border-0"
+          style={styles.emptyHeader}
+        >
           Select a file to view comments
         </h5>
       );
     }
 
     return (
-      <h3 className="card-header text-center" style={styles.header}>
+      <h3 className="card-header text-center border-0" style={styles.header}>
         {this.props.header}
       </h3>
     );
@@ -60,7 +68,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
 
   render() {
     return (
-      <div className="card">
+      <div className="card border-0 py-1">
         <div>{this.renderAppHeader()}</div>
         <div>
           <AppHeaderOptions />
@@ -137,7 +145,11 @@ class AppHeaderOptions extends React.Component {
       <div className="card" style={styles.optionBar}>
         <div className="card-title row" style={styles.optionBar}>
           <div className={bsc.checkbox}>
-            <label className={bsc.checkboxLabel} htmlFor="contols">
+            <label
+              className={bsc.checkboxLabel}
+              htmlFor="contols"
+              style={styles.checkboxLabel}
+            >
               Show resolved{' '}
             </label>
             <input
@@ -147,18 +159,19 @@ class AppHeaderOptions extends React.Component {
               onClick={this.toggleResolved}
             />
           </div>
+          <label className={bsc.dropdownLable} style={styles.dropdown}>
+            Sort By: {this.itemPicked}
+          </label>
           <div
             className={bsc.dropdown}
             style={styles.dropdown}
             onClick={this.toggleOpen}
           >
             <button
-              className={bsc.dropdownButton}
               type="button"
+              className={bsc.dropdownButton}
               data-toggle="dropdown"
-            >
-              Sort by: <span className="caret">{this.itemPicked}</span>
-            </button>
+            />
             <div className={menuClass}>{this.getSortItems()}</div>
           </div>
         </div>
