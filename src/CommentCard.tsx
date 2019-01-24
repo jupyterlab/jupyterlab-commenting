@@ -10,10 +10,12 @@ import { Comment } from './Comment';
 
 interface ICommentCardProps {
   data?: any;
+  cardId: string;
+  setExpandedCard: (cardId: string) => void;
+  getExpandedCard: (cardId: string) => boolean;
 }
 
 interface ICommentCardStates {
-  expanded?: boolean;
   replyActive?: boolean;
   resolved?: boolean;
   active?: boolean;
@@ -26,25 +28,51 @@ export class CommentCard extends React.Component<
   constructor(props: any) {
     super(props);
     this.state = {
-      expanded: false,
       replyActive: false
     };
 
     this.handleExpand = this.handleExpand.bind(this);
+    this.handleShrink = this.handleShrink.bind(this);
     this.handleReplyActive = this.handleReplyActive.bind(this);
     this.expandAndReply = this.expandAndReply.bind(this);
     this.getAllComments = this.getAllComments.bind(this);
+    this.getCommentHeader = this.getCommentHeader.bind(this);
+    this.getCommentFooter = this.getCommentFooter.bind(this);
+  }
+
+  render() {
+    return (
+      <div className={this.bsc.card} style={this.styles.card}>
+        <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
+          {this.getCommentHeader()}
+        </div>
+        <div className={this.bsc.cardBody} style={this.styles.cardBody}>
+          <CommentBody comments={this.getAllComments()} />
+        </div>
+        <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
+          {this.getCommentFooter()}
+        </div>
+      </div>
+    );
   }
 
   handleExpand() {
-    this.setState({ expanded: !this.state.expanded });
+    this.props.setExpandedCard(this.props.cardId);
     if (this.state.replyActive) {
       this.handleReplyActive();
     }
   }
 
-  handleReplyActive = () =>
+  handleShrink() {
+    this.props.setExpandedCard(' ');
+    if (this.state.replyActive) {
+      this.handleReplyActive();
+    }
+  }
+
+  handleReplyActive() {
     this.setState({ replyActive: !this.state.replyActive });
+  }
 
   expandAndReply() {
     this.handleReplyActive();
@@ -52,50 +80,49 @@ export class CommentCard extends React.Component<
   }
 
   getAllComments(): React.ReactNode[] {
+    console.log('F: ' + this.props.getExpandedCard(this.props.cardId));
     let comments: React.ReactNode[] = [];
     let allComments: any = this.props.data['allComments'];
 
-    for (let key in allComments) {
-      comments.push(
-        <Comment
-          name={allComments[key].name}
-          context={allComments[key].context}
-          timestamp={allComments[key].timestamp}
-          photo={allComments[key].photoMain}
-          expanded={this.state.expanded}
-        />
-      );
+    if (this.props.data !== undefined) {
+      for (let key in allComments) {
+        comments.push(
+          <Comment
+            name={allComments[key].name}
+            context={allComments[key].context}
+            timestamp={allComments[key].timestamp}
+            photo={allComments[key].photoMain}
+            expanded={this.props.getExpandedCard(this.props.cardId)}
+          />
+        );
+      }
     }
     return comments;
   }
 
-  render() {
+  getCommentHeader(): React.ReactNode {
     return (
-      <div className={this.bsc.card} style={this.styles.card}>
-        <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
-          <CommentHeader
-            name={this.props.data['startComment'].name}
-            context={this.props.data['startComment'].context}
-            timestamp={this.props.data['startComment'].timestamp}
-            photo={this.props.data['startComment'].photoMain}
-            tag={this.props.data['startComment'].tag}
-            expanded={this.state.expanded}
-            expandFunc={this.handleExpand}
-          />
-        </div>
-        <div className={this.bsc.cardBody} style={this.styles.cardBody}>
-          <CommentBody comments={this.getAllComments()} />
-        </div>
-        <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
-          <CommentFooter
-            expanded={this.state.expanded}
-            replyActive={this.state.replyActive}
-            handleReplyActive={this.handleReplyActive}
-            handleExpand={this.handleExpand}
-            expandAndReply={this.expandAndReply}
-          />
-        </div>
-      </div>
+      <CommentHeader
+        name={this.props.data['startComment'].name}
+        context={this.props.data['startComment'].context}
+        timestamp={this.props.data['startComment'].timestamp}
+        photo={this.props.data['startComment'].photoMain}
+        tag={this.props.data['startComment'].tag}
+        expanded={this.props.getExpandedCard(this.props.cardId)}
+        handleExpand={this.handleExpand}
+        handleShrink={this.handleShrink}
+      />
+    );
+  }
+
+  getCommentFooter(): React.ReactNode {
+    return (
+      <CommentFooter
+        expanded={this.props.getExpandedCard(this.props.cardId)}
+        replyActive={this.state.replyActive}
+        handleReplyActive={this.handleReplyActive}
+        expandAndReply={this.expandAndReply}
+      />
     );
   }
 
@@ -108,17 +135,21 @@ export class CommentCard extends React.Component<
 
   styles = {
     card: {
-      marginBottom: '5px'
+      marginBottom: '5px',
+      background: 'white'
     },
     cardHeading: {
-      padding: '0px'
+      padding: '0px',
+      background: 'white'
     },
     cardBody: {
-      padding: '0px'
+      padding: '0px',
+      background: 'white'
     },
     cardFooter: {
       padding: '0px',
-      paddingBottom: '5px'
+      paddingBottom: '5px',
+      background: 'white'
     }
   };
 }

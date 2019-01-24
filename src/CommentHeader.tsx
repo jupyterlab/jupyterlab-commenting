@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 interface ICommentHeaderProps {
-  name?: string;
+  name: string;
+  timestamp: string;
+  photo: string;
   context?: string;
-  timestamp?: string;
-  photo?: string;
   tag?: string;
-  expanded?: boolean;
-  expandFunc?: VoidFunction;
+  expanded: boolean;
+  handleExpand: VoidFunction;
+  handleShrink: VoidFunction;
 }
 
 export class CommentHeader extends React.Component<ICommentHeaderProps> {
@@ -45,7 +46,11 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
                   : 'http://cdn.onlinewebfonts.com/svg/img_72157.png'
               }
               alt="Expand"
-              onClick={this.props.expandFunc}
+              onClick={
+                this.props.expanded
+                  ? this.props.handleShrink
+                  : this.props.handleExpand
+              }
             />
           </div>
         </div>
@@ -73,7 +78,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   styles = {
     upperHeader: {},
     cardHeader: {
-      marginBottom: '10px'
+      marginBottom: '10px',
+      background: 'white'
     },
     nameArea: {
       paddingLeft: '5px'

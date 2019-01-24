@@ -1,16 +1,15 @@
 import * as React from 'react';
 
-interface ICommentFooter {
-  expanded?: boolean;
-  handleExpand?: VoidFunction;
-  replyActive?: boolean;
-  handleReplyActive?: VoidFunction;
-  expandAndReply?: VoidFunction;
+interface ICommentFooterProps {
+  expanded: boolean;
+  replyActive: boolean;
+  handleReplyActive: VoidFunction;
+  expandAndReply: VoidFunction;
   resolved?: boolean;
   active?: boolean;
 }
 
-export class CommentFooter extends React.Component<ICommentFooter> {
+export class CommentFooter extends React.Component<ICommentFooterProps> {
   constructor(props: any) {
     super(props);
   }
@@ -104,7 +103,8 @@ export class CommentFooter extends React.Component<ICommentFooter> {
       paddingLeft: '5px',
       paddingRight: '5px',
       paddingTop: '0px',
-      paddingBottom: '0px'
+      paddingBottom: '0px',
+      background: 'white'
     },
     buttonArea: {
       marginRight: '5px',

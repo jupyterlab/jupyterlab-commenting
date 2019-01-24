@@ -36,7 +36,7 @@ export class Comment extends React.Component<ICommentProps> {
               : this.styles.contextNotExpanded
           }
         >
-          <p>{this.props.context}</p>
+          <p style={this.styles.commentStyle}>{this.props.context}</p>
         </div>
       </div>
     );
@@ -49,6 +49,9 @@ export class Comment extends React.Component<ICommentProps> {
     },
     nameArea: {
       paddingLeft: '5px'
+    },
+    commentStyle: {
+      marginBottom: '0px'
     },
     photo: {
       height: '2em',
@@ -66,14 +69,15 @@ export class Comment extends React.Component<ICommentProps> {
       marginTop: '-5px'
     },
     contextNotExpanded: {
-      height: '30px',
+      maxHeight: '30px',
       maxWidth: '350px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       fontSize: '.8em',
       lineHeight: 'normal',
       paddingLeft: '5px',
-      paddingRight: '10px'
+      paddingRight: '10px',
+      marginBottom: '0px'
     },
     contextExpanded: {
       height: '100%',
@@ -83,7 +87,8 @@ export class Comment extends React.Component<ICommentProps> {
       fontSize: '.8em',
       lineHeight: 'normal',
       paddingLeft: '5px',
-      paddingRight: '10px'
+      paddingRight: '10px',
+      marginBottom: '0px'
     }
   };
 
