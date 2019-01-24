@@ -80,7 +80,6 @@ export class CommentCard extends React.Component<
   }
 
   getAllComments(): React.ReactNode[] {
-    console.log('F: ' + this.props.getExpandedCard(this.props.cardId));
     let comments: React.ReactNode[] = [];
     let allComments: any = this.props.data['allComments'];
 

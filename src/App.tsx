@@ -25,7 +25,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
 
   getCommentCards(allData: any): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
-    console.log('GetCardsState ' + this.state.expandedCard);
     for (let key in allData) {
       if (this.state.expandedCard === ' ') {
         cards.push(
@@ -56,7 +55,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
 
   setExpandedCard(cardId: string) {
     this.setState({ expandedCard: cardId });
-    console.log('Set ' + cardId);
   }
 
   render() {
