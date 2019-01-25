@@ -1,21 +1,66 @@
 import * as React from 'react';
 
+/**
+ * React Props interface
+ */
 interface ICommentHeaderProps {
+  /**
+   * Person name of comment
+   * @type string
+   */
   name: string;
+  /**
+   * Time stamp of comment
+   * @type string
+   */
   timestamp: string;
+  /**
+   * URL to Person photo to display
+   * @type string
+   */
   photo: string;
+  /**
+   * Text comment to display
+   * @type string
+   */
   context?: string;
+  /**
+   * Tag to display in the header
+   * @type string
+   */
   tag?: string;
+  /**
+   * Tracks the state if the card is expanded
+   * @type boolean
+   */
   expanded: boolean;
+  /**
+   * Function to handle the CommentCard expanding
+   * @type VoidFunction
+   */
   handleExpand: VoidFunction;
+  /**
+   * Function to handle the CommentCard shrinking
+   * @type VoidFunction
+   */
   handleShrink: VoidFunction;
 }
 
+/**
+ * CommentHeader React Component
+ */
 export class CommentHeader extends React.Component<ICommentHeaderProps> {
+  /**
+   * Constructor
+   * @param props React props
+   */
   constructor(props: any) {
     super(props);
   }
 
+  /**
+   * React render function
+   */
   render() {
     return (
       <div style={this.styles.cardHeader}>
@@ -67,6 +112,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  /**
+   * Bootstrap classNames
+   */
   bsc = {
     upperHeader: 'row',
     nameArea: 'col',
@@ -75,6 +123,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     timestamp: 'row-offset-1'
   };
 
+  /**
+   * CSS styles
+   */
   styles = {
     upperHeader: {},
     cardHeader: {

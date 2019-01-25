@@ -1,20 +1,72 @@
 import * as React from 'react';
 
+/**
+ * React Props interface
+ */
 interface ICommentFooterProps {
+  /**
+   * Tracks if card is expanded
+   * @type boolean
+   */
   expanded: boolean;
+  /**
+   * Tracks if the reply box is active
+   * @type boolean
+   */
   replyActive: boolean;
+  /**
+   * Function to call to parent component to handle reply active
+   * @type VoidFunction
+   */
   handleReplyActive: VoidFunction;
+  /**
+   * Function to call to parent component to handle expanding and opening the reply box
+   * @type VoidFunction
+   */
   expandAndReply: VoidFunction;
-  resolved?: boolean;
-  active?: boolean;
 }
 
+/**
+ * CommentFooter React Component
+ */
 export class CommentFooter extends React.Component<ICommentFooterProps> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
   constructor(props: any) {
     super(props);
   }
 
-  getButtons(): any {
+  /**
+   * React render function
+   */
+  render() {
+    return (
+      <div className={this.bsc.buttonArea} style={this.styles.footerArea}>
+        <div>
+          {this.props.expanded &&
+            this.props.replyActive && (
+              <textarea
+                className={this.bsc.input}
+                style={this.styles.replyBox}
+              />
+            )}
+        </div>
+        <div>
+          <div style={this.styles.buttonArea}>{this.getButtons()}</div>
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * Returns the correct buttons for different state combinations
+   *
+   * @return Type: React.ReactNode - JSX with buttons
+   */
+  getButtons(): React.ReactNode {
     if (this.props.expanded && this.props.replyActive) {
       return (
         <div>
@@ -78,25 +130,18 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     }
   }
 
-  render() {
-    return (
-      <div className={this.bsc.buttonArea} style={this.styles.footerArea}>
-        <div>
-          {this.props.expanded &&
-            this.props.replyActive && (
-              <textarea
-                className={this.bsc.input}
-                style={this.styles.replyBox}
-              />
-            )}
-        </div>
-        <div>
-          <div style={this.styles.buttonArea}>{this.getButtons()}</div>
-        </div>
-      </div>
-    );
-  }
+  /**
+   * Bootstrap classNames
+   */
+  bsc = {
+    button: 'btn-secondary float-right',
+    buttonArea: 'col',
+    input: 'form-control form-control-sm'
+  };
 
+  /**
+   * CSS styles
+   */
   styles = {
     footerArea: {
       marginBottom: '5px',
@@ -133,11 +178,5 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
       height: '80px',
       lineHeight: 'normal'
     }
-  };
-
-  bsc = {
-    button: 'btn-secondary float-right',
-    buttonArea: 'col',
-    input: 'form-control form-control-sm'
   };
 }

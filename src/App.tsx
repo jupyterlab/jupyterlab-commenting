@@ -1,17 +1,41 @@
 import * as React from 'react';
 
+// Components
 import { AppBody } from './AppBody';
-
 import { CommentCard } from './CommentCard';
-
 import { AppHeader } from './AppHeader';
 
+/**
+ * React Props interface
+ */
 interface IAppStates {
+  /**
+   * Card unique id that is expanded / full screen
+   * @type string
+   */
   expandedCard: string;
 }
 
-interface IAppProps {}
+/**
+ * React States interface
+ */
+interface IAppProps {
+  /**
+   * all Data for comments
+   * @type any
+   */
+  data?: any;
+}
+
+/**
+ * Main App React Component
+ */
 export default class App extends React.Component<IAppProps, IAppStates> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
   constructor(props: any) {
     super(props);
     this.state = {
@@ -23,6 +47,24 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.getExpandedCard = this.getExpandedCard.bind(this);
   }
 
+  /**
+   * React render function
+   */
+  render() {
+    return (
+      <div>
+        <AppHeader />
+        <AppBody cards={this.getCommentCards(this.props.data)} />
+      </div>
+    );
+  }
+
+  /**
+   * Creates and returns all CommentCard components with correct data
+   *
+   * @param allData Type: any - Comment data from this.props.data
+   * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
+   */
   getCommentCards(allData: any): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
     for (let key in allData) {
@@ -35,7 +77,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             getExpandedCard={this.getExpandedCard}
           />
         );
-      } else if (key === this.state.expandedCard) {
+      } else if (this.state.expandedCard === key) {
         cards.push(
           <CommentCard
             data={allData[this.state.expandedCard]}
@@ -49,163 +91,22 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     return cards;
   }
 
+  /**
+   * Used to check if the cardId passed in is the current expanded card
+   *
+   * @param cardId Type: string - CommentCard unique id
+   * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
+   */
   getExpandedCard(cardId: string): boolean {
     return cardId === this.state.expandedCard;
   }
 
+  /**
+   * Sets this.state.expandedCard to the passed in cardId
+   *
+   * @param cardId Type: string - CommentCard unique id
+   */
   setExpandedCard(cardId: string) {
     this.setState({ expandedCard: cardId });
   }
-
-  render() {
-    return (
-      <div>
-        <AppHeader />
-        <AppBody cards={this.getCommentCards(testData)} />
-      </div>
-    );
-  }
 }
-
-const testData: any = {
-  s0: {
-    startComment: {
-      name: 'Jacob Houssian',
-      context:
-        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delectus enim, laudantium excepturi corrupti eligendi corporis',
-      timestamp: 'Aug 15th 5:30pm',
-      photoMain:
-        'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
-      tag: 'Meta'
-    },
-    allComments: {
-      c0: {
-        name: 'Igor Derke',
-        context: 'Lorem ipsum',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c1: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c2: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c3: {
-        name: 'Igor Derke',
-        context: 'Lorem',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c4: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delecLorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      }
-    }
-  },
-  s1: {
-    startComment: {
-      name: 'Jacob Houssian',
-      context:
-        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delectus enim, laudantium excepturi corrupti eligendi corporis',
-      timestamp: 'Aug 15th 5:30pm',
-      photoMain:
-        'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
-      tag: 'Meta'
-    },
-    allComments: {
-      c0: {
-        name: 'Igor',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c1: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c2: {
-        name: 'Igor Derke',
-        context: 'Lorem, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c3: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      }
-    }
-  },
-  s2: {
-    startComment: {
-      name: 'Jacob Houssian',
-      context:
-        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delectus enim, laudantium excepturi corrupti eligendi corporis',
-      timestamp: 'Aug 15th 5:30pm',
-      photoMain:
-        'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
-      tag: 'Meta'
-    },
-    allComments: {
-      c0: {
-        name: 'Igor',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c1: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c2: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c3: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      }
-    }
-  }
-};

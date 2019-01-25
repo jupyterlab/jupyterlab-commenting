@@ -1,36 +1,70 @@
 import * as React from 'react';
 
+// Components
 import { CommentHeader } from './CommentHeader';
-
 import { CommentBody } from './CommentBody';
-
 import { CommentFooter } from './CommentFooter';
-
 import { Comment } from './Comment';
 
+/**
+ * React Props interface
+ */
 interface ICommentCardProps {
+  /**
+   * Comment thread data
+   * @type any
+   */
   data?: any;
+  /**
+   * Unique string to identify a card
+   * @type string
+   */
   cardId: string;
+  /**
+   * Function to set the state of the current expanded card in "App.tsx"
+   * @param cardId - string: Card unique id
+   */
   setExpandedCard: (cardId: string) => void;
+  /**
+   * Function to check if the given cardID is the current expanded card
+   *
+   * @param cardId - string: Card unique id
+   * @return boolean: true if card is expanded, false if not
+   */
   getExpandedCard: (cardId: string) => boolean;
 }
 
+/**
+ * React States interface
+ */
 interface ICommentCardStates {
+  /**
+   * State for if the reply box is active
+   *
+   * @type boolean
+   */
   replyActive?: boolean;
-  resolved?: boolean;
-  active?: boolean;
 }
 
+/**
+ * CommentCard React Component
+ */
 export class CommentCard extends React.Component<
   ICommentCardProps,
   ICommentCardStates
 > {
+  /**
+   * Constructor
+   *
+   * @param props React Props
+   */
   constructor(props: any) {
     super(props);
     this.state = {
       replyActive: false
     };
 
+    // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
     this.handleShrink = this.handleShrink.bind(this);
     this.handleReplyActive = this.handleReplyActive.bind(this);
@@ -40,6 +74,9 @@ export class CommentCard extends React.Component<
     this.getCommentFooter = this.getCommentFooter.bind(this);
   }
 
+  /**
+   * React render function
+   */
   render() {
     return (
       <div className={this.bsc.card} style={this.styles.card}>
@@ -56,6 +93,9 @@ export class CommentCard extends React.Component<
     );
   }
 
+  /**
+   * Handle a CommentCard expanding
+   */
   handleExpand() {
     this.props.setExpandedCard(this.props.cardId);
     if (this.state.replyActive) {
@@ -63,6 +103,9 @@ export class CommentCard extends React.Component<
     }
   }
 
+  /**
+   * Handles a CommentCard shrinking
+   */
   handleShrink() {
     this.props.setExpandedCard(' ');
     if (this.state.replyActive) {
@@ -70,15 +113,27 @@ export class CommentCard extends React.Component<
     }
   }
 
+  /**
+   * Handles the state of this.state.replyActive.
+   * Changes the state to the opposite boolean
+   */
   handleReplyActive() {
     this.setState({ replyActive: !this.state.replyActive });
   }
 
+  /**
+   * Handles expanding and opening the reply box
+   */
   expandAndReply() {
     this.handleReplyActive();
     this.handleExpand();
   }
 
+  /**
+   * Creates a Comment component for each comment in the this.props.data
+   *
+   * @return React.ReactNode[]: List of Comment ReactNodes / Components
+   */
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
     let allComments: any = this.props.data['allComments'];
@@ -99,6 +154,12 @@ export class CommentCard extends React.Component<
     return comments;
   }
 
+  /**
+   * Creates and returns the CommentHeader Component.
+   * This is the top comment of a thread / card
+   *
+   * @return React.ReactNode: CommentHeader ReactNode / Component
+   */
   getCommentHeader(): React.ReactNode {
     return (
       <CommentHeader
@@ -114,6 +175,12 @@ export class CommentCard extends React.Component<
     );
   }
 
+  /**
+   * Creates and returns the CommentFooter Component
+   * This is the bottom / footer section of a CommentCard
+   *
+   * @return React.ReactNode: CommentFooter ReactNode / Component
+   */
   getCommentFooter(): React.ReactNode {
     return (
       <CommentFooter
@@ -125,6 +192,9 @@ export class CommentCard extends React.Component<
     );
   }
 
+  /**
+   * Bootstrap style classNames
+   */
   bsc = {
     card: 'card',
     cardHeader: 'card-header border-bottom-0',
@@ -132,6 +202,9 @@ export class CommentCard extends React.Component<
     cardFooter: 'card-footer border-top-0'
   };
 
+  /**
+   * CSS styles
+   */
   styles = {
     card: {
       marginBottom: '5px',
