@@ -70,64 +70,75 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     if (this.props.expanded && this.props.replyActive) {
       return (
         <div>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonRight}
-            type="button"
-          >
-            Reply
-          </button>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonLeft}
-            type="button"
-            onClick={this.props.handleReplyActive}
-          >
-            Cancel
-          </button>
+          {this.getReplyButton()}
+          {this.getCancelButton()}
         </div>
       );
     } else if (this.props.expanded && !this.props.replyActive) {
       return (
         <div>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonRight}
-            type="button"
-            onClick={this.props.handleReplyActive}
-          >
-            Reply
-          </button>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonLeft}
-            type="button"
-          >
-            Resolve
-          </button>
+          {this.getReplyAndExpandButton()}
+          {this.getResolveButton()}
         </div>
       );
     } else if (!this.props.expanded && !this.props.replyActive) {
       return (
         <div>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonRight}
-            type="button"
-            onClick={this.props.expandAndReply}
-          >
-            Reply
-          </button>
-          <button
-            className={this.bsc.button}
-            style={this.styles.buttonLeft}
-            type="button"
-          >
-            Resolve
-          </button>
+          {this.getReplyAndExpandButton()}
+          {this.getResolveButton()}
         </div>
       );
     }
+  }
+
+  getReplyAndExpandButton(): React.ReactNode {
+    return (
+      <button
+        className={this.bsc.button}
+        style={this.styles.buttonRight}
+        type="button"
+        onClick={this.props.expandAndReply}
+      >
+        Reply
+      </button>
+    );
+  }
+
+  getResolveButton(): React.ReactNode {
+    return (
+      <button
+        className={this.bsc.button}
+        style={this.styles.buttonLeft}
+        type="button"
+      >
+        Resolve
+      </button>
+    );
+  }
+
+  getReplyButton(): React.ReactNode {
+    return (
+      <button
+        className={this.bsc.button}
+        style={this.styles.buttonRight}
+        type="button"
+      >
+        Reply
+      </button>
+    );
+  }
+
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        className={this.bsc.button}
+        style={this.styles.buttonLeft}
+        type="button"
+        onClick={this.props.handleReplyActive}
+      >
+        Cancel
+      </button>
+    );
   }
 
   /**
