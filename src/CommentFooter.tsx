@@ -91,6 +91,10 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     }
   }
 
+  /**
+   * Creates and returns a button to handle expanding and replying
+   * @return Type: React.ReactNode
+   */
   getReplyAndExpandButton(): React.ReactNode {
     return (
       <button
@@ -104,6 +108,10 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     );
   }
 
+  /**
+   * Creates and returns resolve button
+   * @return Type: React.ReactNode
+   */
   getResolveButton(): React.ReactNode {
     return (
       <button
@@ -116,6 +124,10 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     );
   }
 
+  /**
+   * Creates and returns reply button
+   * @return Type: React.ReactNode
+   */
   getReplyButton(): React.ReactNode {
     return (
       <button
@@ -128,6 +140,10 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     );
   }
 
+  /**
+   * Creates and returns cancel button
+   * @return Type: React.ReactNode
+   */
   getCancelButton(): React.ReactNode {
     return (
       <button
