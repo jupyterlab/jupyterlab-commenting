@@ -70,7 +70,7 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     if (this.props.expanded && this.props.replyActive) {
       return (
         <div>
-          {this.getReplyButton()}
+          {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
       );
@@ -98,8 +98,7 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
   getReplyAndExpandButton(): React.ReactNode {
     return (
       <button
-        className={this.bsc.button}
-        style={this.styles.buttonRight}
+        className={'commentFooterRightButton float-right'}
         type="button"
         onClick={this.props.expandAndReply}
       >
@@ -114,11 +113,7 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    */
   getResolveButton(): React.ReactNode {
     return (
-      <button
-        className={this.bsc.button}
-        style={this.styles.buttonLeft}
-        type="button"
-      >
+      <button className="commentFooterLeftButton float-right" type="button">
         Resolve
       </button>
     );
@@ -128,14 +123,13 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    * Creates and returns reply button
    * @return Type: React.ReactNode
    */
-  getReplyButton(): React.ReactNode {
+  getCommentButton(): React.ReactNode {
     return (
       <button
-        className={this.bsc.button}
-        style={this.styles.buttonRight}
+        className="commentCommentButton commentFooterRightButton float-right"
         type="button"
       >
-        Reply
+        Comment
       </button>
     );
   }
@@ -147,10 +141,9 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
   getCancelButton(): React.ReactNode {
     return (
       <button
-        className={this.bsc.button}
-        style={this.styles.buttonLeft}
-        type="button"
         onClick={this.props.handleReplyActive}
+        className="commentCancelButton commentFooterLeftButton float-right"
+        type="button"
       >
         Cancel
       </button>
@@ -161,7 +154,6 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    * Bootstrap classNames
    */
   bsc = {
-    button: 'btn-secondary float-right',
     buttonArea: 'col',
     input: 'form-control form-control-sm'
   };
@@ -182,19 +174,41 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
       marginRight: '5px',
       marginTop: '8px'
     },
-    buttonRight: {
-      background: '#E0E0E0',
-      color: 'black',
+    commentButtonActive: {
+      background: 'white',
+      color: '#2196F3',
       borderRadius: '2px',
       border: 'none',
+      boxShadow: 'none',
       outline: '0px',
-      marginLeft: '4px',
-      marginRight: '-5px'
+      marginLeft: '0px',
+      marginRight: '4px'
     },
-    buttonLeft: {
+    commentButtonHover: {
       background: '#E0E0E0',
-      color: 'black',
+      color: '#2196F3',
       borderRadius: '2px',
+      border: 'none',
+      boxShadow: 'none',
+      outline: '0px',
+      marginLeft: '0px',
+      marginRight: '4px'
+    },
+    cancelButtonActive: {
+      background: 'white',
+      color: '#E57373',
+      borderRadius: '2px',
+      border: 'none',
+      boxShadow: 'none',
+      outline: '0px',
+      marginLeft: '0px',
+      marginRight: '4px'
+    },
+    cancelButtonHover: {
+      background: '#E0E0E0',
+      color: '#E57373',
+      borderRadius: '2px',
+      boxShadow: 'none',
       border: 'none',
       outline: '0px',
       marginLeft: '0px',
