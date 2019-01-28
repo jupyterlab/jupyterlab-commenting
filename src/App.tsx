@@ -75,6 +75,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             cardId={key}
             setExpandedCard={this.setExpandedCard}
             getExpandedCard={this.getExpandedCard}
+            resolved={allData[key].startComment.resolved}
           />
         );
       } else if (this.state.expandedCard === key) {

@@ -44,7 +44,7 @@ const testData: any = {
       photoMain:
         'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
       tag: 'Meta',
-      header: ''
+      resolved: false
     },
     allComments: {
       c0: {
@@ -95,7 +95,8 @@ const testData: any = {
       timestamp: 'Aug 15th 5:30pm',
       photoMain:
         'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
-      tag: 'Meta'
+      tag: 'Meta',
+      resolved: true
     },
     allComments: {
       c0: {

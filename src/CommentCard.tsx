@@ -21,13 +21,17 @@ interface ICommentCardProps {
    */
   cardId: string;
   /**
+   * Is the card resolved
+   * @type boolean
+   */
+  resolved?: boolean;
+  /**
    * Function to set the state of the current expanded card in "App.tsx"
    * @param cardId - string: Card unique id
    */
   setExpandedCard: (cardId: string) => void;
   /**
    * Function to check if the given cardID is the current expanded card
-   *
    * @param cardId - string: Card unique id
    * @return boolean: true if card is expanded, false if not
    */
@@ -96,7 +100,7 @@ export class CommentCard extends React.Component<
   /**
    * Handle a CommentCard expanding
    */
-  handleExpand() {
+  handleExpand(): void {
     this.props.setExpandedCard(this.props.cardId);
     if (this.state.replyActive) {
       this.handleReplyActive();
@@ -106,7 +110,7 @@ export class CommentCard extends React.Component<
   /**
    * Handles a CommentCard shrinking
    */
-  handleShrink() {
+  handleShrink(): void {
     this.props.setExpandedCard(' ');
     if (this.state.replyActive) {
       this.handleReplyActive();
@@ -117,14 +121,14 @@ export class CommentCard extends React.Component<
    * Handles the state of this.state.replyActive.
    * Changes the state to the opposite boolean
    */
-  handleReplyActive() {
+  handleReplyActive(): void {
     this.setState({ replyActive: !this.state.replyActive });
   }
 
   /**
    * Handles expanding and opening the reply box
    */
-  expandAndReply() {
+  expandAndReply(): void {
     this.handleReplyActive();
     this.handleExpand();
   }
@@ -169,6 +173,7 @@ export class CommentCard extends React.Component<
         photo={this.props.data['startComment'].photoMain}
         tag={this.props.data['startComment'].tag}
         expanded={this.props.getExpandedCard(this.props.cardId)}
+        resolved={this.props.resolved}
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
       />

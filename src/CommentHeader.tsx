@@ -35,6 +35,11 @@ interface ICommentHeaderProps {
    */
   expanded: boolean;
   /**
+   * Is the card resolved
+   * @type boolean
+   */
+  resolved?: boolean;
+  /**
    * Function to handle the CommentCard expanding
    * @type VoidFunction
    */
@@ -75,10 +80,15 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             <p style={this.styles.timestamp} className={this.bsc.timestamp}>
               {this.props.timestamp}
             </p>
-            <div style={this.styles.tagArea}>
+            <div style={this.styles.tagArea} className={this.bsc.tagArea}>
               <h6 style={this.styles.tag} className={this.bsc.tag}>
                 {this.props.tag}
               </h6>
+              {this.props.resolved && (
+                <h6 style={this.styles.resolvedTag} className={this.bsc.tag}>
+                  Resolved
+                </h6>
+              )}
             </div>
           </div>
           <div>
@@ -119,6 +129,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     upperHeader: 'row',
     nameArea: 'col',
     tag: 'badge badge-secondary row-offset-1',
+    tagArea: 'col',
     name: 'row-offset-1',
     timestamp: 'row-offset-1'
   };
@@ -187,8 +198,20 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       marginBottom: '0px',
       marginTop: '-4px'
     },
+    resolvedTag: {
+      background: '#E0E0E0',
+      fontSize: '.7em',
+      fontWeight: 'normal' as 'normal',
+      color: 'black',
+      borderRadius: '2px',
+      marginBottom: '0px',
+      marginTop: '-4px',
+      marginLeft: '5px'
+    },
     tagArea: {
-      marginTop: '-5px'
+      marginTop: '-5px',
+      paddingLeft: '0px',
+      paddingRight: '0px'
     }
   };
 }
