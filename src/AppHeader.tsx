@@ -4,18 +4,38 @@ import { AppHeaderOptions } from './AppHeaderOptions';
 
 interface IAppHeaderProps {
   header?: string;
+  /**
+   * Tracks if card is expanded
+   * @type boolean
+   */
+  expanded?: boolean;
+  /**
+   * Function to set the state of the current expanded card in "App.tsx"
+   * @param cardId - string: Card unique id
+   */
+  setExpandedCard: (cardId: string) => void;
 }
 
 export class AppHeader extends React.Component<IAppHeaderProps> {
   constructor(props: any) {
     super(props);
+
     this.renderAppHeader = this.renderAppHeader.bind(this);
+    this.getBackButton = this.getBackButton.bind(this);
+    this.setShrink = this.setShrink.bind(this);
   }
 
   render() {
     return (
       <div className="card border-0 py-1">
-        <div>{this.renderAppHeader(this.props.header)}</div>
+        <div className="row">
+          <div className={'col-lg-1'}>
+            {this.props.expanded && this.getBackButton()}
+          </div>
+          <div className={'col-lg-10'}>
+            {this.renderAppHeader(this.props.header)}
+          </div>
+        </div>
         <div>
           <AppHeaderOptions />
         </div>
@@ -45,6 +65,27 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     }
   }
 
+  getBackButton(): React.ReactNode {
+    return (
+      <input
+        type="image"
+        style={this.styles.backButton}
+        src={
+          'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_arrow_back_48px-512.png'
+        }
+        alt="Back"
+        onClick={this.setShrink}
+      />
+    );
+  }
+
+  /**
+   * Sets the state expandedCard to ' ' in App.tsx, which will shrink
+   */
+  setShrink(): void {
+    this.props.setExpandedCard(' ');
+  }
+
   styles = {
     emptyHeader: {
       background: 'white',
@@ -55,6 +96,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       paddingTop: '0.5rem',
       paddingBottom: '0.5rem',
       fontWeight: 'bold' as 'bold'
+    },
+    backButton: {
+      width: '16px',
+      height: '16px',
+      marginTop: '14px',
+      marginLeft: '10px'
     }
   };
 }

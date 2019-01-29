@@ -53,7 +53,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
 
     this.getCommentCards = this.getCommentCards.bind(this);
     this.setExpandedCard = this.setExpandedCard.bind(this);
-    this.getExpandedCard = this.getExpandedCard.bind(this);
+    this.checkExpandedCard = this.checkExpandedCard.bind(this);
   }
 
   /**
@@ -76,6 +76,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       </UseSignal>
     );
   }
+
   checkAppHeader(args: any): React.ReactNode {
     if (
       args !== undefined &&
@@ -84,9 +85,21 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       args.newValue.context !== undefined &&
       args.newValue.context.session !== undefined
     ) {
-      return <AppHeader header={args.newValue.context.session._name} />;
+      return (
+        <AppHeader
+          header={args.newValue.context.session._name}
+          expanded={this.state.expandedCard !== ' '}
+          setExpandedCard={this.setExpandedCard}
+        />
+      );
     } else {
-      return <AppHeader header={undefined} />;
+      return (
+        <AppHeader
+          header={undefined}
+          expanded={this.state.expandedCard !== ' '}
+          setExpandedCard={this.setExpandedCard}
+        />
+      );
     }
   }
 
@@ -105,7 +118,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             data={allData[key]}
             cardId={key}
             setExpandedCard={this.setExpandedCard}
-            getExpandedCard={this.getExpandedCard}
+            getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
           />
         );
@@ -115,7 +128,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             data={allData[this.state.expandedCard]}
             cardId={this.state.expandedCard}
             setExpandedCard={this.setExpandedCard}
-            getExpandedCard={this.getExpandedCard}
+            getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
           />
         );
@@ -130,7 +143,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param cardId Type: string - CommentCard unique id
    * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
    */
-  getExpandedCard(cardId: string): boolean {
+  checkExpandedCard(cardId: string): boolean {
     return cardId === this.state.expandedCard;
   }
 

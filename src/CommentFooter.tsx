@@ -258,7 +258,8 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     replyBox: {
       width: '100%',
       height: '80px',
-      lineHeight: 'normal'
+      lineHeight: 'normal',
+      marginTop: '8px'
     }
   };
 }
