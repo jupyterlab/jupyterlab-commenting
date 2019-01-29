@@ -101,23 +101,22 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
       !this.props.replyActive &&
       this.props.resolved
     ) {
-      return (
-        <div>
-          {this.getReplyAndExpandButton()}
-          {this.getReopenButton()}
-        </div>
-      );
+      return <div>{this.getReopenButton()}</div>;
     } else if (
       !this.props.expanded &&
       !this.props.replyActive &&
       this.props.resolved
     ) {
-      return (
-        <div>
-          {this.getReplyAndExpandButton()}
-          {this.getReopenButton()}
-        </div>
-      );
+      return <div>{this.getReopenButton()}</div>;
+    } else if (
+      this.props.expanded &&
+      this.props.replyActive &&
+      this.props.resolved
+    ) {
+      <div>
+        {this.getCommentButton()}
+        {this.getCancelButton()}
+      </div>;
     }
   }
 
@@ -143,7 +142,7 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    */
   getReopenButton(): React.ReactNode {
     return (
-      <button className={'commentFooterLeftButton float-right'} type="button">
+      <button className={'commentFooterRightButton float-right'} type="button">
         Re-open
       </button>
     );
