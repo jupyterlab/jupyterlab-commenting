@@ -61,12 +61,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     return (
       <UseSignal signal={this.props.signal}>
         {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
-          return (
-            <div>
-              {this.checkAppHeader(args)}
-              <AppBody cards={this.getCommentCards(this.props.data)} />
-            </div>
-          );
+          return <div>{this.checkAppHeader(args)}</div>;
         }}
       </UseSignal>
     );
@@ -79,27 +74,20 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @return Type: React.ReactNode[] - App Header with correct header string
    */
   checkAppHeader(args: any): React.ReactNode {
-    if (
-      args !== undefined &&
-      args !== null &&
-      (args.newValue !== undefined && args.newValue !== null) &&
-      args.newValue.context !== undefined &&
-      args.newValue.context.session !== undefined
-    ) {
+    try {
       return (
-        <AppHeader
-          header={args.newValue.context.session._name}
-          expanded={this.state.expandedCard !== ' '}
-          setExpandedCard={this.setExpandedCard}
-        />
+        <div>
+          <AppHeader
+            header={args.newValue.context.session._name}
+            expanded={this.state.expandedCard !== ' '}
+            setExpandedCard={this.setExpandedCard}
+          />
+          <AppBody cards={this.getCommentCards(this.props.data)} />
+        </div>
       );
-    } else {
+    } catch {
       return (
-        <AppHeader
-          header={undefined}
-          expanded={this.state.expandedCard !== ' '}
-          setExpandedCard={this.setExpandedCard}
-        />
+        <AppHeader header={undefined} setExpandedCard={this.setExpandedCard} />
       );
     }
   }
