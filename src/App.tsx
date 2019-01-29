@@ -47,9 +47,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   constructor(props: any) {
     super(props);
-    this.state = {
-      expandedCard: ' '
-    };
+    this.state = { expandedCard: ' ' };
 
     this.getCommentCards = this.getCommentCards.bind(this);
     this.setExpandedCard = this.setExpandedCard.bind(this);
@@ -77,6 +75,12 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     );
   }
 
+  /**
+   * Checks the the prop returned by the signal and returns App header with correct data
+   *
+   * @param args Type: any - FocusTracker.IChangedArgs<Widget> Argument returned by the signal listener
+   * @return Type: React.ReactNode[] - App Header with correct header string
+   */
   checkAppHeader(args: any): React.ReactNode {
     if (
       args !== undefined &&
