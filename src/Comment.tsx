@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 interface ICommentProps {
-  name?: string;
+  name: string;
   context?: string;
-  timestamp?: string;
-  photo?: string;
-  expanded?: boolean;
+  timestamp: string;
+  photo: string;
+  expanded: boolean;
 }
 
 export class Comment extends React.Component<ICommentProps> {

@@ -121,14 +121,6 @@ const testData: any = {
         timestamp: 'Aug 15th 5:35pm',
         photoMain:
           'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c3: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
       }
     }
   },
@@ -142,40 +134,7 @@ const testData: any = {
         'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png',
       tag: 'Meta'
     },
-    allComments: {
-      c0: {
-        name: 'Igor',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c1: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c2: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      },
-      c3: {
-        name: 'Igor Derke',
-        context:
-          'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique accusamus ut placeat eum, veritatis est sit. Maxime ipsum, delec',
-        timestamp: 'Aug 15th 5:35pm',
-        photoMain:
-          'https://www.pclodge.com/wp-content/uploads/2014/08/placeholder.png'
-      }
-    }
+    allComments: {}
   }
 };
 

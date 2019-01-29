@@ -10,6 +10,11 @@ interface ICommentFooterProps {
    */
   expanded: boolean;
   /**
+   * Is the card resolved
+   * @type boolean
+   */
+  resolved: boolean;
+  /**
    * Tracks if the reply box is active
    * @type boolean
    */
@@ -67,25 +72,50 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    * @return Type: React.ReactNode - JSX with buttons
    */
   getButtons(): React.ReactNode {
-    if (this.props.expanded && this.props.replyActive) {
+    if (this.props.expanded && this.props.replyActive && !this.props.resolved) {
       return (
         <div>
           {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
       );
-    } else if (this.props.expanded && !this.props.replyActive) {
+    } else if (
+      this.props.expanded &&
+      !this.props.replyActive &&
+      !this.props.resolved
+    ) {
+      return <div>{this.getReplyAndExpandButton()}</div>;
+    } else if (
+      !this.props.expanded &&
+      !this.props.replyActive &&
+      !this.props.resolved
+    ) {
       return (
         <div>
           {this.getReplyAndExpandButton()}
           {this.getResolveButton()}
         </div>
       );
-    } else if (!this.props.expanded && !this.props.replyActive) {
+    } else if (
+      this.props.expanded &&
+      !this.props.replyActive &&
+      this.props.resolved
+    ) {
       return (
         <div>
           {this.getReplyAndExpandButton()}
-          {this.getResolveButton()}
+          {this.getReopenButton()}
+        </div>
+      );
+    } else if (
+      !this.props.expanded &&
+      !this.props.replyActive &&
+      this.props.resolved
+    ) {
+      return (
+        <div>
+          {this.getReplyAndExpandButton()}
+          {this.getReopenButton()}
         </div>
       );
     }
@@ -103,6 +133,18 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
         onClick={this.props.expandAndReply}
       >
         Reply
+      </button>
+    );
+  }
+
+  /**
+   * Creates and returns re-open button
+   * @return Type: React.ReactNode
+   */
+  getReopenButton(): React.ReactNode {
+    return (
+      <button className={'commentFooterLeftButton float-right'} type="button">
+        Re-open
       </button>
     );
   }

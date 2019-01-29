@@ -6,7 +6,7 @@ import { CommentCard } from './CommentCard';
 import { AppHeader } from './AppHeader';
 
 /**
- * React Props interface
+ * React States interface
  */
 interface IAppStates {
   /**
@@ -17,7 +17,7 @@ interface IAppStates {
 }
 
 /**
- * React States interface
+ * React Props interface
  */
 interface IAppProps {
   /**
@@ -85,6 +85,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             cardId={this.state.expandedCard}
             setExpandedCard={this.setExpandedCard}
             getExpandedCard={this.getExpandedCard}
+            resolved={allData[key].startComment.resolved}
           />
         );
       }

@@ -38,7 +38,7 @@ interface ICommentHeaderProps {
    * Is the card resolved
    * @type boolean
    */
-  resolved?: boolean;
+  resolved: boolean;
   /**
    * Function to handle the CommentCard expanding
    * @type VoidFunction
@@ -92,21 +92,17 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             </div>
           </div>
           <div>
-            <input
-              type="image"
-              style={this.styles.cornerButton}
-              src={
-                this.props.expanded
-                  ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Resize_small_font_awesome.svg/1024px-Resize_small_font_awesome.svg.png'
-                  : 'http://cdn.onlinewebfonts.com/svg/img_72157.png'
-              }
-              alt="Expand"
-              onClick={
-                this.props.expanded
-                  ? this.props.handleShrink
-                  : this.props.handleExpand
-              }
-            />
+            {this.props.expanded ? (
+              this.getResolveButton()
+            ) : (
+              <input
+                type="image"
+                style={this.styles.cornerButton}
+                src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
+                alt="Expand"
+                onClick={this.props.handleExpand}
+              />
+            )}
           </div>
         </div>
         <div
@@ -119,6 +115,22 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
           <p>{this.props.context}</p>
         </div>
       </div>
+    );
+  }
+
+  /**
+   * Creates and returns resolve button
+   * @return Type: React.ReactNode
+   */
+  getResolveButton(): React.ReactNode {
+    return (
+      <button
+        className="commentFooterLeftButton float-right"
+        style={this.styles.resolveButton}
+        type="button"
+      >
+        Resolve
+      </button>
     );
   }
 
@@ -142,6 +154,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     cardHeader: {
       marginBottom: '10px',
       background: 'white'
+    },
+    resolveButton: {
+      marginRight: '20px',
+      marginTop: '5px'
     },
     nameArea: {
       paddingLeft: '5px'

@@ -9,7 +9,14 @@ interface ICommentBodyProps {
    * @type ReactNode[]
    */
   comments?: React.ReactNode[];
+  /**
+   * Tracks if card is expanded
+   * @type boolean
+   */
+  expanded: boolean;
 }
+
+const _maxCommentsPerShrinkCard = 3;
 
 /**
  * CommentBody React Component
@@ -28,19 +35,38 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    * React render function
    */
   render() {
+    return (
+      <div style={this.styles.commentBodyStyle} className={this.bsc}>
+        {this.getComments()}
+      </div>
+    );
+  }
+
+  getComments(): React.ReactNode {
     let items: React.ReactNode;
     if (this.props.comments != null) {
-      // Maps each Comment component into an individual div tag
-      items = this.props.comments.map((props, i) => <div key={i}>{props}</div>);
+      if (
+        this.props.comments.length <= _maxCommentsPerShrinkCard ||
+        this.props.expanded
+      ) {
+        // Maps each Comment component into an individual div tag
+        items = this.props.comments.map((props, i) => (
+          <div key={i}>{props}</div>
+        ));
+      } else if (!this.props.expanded) {
+        items = (
+          <div>
+            <div style={this.styles.circle} />
+            <div style={this.styles.circle} />
+            <div style={this.styles.circle} />
+            <div>{this.props.comments[this.props.comments.length - 1]}</div>
+          </div>
+        );
+      }
     } else {
       items = '';
     }
-
-    return (
-      <div style={this.commentBodyStyle} className={this.bsc}>
-        {items}
-      </div>
-    );
+    return items;
   }
 
   /**
@@ -51,7 +77,17 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
   /**
    * CSS styles
    */
-  commentBodyStyle = {
-    padding: '0px'
+  styles = {
+    commentBodyStyle: {
+      padding: '0px'
+    },
+    circle: {
+      width: '8px',
+      height: '8px',
+      background: '#C4C4C4',
+      borderRadius: '4px',
+      marginBottom: '8px',
+      marginLeft: '8px'
+    }
   };
 }

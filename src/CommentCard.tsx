@@ -24,7 +24,7 @@ interface ICommentCardProps {
    * Is the card resolved
    * @type boolean
    */
-  resolved?: boolean;
+  resolved: boolean;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
    * @param cardId - string: Card unique id
@@ -73,9 +73,6 @@ export class CommentCard extends React.Component<
     this.handleShrink = this.handleShrink.bind(this);
     this.handleReplyActive = this.handleReplyActive.bind(this);
     this.expandAndReply = this.expandAndReply.bind(this);
-    this.getAllComments = this.getAllComments.bind(this);
-    this.getCommentHeader = this.getCommentHeader.bind(this);
-    this.getCommentFooter = this.getCommentFooter.bind(this);
   }
 
   /**
@@ -88,7 +85,10 @@ export class CommentCard extends React.Component<
           {this.getCommentHeader()}
         </div>
         <div className={this.bsc.cardBody} style={this.styles.cardBody}>
-          <CommentBody comments={this.getAllComments()} />
+          <CommentBody
+            comments={this.getAllComments()}
+            expanded={this.props.getExpandedCard(this.props.cardId)}
+          />
         </div>
         <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
           {this.getCommentFooter()}
@@ -191,6 +191,7 @@ export class CommentCard extends React.Component<
       <CommentFooter
         expanded={this.props.getExpandedCard(this.props.cardId)}
         replyActive={this.state.replyActive}
+        resolved={this.props.resolved}
         handleReplyActive={this.handleReplyActive}
         expandAndReply={this.expandAndReply}
       />
@@ -217,11 +218,13 @@ export class CommentCard extends React.Component<
     },
     cardHeading: {
       padding: '0px',
-      background: 'white'
+      background: 'white',
+      marginBottom: '-8px'
     },
     cardBody: {
       padding: '0px',
-      background: 'white'
+      background: 'white',
+      marginBottom: '-15px'
     },
     cardFooter: {
       padding: '0px',
