@@ -87,15 +87,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   }
 
   styles = {
-    emptyHeader: {
-      background: 'white',
-      color: '#a3a1a0'
-    },
+    emptyHeader: { background: 'white', color: '#a3a1a0' },
     header: {
       background: 'white',
       paddingTop: '0.5rem',
       paddingBottom: '0.5rem',
-      fontWeight: 'bold' as 'bold'
+      fontSize: '24px'
     },
     backButton: {
       width: '16px',
@@ -104,4 +101,59 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       marginLeft: '10px'
     }
   };
+
+  fileTypes = [
+    {
+      mimeTypes: ['text/markdown'],
+      iconClass: 'jp-MaterialIcon jp-MarkdownIcon'
+    },
+    {
+      mimeTypes: ['text/x-python'],
+      iconClass: 'jp-MaterialIcon jp-PythonIcon'
+    },
+    {
+      mimeTypes: ['application/json'],
+      iconClass: 'jp-MaterialIcon jp-JSONIcon'
+    },
+    {
+      mimeTypes: ['text/csv'],
+      iconClass: 'jp-MaterialIcon jp-SpreadsheetIcon'
+    },
+    {
+      mimeTypes: ['text/csv'],
+      iconClass: 'jp-MaterialIcon jp-SpreadsheetIcon'
+    },
+    {
+      mimeTypes: ['text/x-rsrc'],
+      iconClass: 'jp-MaterialIcon jp-RKernelIcon'
+    },
+    {
+      mimeTypes: ['text/x-yaml', 'text/yaml'],
+      iconClass: 'jp-MaterialIcon jp-YamlIcon'
+    },
+    {
+      mimeTypes: ['image/svg+xml'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    },
+    {
+      mimeTypes: ['image/tiff'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    },
+    {
+      mimeTypes: ['image/jpeg'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    },
+    {
+      mimeTypes: ['image/gif'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    },
+    {
+      mimeTypes: ['image/png'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    },
+    {
+      mimeTypes: ['image/bmp'],
+      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+    }
+  ];
 }
