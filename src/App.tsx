@@ -1,5 +1,13 @@
 import * as React from 'react';
 
+import { ISignal } from '@phosphor/signaling';
+
+import { UseSignal } from '@jupyterlab/apputils';
+
+import { ApplicationShell } from '@jupyterlab/application';
+
+import { FocusTracker, Widget } from '@phosphor/widgets';
+
 // Components
 import { AppBody } from './AppBody';
 import { CommentCard } from './CommentCard';
@@ -25,6 +33,7 @@ interface IAppProps {
    * @type any
    */
   data?: any;
+  signal?: ISignal<ApplicationShell, FocusTracker.IChangedArgs<Widget>>;
 }
 
 /**
@@ -52,11 +61,33 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return (
-      <div>
-        <AppHeader />
-        <AppBody cards={this.getCommentCards(this.props.data)} />
-      </div>
+      <UseSignal signal={this.props.signal}>
+        {(
+          sender: ApplicationShell,
+          args: FocusTracker.IChangedArgs<Widget>
+        ) => {
+          return (
+            <div>
+              {this.checkAppHeader(args)}
+              <AppBody cards={this.getCommentCards(this.props.data)} />
+            </div>
+          );
+        }}
+      </UseSignal>
     );
+  }
+  checkAppHeader(args: any): React.ReactNode {
+    if (
+      args !== undefined &&
+      args !== null &&
+      (args.newValue !== undefined && args.newValue !== null) &&
+      args.newValue.context !== undefined &&
+      args.newValue.context.session !== undefined
+    ) {
+      return <AppHeader header={args.newValue.context.session._name} />;
+    } else {
+      return <AppHeader header={undefined} />;
+    }
   }
 
   /**

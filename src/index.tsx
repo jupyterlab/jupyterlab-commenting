@@ -6,6 +6,8 @@ import '../style/index.css';
 
 import { ReactWidget } from '@jupyterlab/apputils';
 
+// import { DocumentRegistry } from '@jupyterlab/docregistry';
+
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -14,17 +16,18 @@ import 'bootstrap/dist/css/bootstrap.css';
  * Activate the extension
  */
 function activate(app: JupyterLab) {
-  const widget = ReactWidget.create(<App data={testData} />);
+  const widget = ReactWidget.create(
+    <App data={testData} signal={app.shell.currentChanged} />
+  );
   widget.id = 'jupyterlab-commenting';
   widget.title.iconClass = 'jp-ChatIcon jp-SideBar-tabIcon';
   widget.title.caption = 'Commenting';
-
   app.shell.addToRightArea(widget);
 }
-
 /**
  * Initialization data for the jupyterlab-commenting extension
  */
+
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
