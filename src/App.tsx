@@ -4,7 +4,7 @@ import { ISignal } from '@phosphor/signaling';
 
 import { UseSignal } from '@jupyterlab/apputils';
 
-import { ApplicationShell } from '@jupyterlab/application';
+import { ILabShell } from '@jupyterlab/application';
 
 import { FocusTracker, Widget } from '@phosphor/widgets';
 
@@ -33,7 +33,7 @@ interface IAppProps {
    * @type any
    */
   data?: any;
-  signal?: ISignal<ApplicationShell, FocusTracker.IChangedArgs<Widget>>;
+  signal?: ISignal<ILabShell, FocusTracker.IChangedArgs<Widget>>;
 }
 
 /**
@@ -60,11 +60,13 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   render() {
     return (
       <UseSignal signal={this.props.signal}>
-        {(
-          sender: ApplicationShell,
-          args: FocusTracker.IChangedArgs<Widget>
-        ) => {
-          return <div>{this.checkAppHeader(args)}</div>;
+        {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
+          return (
+            <div>
+              {this.checkAppHeader(args)}
+              <AppBody cards={this.getCommentCards(this.props.data)} />
+            </div>
+          );
         }}
       </UseSignal>
     );
@@ -77,20 +79,27 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @return Type: React.ReactNode[] - App Header with correct header string
    */
   checkAppHeader(args: any): React.ReactNode {
-    try {
+    if (
+      args !== undefined &&
+      args !== null &&
+      (args.newValue !== undefined && args.newValue !== null) &&
+      args.newValue.context !== undefined &&
+      args.newValue.context.session !== undefined
+    ) {
       return (
-        <div>
-          <AppHeader
-            header={args.newValue.context.session._name}
-            expanded={this.state.expandedCard !== ' '}
-            setExpandedCard={this.setExpandedCard}
-          />
-          <AppBody cards={this.getCommentCards(this.props.data)} />
-        </div>
+        <AppHeader
+          header={args.newValue.context.session._name}
+          expanded={this.state.expandedCard !== ' '}
+          setExpandedCard={this.setExpandedCard}
+        />
       );
-    } catch {
+    } else {
       return (
-        <AppHeader header={undefined} setExpandedCard={this.setExpandedCard} />
+        <AppHeader
+          header={undefined}
+          expanded={this.state.expandedCard !== ' '}
+          setExpandedCard={this.setExpandedCard}
+        />
       );
     }
   }
