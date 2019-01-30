@@ -10,6 +10,8 @@ import '../style/index.css';
 
 import { ReactWidget } from '@jupyterlab/apputils';
 
+import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+
 // import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import App from './App';
@@ -19,7 +21,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 /**
  * Activate the extension
  */
-function activate(app: JupyterFrontEnd, labShell: ILabShell) {
+function activate(
+  app: JupyterFrontEnd,
+  labShell: ILabShell,
+  comments: IMetadataCommentsService
+) {
   const widget = ReactWidget.create(
     <App data={testData} signal={labShell.currentChanged} />
   );
@@ -36,7 +42,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
   activate: activate,
-  requires: [ILabShell]
+  requires: [ILabShell, IMetadataCommentsService]
 };
 
 /**

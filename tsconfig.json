@@ -21,8 +21,7 @@
   "include": [
     "src/*"
   ],
-  "references": [
-    {
+  "references": [{
       "path": "../application"
     },
     {
@@ -30,6 +29,9 @@
     },
     {
       "path": "../docregistry"
+    },
+    {
+      "path": "../frontend"
     }
   ]
 }
