@@ -113,10 +113,23 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
       this.props.replyActive &&
       this.props.resolved
     ) {
-      <div>
-        {this.getCommentButton()}
-        {this.getCancelButton()}
-      </div>;
+      return (
+        <div>
+          {this.getCommentButton()}
+          {this.getCancelButton()}
+        </div>
+      );
+    } else if (
+      !this.props.expanded &&
+      this.props.replyActive &&
+      !this.props.resolved
+    ) {
+      return (
+        <div>
+          {this.getReplyAndExpandButton()}
+          {this.getResolveButton()}
+        </div>
+      );
     }
   }
 
