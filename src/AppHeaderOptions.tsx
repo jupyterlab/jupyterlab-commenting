@@ -1,44 +1,53 @@
 import * as React from 'react';
 
-export class AppHeaderOptions extends React.Component {
-  state = {
-    isOpen: false,
-    isResolved: false,
-    sorted: 'latest'
-  };
+/**
+ * React Props interface
+ */
+interface IAppHeaderOptionsProps {
+  /**
+   * Function to set the state of the current sort option in "App.tsx"
+   * @param state - string: card sort controller
+   */
+  setSortState: (state: string) => void;
+  /**
+   * Function to set the resolved state. Controlls if resolved comments are shown in "App.tsx"
+   *
+   */
+  showResolvedState: () => void;
+}
 
-  itemPicked = 'Latest Reply';
+/**
+ * React State Interface
+ */
+interface IAppHeaderOptionsState {
+  /**
+   * dropdown state, shows dropdown menu if true
+   * @type boolean
+   */
+  isOpen: boolean;
+}
 
-  toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
-  toggleResolved = () => this.setState({ isResolved: !this.state.isResolved });
+/**
+ * AppHeaderOptions React Component
+ */
+export class AppHeaderOptions extends React.Component<
+  IAppHeaderOptionsProps,
+  IAppHeaderOptionsState
+> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
+  constructor(props: any) {
+    super(props);
 
-  getSortItems(): React.ReactNode {
-    let table = [];
-    for (let key = 0; key < this.sortItems.length; key++) {
-      table.push(
-        <a
-          key={key}
-          className="dropdown-item"
-          href="#"
-          onClick={() =>
-            this.setSortState(
-              this.sortItems[key].state,
-              this.sortItems[key].name
-            )
-          }
-        >
-          {this.sortItems[key].name}
-        </a>
-      );
-    }
-    return table;
+    this.state = { isOpen: false };
   }
 
-  setSortState(state: string, name: string) {
-    this.itemPicked = name;
-    this.setState({ sorted: state });
-  }
-
+  /**
+   * React render function
+   */
   render() {
     const menuClass = `dropdown-menu dropdown-menu-right${
       this.state.isOpen ? ' show' : ''
@@ -95,6 +104,68 @@ export class AppHeaderOptions extends React.Component {
     );
   }
 
+  /**
+   * Stores the Sort by: option string
+   */
+  itemPicked = 'Latest Reply';
+
+  /**
+   * Sets the "isOpen" state to control the dropdown menu
+   */
+  toggleOpen = () =>
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  /**
+   * Sets "showResolved" state in "App.tsx"
+   */
+  toggleResolved = () => {
+    this.props.showResolvedState();
+  };
+
+  /**
+   * Gets values for the dropdown menu
+   *
+   * @callback to setSortState function
+   * @returns React.ReactNode with dropdown menu items
+   */
+  getSortItems(): React.ReactNode {
+    let table = [];
+    for (let key = 0; key < this.sortItems.length; key++) {
+      table.push(
+        <a
+          key={key}
+          className="dropdown-item"
+          href="#"
+          onClick={() =>
+            this.setSortState(
+              this.sortItems[key].state,
+              this.sortItems[key].name
+            )
+          }
+        >
+          {this.sortItems[key].name}
+        </a>
+      );
+    }
+    return table;
+  }
+
+  /**
+   * Sets "sortState" state in "App.tsx"
+   * Adds a name to the Sort by: label
+   *
+   * @param state Type: string - Passed as an argument to the SetSortState function in "App.tsx"
+   * @param name Type: string - Assigns passed value to show as a Sort by: label
+   */
+  setSortState(state: string, name: string) {
+    this.itemPicked = name;
+    this.props.setSortState(state);
+  }
+
+  /**
+   * Dropbown menu items
+   */
   sortItems = [
     { name: 'Latest Reply', state: 'latest' },
     { name: 'Date Created', state: 'date' },
@@ -102,6 +173,9 @@ export class AppHeaderOptions extends React.Component {
     { name: 'Position', state: 'position' }
   ];
 
+  /**
+   * Bootstrap classes
+   */
   bsc = {
     checkbox: 'col-lg-5 col-md-5 col-sm-5 form-check text-center',
     checkboxLabel: '',
@@ -111,11 +185,11 @@ export class AppHeaderOptions extends React.Component {
       'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
   };
 
+  /**
+   * Custom styles
+   */
   styles = {
-    optionBar: {
-      height: '28px',
-      borderRadius: 0
-    },
+    optionBar: { height: '28px', borderRadius: 0 },
     dropdownLable: {
       height: '27px',
       lineHeight: 'normal',
@@ -125,10 +199,7 @@ export class AppHeaderOptions extends React.Component {
       borderLeftStyle: 'solid' as 'solid',
       borderLeftColor: '#a3a1a0'
     },
-    dropdownButton: {
-      height: '28px',
-      width: '40px'
-    },
+    dropdownButton: { height: '28px', width: '40px' },
     checkbox: {},
     checkboxLabel: {
       paddingRight: '24px',

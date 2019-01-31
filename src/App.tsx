@@ -12,6 +12,7 @@ import { FocusTracker, Widget } from '@phosphor/widgets';
 import { AppBody } from './AppBody';
 import { CommentCard } from './CommentCard';
 import { AppHeader } from './AppHeader';
+import { AppHeaderOptions } from './AppHeaderOptions';
 
 /**
  * React States interface
@@ -22,6 +23,8 @@ interface IAppStates {
    * @type string
    */
   expandedCard: string;
+  sortState: string;
+  showResolved: boolean;
 }
 
 /**
@@ -47,11 +50,17 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   constructor(props: any) {
     super(props);
-    this.state = { expandedCard: ' ' };
+    this.state = {
+      expandedCard: ' ',
+      sortState: 'latest',
+      showResolved: false
+    };
 
     this.getCommentCards = this.getCommentCards.bind(this);
     this.setExpandedCard = this.setExpandedCard.bind(this);
     this.checkExpandedCard = this.checkExpandedCard.bind(this);
+    this.setSortState = this.setSortState.bind(this);
+    this.showResolvedState = this.showResolvedState.bind(this);
   }
 
   /**
@@ -81,13 +90,29 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             header={args.newValue.context.session._name}
             expanded={this.state.expandedCard !== ' '}
             setExpandedCard={this.setExpandedCard}
+            headerOptions={
+              <AppHeaderOptions
+                setSortState={this.setSortState}
+                showResolvedState={this.showResolvedState}
+              />
+            }
           />
           <AppBody cards={this.getCommentCards(this.props.data)} />
         </div>
       );
     } catch {
       return (
-        <AppHeader header={undefined} setExpandedCard={this.setExpandedCard} />
+        <AppHeader
+          header={undefined}
+          setExpandedCard={this.setExpandedCard}
+          expanded={this.state.expandedCard !== ' '}
+          headerOptions={
+            <AppHeaderOptions
+              setSortState={this.setSortState}
+              showResolvedState={this.showResolvedState}
+            />
+          }
+        />
       );
     }
   }
@@ -143,5 +168,14 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   setExpandedCard(cardId: string) {
     this.setState({ expandedCard: cardId });
+  }
+
+  setSortState(state: string) {
+    this.setState({ sortState: state });
+    console.log(this.state.sortState);
+  }
+
+  showResolvedState() {
+    this.setState({ showResolved: !this.state.showResolved });
   }
 }

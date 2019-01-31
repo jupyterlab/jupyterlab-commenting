@@ -1,8 +1,13 @@
 import * as React from 'react';
 
-import { AppHeaderOptions } from './AppHeaderOptions';
-
+/**
+ * React Props interface
+ */
 interface IAppHeaderProps {
+  /**
+   * Recieves a value for a header
+   * @type string
+   */
   header?: string;
   /**
    * Tracks if card is expanded
@@ -14,9 +19,18 @@ interface IAppHeaderProps {
    * @param cardId - string: Card unique id
    */
   setExpandedCard: (cardId: string) => void;
+  headerOptions: React.ReactNode;
 }
 
+/**
+ * AppHeader React Component
+ */
 export class AppHeader extends React.Component<IAppHeaderProps> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
   constructor(props: any) {
     super(props);
 
@@ -25,6 +39,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     this.setShrink = this.setShrink.bind(this);
   }
 
+  /**
+   * React render function
+   */
   render() {
     return (
       <div className="card border-0 py-1">
@@ -36,13 +53,18 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
             {this.renderAppHeader(this.props.header)}
           </div>
         </div>
-        <div>
-          <AppHeaderOptions />
-        </div>
+        <div>{this.props.headerOptions}</div>
       </div>
     );
   }
 
+  /**
+   * Chacks the value of the header prop and returns a React component
+   * with a value held by the header prop, or a header placeholder
+   *
+   * @param header Type: string
+   * @return Type: React.ReactNode - App Header with correct string
+   */
   renderAppHeader(header: string): React.ReactNode {
     if (this.props.header === undefined) {
       return (
@@ -68,6 +90,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     }
   }
 
+  /**
+   * Strips the header of the extention ending and compares it to the list of supported extentions
+   *
+   * @param header Type: string
+   * @return Type: React.ReactNode - span with a correct image class
+   */
   getFileIcon(header: string): React.ReactNode {
     try {
       let extentionName = header.slice(header.indexOf('.'));
@@ -97,8 +125,14 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       return <span />;
     }
   }
-
+  /**
+   * Renders a back button inside the header
+   *
+   * @return Type: React.ReactNode -
+   *    Input button @type Image
+   */
   getBackButton(): React.ReactNode {
+    console.log('back button should be rendered');
     return (
       <input
         type="image"
@@ -117,6 +151,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     this.props.setExpandedCard(' ');
   }
 
+  /**
+   * App header styles
+   */
   styles = {
     emptyHeader: { background: 'white', color: '#a3a1a0' },
     header: { display: 'inline-block', alignItems: 'center' },
@@ -143,6 +180,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     }
   };
 
+  /**
+   * Stores all the available file extention types
+   */
   fileTypes = [
     {
       extensions: ['.md'],
