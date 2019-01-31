@@ -44,8 +44,14 @@ export class AppHeaderOptions extends React.Component {
       this.state.isOpen ? ' show' : ''
     }`;
     return (
-      <div className="card" style={this.styles.optionBar}>
-        <div className="card-title row" style={this.styles.optionBar}>
+      <div
+        className="card border-left-0 border-right-0"
+        style={this.styles.optionBar}
+      >
+        <div
+          className="card-title row border-left-0 border-right-0"
+          style={this.styles.optionBar}
+        >
           {/* Checkbox start */}
           <div className={this.bsc.checkbox} style={this.styles.checkbox}>
             <label
@@ -100,8 +106,7 @@ export class AppHeaderOptions extends React.Component {
     checkbox: 'col-lg-5 col-md-5 col-sm-5 form-check text-center',
     checkboxLabel: '',
     dropdown: 'col-lg-1 col-md-1 col-sm-1 px-0',
-    dropdownLable:
-      'col-lg-5 col-md-5 col-sm-5 text-center border-left border-dark my-0 px-0',
+    dropdownLable: 'col-lg-5 col-md-5 col-sm-5 text-center my-0 px-0',
     dropdownButton:
       'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
   };
@@ -112,18 +117,19 @@ export class AppHeaderOptions extends React.Component {
       borderRadius: 0
     },
     dropdownLable: {
-      height: '28px',
+      height: '27px',
       lineHeight: 'normal',
       fontSize: '13px',
-      paddingTop: '5px'
+      paddingTop: '5px',
+      borderLeftWidth: '1px',
+      borderLeftStyle: 'solid' as 'solid',
+      borderLeftColor: '#a3a1a0'
     },
     dropdownButton: {
       height: '28px',
       width: '40px'
     },
-    checkbox: {
-      paddingBottom: '5px'
-    },
+    checkbox: {},
     checkboxLabel: {
       paddingRight: '24px',
       lineHeight: 'normal',

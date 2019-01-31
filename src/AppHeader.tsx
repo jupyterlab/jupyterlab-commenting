@@ -29,10 +29,10 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <div className="card border-0 py-1">
         <div className="row">
-          <div className={'col-lg-1'}>
+          <div className={'col-lg-2'}>
             {this.props.expanded && this.getBackButton()}
           </div>
-          <div className={'col-lg-10'}>
+          <div className={'col-lg-9 text-center px-0'}>
             {this.renderAppHeader(this.props.header)}
           </div>
         </div>
@@ -43,7 +43,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     );
   }
 
-  renderAppHeader(header: any): React.ReactNode {
+  renderAppHeader(header: string): React.ReactNode {
     if (this.props.header === undefined) {
       return (
         <h5
@@ -55,13 +55,46 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       );
     } else {
       return (
-        <h3
-          className="card-header text-center border-0"
-          style={this.styles.header}
-        >
-          {this.props.header}
-        </h3>
+        <div style={this.styles.header}>
+          {this.getFileIcon(this.props.header)}
+          <label
+            className="card-header text-center border-0 py-0"
+            style={this.styles.headerLabel}
+          >
+            {this.props.header}
+          </label>
+        </div>
       );
+    }
+  }
+
+  getFileIcon(header: string): React.ReactNode {
+    try {
+      let extentionName = header.slice(header.indexOf('.'));
+      for (let key = 0; key < this.fileTypes.length; key++) {
+        for (
+          let value = 0;
+          value < this.fileTypes[key].extensions.length;
+          value++
+        ) {
+          if (extentionName === this.fileTypes[key].extensions[value]) {
+            return (
+              <span
+                className={this.fileTypes[key].iconClass}
+                style={this.styles.headerIcon}
+              />
+            );
+          }
+        }
+      }
+      return (
+        <span
+          className={'jp-Icon jp-FileIcon'}
+          style={this.styles.headerIcon}
+        />
+      );
+    } catch {
+      return <span />;
     }
   }
 
@@ -70,9 +103,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       <input
         type="image"
         style={this.styles.backButton}
-        src={
-          'https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_arrow_back_48px-512.png'
-        }
+        src={'https://i.ibb.co/xg3hwy8/Vector.png'}
         alt="Back"
         onClick={this.setShrink}
       />
@@ -88,72 +119,95 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
 
   styles = {
     emptyHeader: { background: 'white', color: '#a3a1a0' },
-    header: {
+    header: { display: 'inline-block', alignItems: 'center' },
+    headerLabel: {
+      paddingLeft: '5px',
       background: 'white',
       paddingTop: '0.5rem',
       paddingBottom: '0.5rem',
       fontSize: '24px'
     },
+    headerIcon: {
+      minWidth: '28px',
+      minHeight: '28px',
+      backgroundSize: '28px',
+      marginTop: '13px',
+      marginBottom: '18px',
+      padding: '8px'
+    },
     backButton: {
       width: '16px',
       height: '16px',
-      marginTop: '14px',
-      marginLeft: '10px'
+      marginTop: '20px',
+      marginLeft: '15px'
     }
   };
 
   fileTypes = [
     {
+      extensions: ['.md'],
       mimeTypes: ['text/markdown'],
-      iconClass: 'jp-MaterialIcon jp-MarkdownIcon'
+      iconClass: 'jp-Icon jp-MarkdownIcon'
     },
     {
+      extensions: ['.py'],
       mimeTypes: ['text/x-python'],
-      iconClass: 'jp-MaterialIcon jp-PythonIcon'
+      iconClass: 'jp-Icon jp-PythonIcon'
     },
     {
+      extensions: ['.json'],
       mimeTypes: ['application/json'],
-      iconClass: 'jp-MaterialIcon jp-JSONIcon'
+      iconClass: 'jp-Icon jp-JSONIcon'
     },
     {
+      extensions: ['.csv'],
       mimeTypes: ['text/csv'],
-      iconClass: 'jp-MaterialIcon jp-SpreadsheetIcon'
+      iconClass: 'jp-Icon jp-SpreadsheetIcon'
     },
     {
+      extensions: ['.tsv'],
       mimeTypes: ['text/csv'],
-      iconClass: 'jp-MaterialIcon jp-SpreadsheetIcon'
+      iconClass: 'jp-Icon jp-SpreadsheetIcon'
     },
     {
       mimeTypes: ['text/x-rsrc'],
-      iconClass: 'jp-MaterialIcon jp-RKernelIcon'
+      extensions: ['.r'],
+      iconClass: 'jp-Icon jp-RKernelIcon'
     },
     {
       mimeTypes: ['text/x-yaml', 'text/yaml'],
-      iconClass: 'jp-MaterialIcon jp-YamlIcon'
+      extensions: ['.yaml', '.yml'],
+      iconClass: 'jp-Icon jp-YamlIcon'
     },
     {
       mimeTypes: ['image/svg+xml'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.svg'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     },
     {
       mimeTypes: ['image/tiff'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.tif', '.tiff'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     },
     {
       mimeTypes: ['image/jpeg'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.jpg', '.jpeg'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     },
     {
       mimeTypes: ['image/gif'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.gif'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     },
     {
       mimeTypes: ['image/png'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.png'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     },
     {
       mimeTypes: ['image/bmp'],
-      iconClass: 'jp-MaterialIcon jp-ImageIcon'
+      extensions: ['.bmp'],
+      iconClass: 'jp-Icon jp-ImageIcon'
     }
   ];
 }
