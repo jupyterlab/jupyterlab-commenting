@@ -38,11 +38,18 @@ interface ICommentCardProps {
   getExpandedCard: (cardId: string) => boolean;
   /**
    * Pushed comment back to MetadataCommentsService
-   *
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
   putComment: (comment: string, cardId: string) => void;
+  /**
+   * Sets the value of the given key value pair in specific itemId and cardId
+   * @param cardId Type: string - id of card to set value on
+   * @param key Type: string - key of value to set
+   * @param value Type: sting - value to set to key
+   * @type void function
+   */
+  setCardValue(cardId: string, key: string, value: any): void;
 }
 
 /**
@@ -81,6 +88,7 @@ export class CommentCard extends React.Component<
     this.handleReplyActive = this.handleReplyActive.bind(this);
     this.expandAndReply = this.expandAndReply.bind(this);
     this.getInput = this.getInput.bind(this);
+    this.handleResolve = this.handleResolve.bind(this);
   }
 
   /**
@@ -152,6 +160,29 @@ export class CommentCard extends React.Component<
   }
 
   /**
+   * Passes resolve state to setCardValue in App.tsx
+   *
+   * @param resolved Type: boolean - resolve state
+   */
+  handleResolve(): void {
+    this.props.setCardValue(
+      this.props.cardId,
+      'resolved',
+      !this.props.resolved
+    );
+
+    if (this.props.resolved) {
+      if (this.props.getExpandedCard(this.props.cardId)) {
+        this.handleExpand();
+      } else {
+        this.handleShrink();
+      }
+    } else {
+      this.handleShrink();
+    }
+  }
+
+  /**
    * Creates a Comment component for each comment in the this.props.data
    *
    * @return React.ReactNode[]: List of Comment ReactNodes / Components
@@ -194,6 +225,7 @@ export class CommentCard extends React.Component<
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
+        handleResolve={this.handleResolve}
       />
     );
   }
@@ -213,6 +245,7 @@ export class CommentCard extends React.Component<
         handleReplyActive={this.handleReplyActive}
         expandAndReply={this.expandAndReply}
         getInput={this.getInput}
+        handleResolve={this.handleResolve}
       />
     );
   }

@@ -36,6 +36,11 @@ interface ICommentFooterProps {
    * @type void function
    */
   getInput: (comment: string) => void;
+  /**
+   * Reverses resolve state
+   * @type: void function
+   */
+  handleResolve: VoidFunction;
 }
 
 /**
@@ -197,7 +202,11 @@ export class CommentFooter extends React.Component<
    */
   getReopenButton(): React.ReactNode {
     return (
-      <button className={'commentFooterRightButton float-right'} type="button">
+      <button
+        className={'commentFooterRightButton float-right'}
+        type="button"
+        onClick={this.props.handleResolve}
+      >
         Re-open
       </button>
     );
@@ -209,7 +218,11 @@ export class CommentFooter extends React.Component<
    */
   getResolveButton(): React.ReactNode {
     return (
-      <button className="commentFooterLeftButton float-right" type="button">
+      <button
+        className="commentFooterLeftButton float-right"
+        type="button"
+        onClick={this.props.handleResolve}
+      >
         Resolve
       </button>
     );

@@ -5,7 +5,7 @@ import * as React from 'react';
  */
 interface IAppHeaderProps {
   /**
-   * Recieves a value for a header
+   * Receives a value for a header
    * @type string
    */
   header?: string;
@@ -59,7 +59,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   }
 
   /**
-   * Chacks the value of the header prop and returns a React component
+   * Checks the value of the header prop and returns a React component
    * with a value held by the header prop, or a header placeholder
    *
    * @param header Type: string
@@ -91,21 +91,21 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   }
 
   /**
-   * Strips the header of the extention ending and compares it to the list of supported extentions
+   * Strips the header of the extension ending and compares it to the list of supported extensions
    *
    * @param header Type: string
    * @return Type: React.ReactNode - span with a correct image class
    */
   getFileIcon(header: string): React.ReactNode {
     try {
-      let extentionName = header.slice(header.indexOf('.'));
+      let extensionName = header.slice(header.indexOf('.'));
       for (let key = 0; key < this.fileTypes.length; key++) {
         for (
           let value = 0;
           value < this.fileTypes[key].extensions.length;
           value++
         ) {
-          if (extentionName === this.fileTypes[key].extensions[value]) {
+          if (extensionName === this.fileTypes[key].extensions[value]) {
             return (
               <span
                 className={this.fileTypes[key].iconClass}
@@ -132,7 +132,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    *    Input button @type Image
    */
   getBackButton(): React.ReactNode {
-    console.log('back button should be rendered');
     return (
       <input
         type="image"
@@ -181,7 +180,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   };
 
   /**
-   * Stores all the available file extention types
+   * Stores all the available file extension types
    */
   fileTypes = [
     {

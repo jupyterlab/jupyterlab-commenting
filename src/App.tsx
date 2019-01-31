@@ -65,6 +65,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setSortState = this.setSortState.bind(this);
     this.showResolvedState = this.showResolvedState.bind(this);
     this.putComment = this.putComment.bind(this);
+    this.setCardValue = this.setCardValue.bind(this);
   }
 
   /**
@@ -99,6 +100,17 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   putComment(comment: string, cardId: string): void {
     // TODO: Add auto get itemID not hard coded file path
     this.props.commentsService.createComment('clean.py', comment, cardId);
+  }
+
+  /**
+   * Sets the value of the given key value pair in specific itemId and cardId
+   *
+   * @param cardId Type: string - id of card to set value on
+   * @param key Type: string - key of value to set
+   * @param value Type: sting - value to set to key
+   */
+  setCardValue(cardId: string, key: string, value: any): void {
+    this.props.commentsService.setCardValue('clean.py', cardId, key, value);
   }
 
   /**
@@ -164,6 +176,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
             putComment={this.putComment}
+            setCardValue={this.setCardValue}
           />
         );
       } else if (this.state.expandedCard === key) {
@@ -175,6 +188,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
             putComment={this.putComment}
+            setCardValue={this.setCardValue}
           />
         );
       }
@@ -203,7 +217,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
 
   setSortState(state: string) {
     this.setState({ sortState: state });
-    console.log(this.state.sortState);
   }
 
   showResolvedState() {

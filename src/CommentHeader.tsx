@@ -49,6 +49,11 @@ interface ICommentHeaderProps {
    * @type VoidFunction
    */
   handleShrink: VoidFunction;
+  /**
+   * Reverses resolve state
+   * @type: void function
+   */
+  handleResolve: VoidFunction;
 }
 
 /**
@@ -128,6 +133,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         className="commentFooterLeftButton float-right"
         style={this.styles.resolveButton}
         type="button"
+        onClick={this.props.handleResolve}
       >
         Resolve
       </button>

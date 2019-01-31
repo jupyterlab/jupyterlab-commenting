@@ -10,7 +10,7 @@ interface IAppHeaderOptionsProps {
    */
   setSortState: (state: string) => void;
   /**
-   * Function to set the resolved state. Controlls if resolved comments are shown in "App.tsx"
+   * Function to set the resolved state. Controls if resolved comments are shown in "App.tsx"
    *
    */
   showResolvedState: () => void;
@@ -65,7 +65,7 @@ export class AppHeaderOptions extends React.Component<
           <div className={this.bsc.checkbox} style={this.styles.checkbox}>
             <label
               className={this.bsc.checkboxLabel}
-              htmlFor="contols"
+              htmlFor="controls"
               style={this.styles.checkboxLabel}
             >
               Show resolved{' '}
@@ -80,8 +80,8 @@ export class AppHeaderOptions extends React.Component<
           {/* Checkbox End */}
           {/* Dropdown Start */}
           <label
-            className={this.bsc.dropdownLable}
-            style={this.styles.dropdownLable}
+            className={this.bsc.dropdownLabel}
+            style={this.styles.dropdownLabel}
           >
             Sort By: {this.itemPicked}
           </label>
@@ -164,7 +164,7 @@ export class AppHeaderOptions extends React.Component<
   }
 
   /**
-   * Dropbown menu items
+   * Dropdown menu items
    */
   sortItems = [
     { name: 'Latest Reply', state: 'latest' },
@@ -180,7 +180,7 @@ export class AppHeaderOptions extends React.Component<
     checkbox: 'col-lg-5 col-md-5 col-sm-5 form-check text-center',
     checkboxLabel: '',
     dropdown: 'col-lg-1 col-md-1 col-sm-1 px-0',
-    dropdownLable: 'col-lg-5 col-md-5 col-sm-5 text-center my-0 px-0',
+    dropdownLabel: 'col-lg-5 col-md-5 col-sm-5 text-center my-0 px-0',
     dropdownButton:
       'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
   };
@@ -190,7 +190,7 @@ export class AppHeaderOptions extends React.Component<
    */
   styles = {
     optionBar: { height: '28px', borderRadius: 0 },
-    dropdownLable: {
+    dropdownLabel: {
       height: '27px',
       lineHeight: 'normal',
       fontSize: '13px',
