@@ -8,6 +8,8 @@ import { ILabShell } from '@jupyterlab/application';
 
 import { FocusTracker, Widget } from '@phosphor/widgets';
 
+import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+
 // Components
 import { AppBody } from './AppBody';
 import { CommentCard } from './CommentCard';
@@ -37,6 +39,7 @@ interface IAppProps {
    */
   data?: any;
   signal?: ISignal<ILabShell, FocusTracker.IChangedArgs<Widget>>;
+  commentsService?: IMetadataCommentsService;
 }
 
 /**
@@ -61,6 +64,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.checkExpandedCard = this.checkExpandedCard.bind(this);
     this.setSortState = this.setSortState.bind(this);
     this.showResolvedState = this.showResolvedState.bind(this);
+    this.putComment = this.putComment.bind(this);
   }
 
   /**
@@ -74,6 +78,27 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         }}
       </UseSignal>
     );
+  }
+
+  /**
+   * Query the comments from MetadataCommentsService based on itemId
+   *
+   * @param itemId Type: String - Path of file to get comments for
+   * @return Type: any - Stream of comments
+   */
+  getComments(itemId: string): any {
+    return this.props.commentsService.queryComments(itemId);
+  }
+
+  /**
+   * Pushed comment back to MetadataCommentsService
+   *
+   * @param comment Type: string - comment message
+   * @param cardId Type: String - commend card / thread the comment applies to
+   */
+  putComment(comment: string, cardId: string): void {
+    // TODO: Add auto get itemID not hard coded file path
+    this.props.commentsService.createComment('clean.py', comment, cardId);
   }
 
   /**
@@ -97,7 +122,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               />
             }
           />
-          <AppBody cards={this.getCommentCards(this.props.data)} />
+          <AppBody
+            cards={this.getCommentCards(
+              this.getComments(args.newValue.context.session._path)
+            )}
+          />
         </div>
       );
     } catch {
@@ -134,6 +163,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             setExpandedCard={this.setExpandedCard}
             getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
+            putComment={this.putComment}
           />
         );
       } else if (this.state.expandedCard === key) {
@@ -144,6 +174,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             setExpandedCard={this.setExpandedCard}
             getExpandedCard={this.checkExpandedCard}
             resolved={allData[key].startComment.resolved}
+            putComment={this.putComment}
           />
         );
       }

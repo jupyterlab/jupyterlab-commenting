@@ -29,12 +29,29 @@ interface ICommentFooterProps {
    * @type VoidFunction
    */
   expandAndReply: VoidFunction;
+  /**
+   * Passes comment message to putComment in App.tsx
+   *
+   * @param comment Type: string - comment message
+   * @type void function
+   */
+  getInput: (comment: string) => void;
+}
+
+/**
+ * React States interface
+ */
+interface ICommentFooterStates {
+  commentBox: string;
 }
 
 /**
  * CommentFooter React Component
  */
-export class CommentFooter extends React.Component<ICommentFooterProps> {
+export class CommentFooter extends React.Component<
+  ICommentFooterProps,
+  ICommentFooterStates
+> {
   /**
    * Constructor
    *
@@ -42,6 +59,12 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
    */
   constructor(props: any) {
     super(props);
+    this.state = {
+      commentBox: ''
+    };
+
+    this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
+    this.handleCommentButton = this.handleCommentButton.bind(this);
   }
 
   /**
@@ -56,6 +79,9 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
               <textarea
                 className={this.bsc.input}
                 style={this.styles.replyBox}
+                id={'commentBox'}
+                value={this.state.commentBox}
+                onChange={this.handleChangeCommentBox}
               />
             )}
         </div>
@@ -133,6 +159,22 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     }
   }
 
+  // TODO: Get correct type
+  /**
+   * Handles when the comment box changes
+   * @param event Type: any - input box event
+   */
+  handleChangeCommentBox(event: any): void {
+    this.setState({ commentBox: event.target.value });
+  }
+
+  /**
+   * Handles clicking the comment button
+   */
+  handleCommentButton(): void {
+    this.props.getInput(this.state.commentBox);
+  }
+
   /**
    * Creates and returns a button to handle expanding and replying
    * @return Type: React.ReactNode
@@ -182,6 +224,7 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
       <button
         className="commentCommentButton commentFooterRightButton float-right"
         type="button"
+        onClick={this.handleCommentButton}
       >
         Comment
       </button>
@@ -227,46 +270,6 @@ export class CommentFooter extends React.Component<ICommentFooterProps> {
     buttonArea: {
       marginRight: '5px',
       marginTop: '8px'
-    },
-    commentButtonActive: {
-      background: 'white',
-      color: '#2196F3',
-      borderRadius: '2px',
-      border: 'none',
-      boxShadow: 'none',
-      outline: '0px',
-      marginLeft: '0px',
-      marginRight: '4px'
-    },
-    commentButtonHover: {
-      background: '#E0E0E0',
-      color: '#2196F3',
-      borderRadius: '2px',
-      border: 'none',
-      boxShadow: 'none',
-      outline: '0px',
-      marginLeft: '0px',
-      marginRight: '4px'
-    },
-    cancelButtonActive: {
-      background: 'white',
-      color: '#E57373',
-      borderRadius: '2px',
-      border: 'none',
-      boxShadow: 'none',
-      outline: '0px',
-      marginLeft: '0px',
-      marginRight: '4px'
-    },
-    cancelButtonHover: {
-      background: '#E0E0E0',
-      color: '#E57373',
-      borderRadius: '2px',
-      boxShadow: 'none',
-      border: 'none',
-      outline: '0px',
-      marginLeft: '0px',
-      marginRight: '4px'
     },
     replyBox: {
       width: '100%',

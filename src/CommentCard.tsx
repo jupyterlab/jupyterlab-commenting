@@ -36,6 +36,13 @@ interface ICommentCardProps {
    * @return boolean: true if card is expanded, false if not
    */
   getExpandedCard: (cardId: string) => boolean;
+  /**
+   * Pushed comment back to MetadataCommentsService
+   *
+   * @param comment Type: string - comment message
+   * @param cardId Type: String - commend card / thread the comment applies to
+   */
+  putComment: (comment: string, cardId: string) => void;
 }
 
 /**
@@ -73,6 +80,7 @@ export class CommentCard extends React.Component<
     this.handleShrink = this.handleShrink.bind(this);
     this.handleReplyActive = this.handleReplyActive.bind(this);
     this.expandAndReply = this.expandAndReply.bind(this);
+    this.getInput = this.getInput.bind(this);
   }
 
   /**
@@ -131,6 +139,16 @@ export class CommentCard extends React.Component<
   expandAndReply(): void {
     this.handleReplyActive();
     this.handleExpand();
+  }
+
+  /**
+   * Passes comment message to putComment in App.tsx
+   *
+   * @param comment Type: string - comment message
+   */
+  getInput(comment: string): void {
+    this.props.putComment(comment, this.props.cardId);
+    this.handleReplyActive();
   }
 
   /**
@@ -194,6 +212,7 @@ export class CommentCard extends React.Component<
         resolved={this.props.resolved}
         handleReplyActive={this.handleReplyActive}
         expandAndReply={this.expandAndReply}
+        getInput={this.getInput}
       />
     );
   }
