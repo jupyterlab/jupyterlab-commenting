@@ -70,6 +70,7 @@ export class CommentFooter extends React.Component<
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleCommentButton = this.handleCommentButton.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   /**
@@ -87,6 +88,7 @@ export class CommentFooter extends React.Component<
                 id={'commentBox'}
                 value={this.state.commentBox}
                 onChange={this.handleChangeCommentBox}
+                onKeyPress={this.handleKeyPress}
               />
             )}
         </div>
@@ -164,13 +166,20 @@ export class CommentFooter extends React.Component<
     }
   }
 
+  handleKeyPress(e: any): void {
+    console.log(e.key);
+    if (e.key === 'Enter' && !e.shiftKey) {
+      this.handleCommentButton();
+    }
+  }
+
   // TODO: Get correct type
   /**
    * Handles when the comment box changes
-   * @param event Type: any - input box event
+   * @param e Type: any - input box event
    */
-  handleChangeCommentBox(event: any): void {
-    this.setState({ commentBox: event.target.value });
+  handleChangeCommentBox(e: any): void {
+    this.setState({ commentBox: e.target.value });
   }
 
   /**
@@ -178,6 +187,7 @@ export class CommentFooter extends React.Component<
    */
   handleCommentButton(): void {
     this.props.getInput(this.state.commentBox);
+    this.setState({ commentBox: '' });
   }
 
   /**
