@@ -97,17 +97,17 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             </div>
           </div>
           <div>
-            {this.props.expanded ? (
-              this.getResolveButton()
-            ) : (
-              <input
-                type="image"
-                style={this.styles.cornerButton}
-                src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
-                alt="Expand"
-                onClick={this.props.handleExpand}
-              />
-            )}
+            {this.props.expanded && !this.props.resolved
+              ? this.getResolveButton()
+              : !this.props.expanded && (
+                  <input
+                    type="image"
+                    style={this.styles.cornerButton}
+                    src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
+                    alt="Expand"
+                    onClick={this.props.handleExpand}
+                  />
+                )}
           </div>
         </div>
         <div
