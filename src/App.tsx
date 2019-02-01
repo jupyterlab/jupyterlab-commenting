@@ -78,7 +78,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       showResolved: false
     };
 
-    this.getCommentCards = this.getCommentCards.bind(this);
+    this.getAllCommentCards = this.getAllCommentCards.bind(this);
     this.setExpandedCard = this.setExpandedCard.bind(this);
     this.checkExpandedCard = this.checkExpandedCard.bind(this);
     this.setSortState = this.setSortState.bind(this);
@@ -154,7 +154,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             }
           />
           <AppBody
-            cards={this.getCommentCards(
+            cards={this.getAllCommentCards(
               this.getComments(args.newValue.context.session._path),
               args.newValue.context.session._path
             )}
@@ -184,10 +184,16 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param allData Type: any - Comment data from this.props.data
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
-  getCommentCards(allData: any, itemId: string): React.ReactNode[] {
+  getAllCommentCards(allData: any, itemId: string): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
     for (let key in allData) {
-      if (this.state.expandedCard === ' ') {
+      if (
+        this.shouldRenderCard(
+          allData[key].startComment.resolved,
+          this.state.expandedCard !== ' ',
+          this.state.expandedCard === key
+        )
+      ) {
         cards.push(
           <CommentCard
             data={allData[key]}
@@ -200,22 +206,39 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             itemId={itemId}
           />
         );
-      } else if (this.state.expandedCard === key) {
-        cards.push(
-          <CommentCard
-            data={allData[this.state.expandedCard]}
-            cardId={this.state.expandedCard}
-            setExpandedCard={this.setExpandedCard}
-            getExpandedCard={this.checkExpandedCard}
-            resolved={allData[key].startComment.resolved}
-            putComment={this.putComment}
-            setCardValue={this.setCardValue}
-            itemId={itemId}
-          />
-        );
       }
     }
     return cards;
+  }
+
+  /**
+   * Checks if a card should be rendered in based on the states of
+   * the current view
+   *
+   * @param resolved Type: boolean - resolved state of the card
+   * @param expandedCard Type: boolean - State if there is a card expanded
+   * @param curCardExpanded Type: boolean - State if the current card is expanded
+   */
+  shouldRenderCard(
+    resolved: boolean,
+    expandedCard: boolean,
+    curCardExpanded: boolean
+  ): boolean {
+    if (!this.state.showResolved) {
+      if (!resolved) {
+        if (expandedCard) {
+          return curCardExpanded;
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (expandedCard) {
+        return curCardExpanded;
+      }
+      return true;
+    }
   }
 
   /**

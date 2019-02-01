@@ -58,7 +58,16 @@ interface ICommentCardProps {
    * @type void function
    */
   setCardValue(itemId: string, cardId: string, key: string, value: any): void;
+  /**
+   * Pushed comment back to MetadataCommentsService
+   *
+   * @param comment Type: string - comment message
+   * @param cardId Type: String - commend card / thread the comment applies to
+   */
   putComment: (itemId: string, comment: string, cardId: string) => void;
+  /**
+   * Path of file used to itemize comment thread to file
+   */
   itemId?: string;
 }
 
