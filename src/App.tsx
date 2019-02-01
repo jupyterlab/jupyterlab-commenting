@@ -97,9 +97,9 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment(comment: string, cardId: string): void {
+  putComment(itemId: string, comment: string, cardId: string): void {
     // TODO: Add auto get itemID not hard coded file path
-    this.props.commentsService.createComment('clean.py', comment, cardId);
+    this.props.commentsService.createComment(itemId, comment, cardId);
   }
 
   /**
@@ -136,7 +136,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           />
           <AppBody
             cards={this.getCommentCards(
-              this.getComments(args.newValue.context.session._path)
+              this.getComments(args.newValue.context.session._path),
+              args.newValue.context.session._path
             )}
           />
         </div>
@@ -164,7 +165,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param allData Type: any - Comment data from this.props.data
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
-  getCommentCards(allData: any): React.ReactNode[] {
+  getCommentCards(allData: any, itemId: string): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
     for (let key in allData) {
       if (this.state.expandedCard === ' ') {
@@ -177,6 +178,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             resolved={allData[key].startComment.resolved}
             putComment={this.putComment}
             setCardValue={this.setCardValue}
+            itemId={itemId}
           />
         );
       } else if (this.state.expandedCard === key) {
@@ -189,6 +191,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             resolved={allData[key].startComment.resolved}
             putComment={this.putComment}
             setCardValue={this.setCardValue}
+            itemId={itemId}
           />
         );
       }

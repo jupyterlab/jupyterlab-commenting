@@ -19,6 +19,11 @@ interface IAppHeaderProps {
    * @param cardId - string: Card unique id
    */
   setExpandedCard: (cardId: string) => void;
+  /**
+   * Recieves the AppHeaderOption componenet for render purposes
+   *
+   * @type React.ReactNode
+   */
   headerOptions: React.ReactNode;
 }
 

@@ -41,7 +41,6 @@ interface ICommentCardProps {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment: (comment: string, cardId: string) => void;
   /**
    * Sets the value of the given key value pair in specific itemId and cardId
    * @param cardId Type: string - id of card to set value on
@@ -50,6 +49,8 @@ interface ICommentCardProps {
    * @type void function
    */
   setCardValue(cardId: string, key: string, value: any): void;
+  putComment: (itemId: string, comment: string, cardId: string) => void;
+  itemId?: string;
 }
 
 /**
@@ -155,7 +156,7 @@ export class CommentCard extends React.Component<
    * @param comment Type: string - comment message
    */
   getInput(comment: string): void {
-    this.props.putComment(comment, this.props.cardId);
+    this.props.putComment(this.props.itemId, comment, this.props.cardId);
     this.handleReplyActive();
   }
 
