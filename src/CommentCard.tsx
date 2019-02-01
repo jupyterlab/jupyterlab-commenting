@@ -48,7 +48,7 @@ interface ICommentCardProps {
    * @param value Type: sting - value to set to key
    * @type void function
    */
-  setCardValue(cardId: string, key: string, value: any): void;
+  setCardValue(itemId: string, cardId: string, key: string, value: any): void;
   putComment: (itemId: string, comment: string, cardId: string) => void;
   itemId?: string;
 }
@@ -167,6 +167,7 @@ export class CommentCard extends React.Component<
    */
   handleResolve(): void {
     this.props.setCardValue(
+      this.props.itemId,
       this.props.cardId,
       'resolved',
       !this.props.resolved
@@ -282,7 +283,8 @@ export class CommentCard extends React.Component<
     cardFooter: {
       padding: '0px',
       paddingBottom: '5px',
-      background: 'white'
+      background: 'white',
+      marginTop: '10px'
     }
   };
 }

@@ -109,8 +109,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param key Type: string - key of value to set
    * @param value Type: sting - value to set to key
    */
-  setCardValue(cardId: string, key: string, value: any): void {
-    this.props.commentsService.setCardValue('clean.py', cardId, key, value);
+  setCardValue(itemId: string, cardId: string, key: string, value: any): void {
+    this.props.commentsService.setCardValue(itemId, cardId, key, value);
   }
 
   /**
