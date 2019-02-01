@@ -12,8 +12,6 @@ import { ReactWidget } from '@jupyterlab/apputils';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
-// import { DocumentRegistry } from '@jupyterlab/docregistry';
-
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -34,10 +32,10 @@ function activate(
   widget.title.caption = 'Commenting';
   labShell.add(widget, 'right');
 }
+
 /**
  * Initialization data for the jupyterlab-commenting extension
  */
-
 const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,

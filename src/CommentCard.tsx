@@ -12,40 +12,49 @@ import { Comment } from './Comment';
 interface ICommentCardProps {
   /**
    * Comment thread data
+   *
    * @type any
    */
   data?: any;
   /**
    * Unique string to identify a card
+   *
    * @type string
    */
   cardId: string;
   /**
    * Is the card resolved
+   *
    * @type boolean
    */
   resolved: boolean;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
+   *
    * @param cardId - string: Card unique id
    */
   setExpandedCard: (cardId: string) => void;
   /**
    * Function to check if the given cardID is the current expanded card
+   *
    * @param cardId - string: Card unique id
+   *
    * @return boolean: true if card is expanded, false if not
    */
   getExpandedCard: (cardId: string) => boolean;
   /**
    * Pushed comment back to MetadataCommentsService
+   *
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
   /**
    * Sets the value of the given key value pair in specific itemId and cardId
+   *
    * @param cardId Type: string - id of card to set value on
    * @param key Type: string - key of value to set
    * @param value Type: sting - value to set to key
+   *
    * @type void function
    */
   setCardValue(itemId: string, cardId: string, key: string, value: any): void;

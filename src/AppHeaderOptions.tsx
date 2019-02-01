@@ -6,6 +6,7 @@ import * as React from 'react';
 interface IAppHeaderOptionsProps {
   /**
    * Function to set the state of the current sort option in "App.tsx"
+   *
    * @param state - string: card sort controller
    */
   setSortState: (state: string) => void;
@@ -22,6 +23,7 @@ interface IAppHeaderOptionsProps {
 interface IAppHeaderOptionsState {
   /**
    * dropdown state, shows dropdown menu if true
+   *
    * @type boolean
    */
   isOpen: boolean;
@@ -127,6 +129,7 @@ export class AppHeaderOptions extends React.Component<
    * Gets values for the dropdown menu
    *
    * @callback to setSortState function
+   *
    * @returns React.ReactNode with dropdown menu items
    */
   getSortItems(): React.ReactNode {

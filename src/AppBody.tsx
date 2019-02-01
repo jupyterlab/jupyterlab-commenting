@@ -4,6 +4,11 @@ import * as React from 'react';
  * React Props interface
  */
 interface IAppBodyProps {
+  /**
+   * Array of CommentCard React Components
+   *
+   * @type React.ReactNode
+   */
   cards?: React.ReactNode[];
 }
 
@@ -13,6 +18,7 @@ interface IAppBodyProps {
 export class AppBody extends React.Component<IAppBodyProps> {
   /**
    * Constructor
+   *
    * @param props React props
    */
   constructor(props: any) {

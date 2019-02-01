@@ -22,10 +22,21 @@ import { AppHeaderOptions } from './AppHeaderOptions';
 interface IAppStates {
   /**
    * Card unique id that is expanded / full screen
+   *
    * @type string
    */
   expandedCard: string;
+  /**
+   * Current state of the sort dropdown in the header
+   *
+   * @type string
+   */
   sortState: string;
+  /**
+   * Check box state in the header
+   *
+   * @type boolean
+   */
   showResolved: boolean;
 }
 
@@ -38,7 +49,15 @@ interface IAppProps {
    * @type any
    */
   data?: any;
+  /**
+   * Signal that updates when file events happen
+   * @type ISignal
+   */
   signal?: ISignal<ILabShell, FocusTracker.IChangedArgs<Widget>>;
+  /**
+   * Comments Service that communicates with graphql server
+   * @type IMetadataCommentsService
+   */
   commentsService?: IMetadataCommentsService;
 }
 

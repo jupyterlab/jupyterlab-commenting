@@ -6,16 +6,19 @@ import * as React from 'react';
 interface IAppHeaderProps {
   /**
    * Receives a value for a header
+   *
    * @type string
    */
   header?: string;
   /**
    * Tracks if card is expanded
+   *
    * @type boolean
    */
   expanded?: boolean;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
+   *
    * @param cardId - string: Card unique id
    */
   setExpandedCard: (cardId: string) => void;

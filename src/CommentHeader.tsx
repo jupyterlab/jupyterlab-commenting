@@ -6,51 +6,61 @@ import * as React from 'react';
 interface ICommentHeaderProps {
   /**
    * Person name of comment
+   *
    * @type string
    */
   name: string;
   /**
    * Time stamp of comment
+   *
    * @type string
    */
   timestamp: string;
   /**
    * URL to Person photo to display
+   *
    * @type string
    */
   photo: string;
   /**
    * Text comment to display
+   *
    * @type string
    */
   context?: string;
   /**
    * Tag to display in the header
+   *
    * @type string
    */
   tag?: string;
   /**
    * Tracks the state if the card is expanded
+   *
    * @type boolean
    */
   expanded: boolean;
   /**
    * Is the card resolved
+   *
    * @type boolean
    */
   resolved: boolean;
   /**
    * Function to handle the CommentCard expanding
+   *
    * @type VoidFunction
    */
   handleExpand: VoidFunction;
   /**
    * Function to handle the CommentCard shrinking
+   *
    * @type VoidFunction
    */
   handleShrink: VoidFunction;
   /**
    * Reverses resolve state
+   *
    * @type: void function
    */
   handleResolve: VoidFunction;
@@ -62,6 +72,7 @@ interface ICommentHeaderProps {
 export class CommentHeader extends React.Component<ICommentHeaderProps> {
   /**
    * Constructor
+   *
    * @param props React props
    */
   constructor(props: any) {
@@ -125,6 +136,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
 
   /**
    * Creates and returns resolve button
+   *
    * @return Type: React.ReactNode
    */
   getResolveButton(): React.ReactNode {

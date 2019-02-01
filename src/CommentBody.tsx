@@ -6,11 +6,13 @@ import * as React from 'react';
 interface ICommentBodyProps {
   /**
    * List of ReactNode Comment components to be rendered to the CommentCardBody
+   *
    * @type ReactNode[]
    */
   comments?: React.ReactNode[];
   /**
    * Tracks if card is expanded
+   *
    * @type boolean
    */
   expanded: boolean;
@@ -42,6 +44,11 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
     );
   }
 
+  /**
+   * Returns and organized all Comment components passed in this.props.comments
+   *
+   * @return Type: React.ReactNode[] - array of Comment components
+   */
   getComments(): React.ReactNode {
     let items: React.ReactNode;
     if (this.props.comments != null) {

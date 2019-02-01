@@ -6,26 +6,31 @@ import * as React from 'react';
 interface ICommentFooterProps {
   /**
    * Tracks if card is expanded
+   *
    * @type boolean
    */
   expanded: boolean;
   /**
    * Is the card resolved
+   *
    * @type boolean
    */
   resolved: boolean;
   /**
    * Tracks if the reply box is active
+   *
    * @type boolean
    */
   replyActive: boolean;
   /**
    * Function to call to parent component to handle reply active
+   *
    * @type VoidFunction
    */
   handleReplyActive: VoidFunction;
   /**
    * Function to call to parent component to handle expanding and opening the reply box
+   *
    * @type VoidFunction
    */
   expandAndReply: VoidFunction;
@@ -33,11 +38,13 @@ interface ICommentFooterProps {
    * Passes comment message to putComment in App.tsx
    *
    * @param comment Type: string - comment message
+   *
    * @type void function
    */
   getInput: (comment: string) => void;
   /**
    * Reverses resolve state
+   *
    * @type: void function
    */
   handleResolve: VoidFunction;
@@ -166,6 +173,11 @@ export class CommentFooter extends React.Component<
     }
   }
 
+  /**
+   * Handles key events
+   *
+   * @param e Type: ? - keyboard event
+   */
   handleKeyPress(e: any): void {
     if (e.key === 'Enter' && !e.shiftKey) {
       this.handleCommentButton();
@@ -175,6 +187,7 @@ export class CommentFooter extends React.Component<
   // TODO: Get correct type
   /**
    * Handles when the comment box changes
+   *
    * @param e Type: any - input box event
    */
   handleChangeCommentBox(e: any): void {
@@ -207,6 +220,7 @@ export class CommentFooter extends React.Component<
 
   /**
    * Creates and returns re-open button
+   *
    * @return Type: React.ReactNode
    */
   getReopenButton(): React.ReactNode {
@@ -223,6 +237,7 @@ export class CommentFooter extends React.Component<
 
   /**
    * Creates and returns resolve button
+   *
    * @return Type: React.ReactNode
    */
   getResolveButton(): React.ReactNode {
@@ -239,6 +254,7 @@ export class CommentFooter extends React.Component<
 
   /**
    * Creates and returns reply button
+   *
    * @return Type: React.ReactNode
    */
   getCommentButton(): React.ReactNode {
@@ -255,6 +271,7 @@ export class CommentFooter extends React.Component<
 
   /**
    * Creates and returns cancel button
+   *
    * @return Type: React.ReactNode
    */
   getCancelButton(): React.ReactNode {

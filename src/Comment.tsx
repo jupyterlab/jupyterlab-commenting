@@ -1,18 +1,54 @@
 import * as React from 'react';
 
 interface ICommentProps {
+  /**
+   * Name of person commenting
+   *
+   * @type string
+   */
   name: string;
+  /**
+   * Actual comment from the user
+   *
+   * @type string
+   */
   context?: string;
+  /**
+   * Time comment was made
+   *
+   * @type string
+   */
   timestamp: string;
+  /**
+   * Source of the profile picture
+   *
+   * @type string
+   */
   photo: string;
+  /**
+   * State if the CommentCard is expanded
+   *
+   * @type string
+   */
   expanded: boolean;
 }
 
+/**
+ * Comment React Component
+ */
 export class Comment extends React.Component<ICommentProps> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
   constructor(props: any) {
     super(props);
   }
 
+  /**
+   * React render function
+   */
   render() {
     return (
       <div style={this.styles.commentHeader}>
@@ -42,6 +78,9 @@ export class Comment extends React.Component<ICommentProps> {
     );
   }
 
+  /**
+   * CSS Styles
+   */
   styles = {
     upperComment: {},
     commentHeader: {
@@ -92,6 +131,9 @@ export class Comment extends React.Component<ICommentProps> {
     }
   };
 
+  /**
+   * Bootstrap classNames
+   */
   bsc = {
     upperComment: 'row',
     nameArea: 'col',
