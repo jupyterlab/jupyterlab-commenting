@@ -167,7 +167,6 @@ export class CommentFooter extends React.Component<
   }
 
   handleKeyPress(e: any): void {
-    console.log(e.key);
     if (e.key === 'Enter' && !e.shiftKey) {
       this.handleCommentButton();
     }
