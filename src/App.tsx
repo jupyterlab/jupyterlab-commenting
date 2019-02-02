@@ -133,6 +133,42 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   }
 
   /**
+   * Used to check if the cardId passed in is the current expanded card
+   *
+   * @param cardId Type: string - CommentCard unique id
+   * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
+   */
+  checkExpandedCard(cardId: string): boolean {
+    return cardId === this.state.expandedCard;
+  }
+
+  /**
+   * Sets this.state.expandedCard to the passed in cardId
+   *
+   * @param cardId Type: string - CommentCard unique id
+   */
+  setExpandedCard(cardId: string) {
+    this.setState({ expandedCard: cardId });
+  }
+
+  /**
+   * Sets this.state.sortState to the selected sort by
+   *
+   * @param state Type: string - Sort by type
+   */
+  setSortState(state: string) {
+    this.setState({ sortState: state });
+  }
+
+  /**
+   * Sets this.state.showResolved to the state of the checkbox
+   * "Show resolved"
+   */
+  showResolvedState() {
+    this.setState({ showResolved: !this.state.showResolved });
+  }
+
+  /**
    * Checks the the prop returned by the signal and returns App header with correct data
    *
    * @param args Type: any - FocusTracker.IChangedArgs<Widget> Argument returned by the signal listener
@@ -239,32 +275,5 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       }
       return true;
     }
-  }
-
-  /**
-   * Used to check if the cardId passed in is the current expanded card
-   *
-   * @param cardId Type: string - CommentCard unique id
-   * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
-   */
-  checkExpandedCard(cardId: string): boolean {
-    return cardId === this.state.expandedCard;
-  }
-
-  /**
-   * Sets this.state.expandedCard to the passed in cardId
-   *
-   * @param cardId Type: string - CommentCard unique id
-   */
-  setExpandedCard(cardId: string) {
-    this.setState({ expandedCard: cardId });
-  }
-
-  setSortState(state: string) {
-    this.setState({ sortState: state });
-  }
-
-  showResolvedState() {
-    this.setState({ showResolved: !this.state.showResolved });
   }
 }
