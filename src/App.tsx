@@ -186,6 +186,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               <AppHeaderOptions
                 setSortState={this.setSortState}
                 showResolvedState={this.showResolvedState}
+                cardExpanded={this.state.expandedCard !== ' '}
               />
             }
           />
@@ -207,6 +208,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             <AppHeaderOptions
               setSortState={this.setSortState}
               showResolvedState={this.showResolvedState}
+              cardExpanded={this.state.expandedCard !== ' '}
             />
           }
         />

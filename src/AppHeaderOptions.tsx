@@ -8,13 +8,22 @@ interface IAppHeaderOptionsProps {
    * Function to set the state of the current sort option in "App.tsx"
    *
    * @param state - string: card sort controller
+   *
+   * @type void function
    */
   setSortState: (state: string) => void;
   /**
    * Function to set the resolved state. Controls if resolved comments are shown in "App.tsx"
    *
+   * @type void function
    */
   showResolvedState: () => void;
+  /**
+   * State of if a card is currently expanded
+   *
+   * @type boolean
+   */
+  cardExpanded: boolean;
 }
 
 /**
@@ -68,22 +77,31 @@ export class AppHeaderOptions extends React.Component<
             <label
               className={this.bsc.checkboxLabel}
               htmlFor="controls"
-              style={this.styles.checkboxLabel}
+              style={
+                this.props.cardExpanded
+                  ? this.styles.checkboxLabelDisabled
+                  : this.styles.checkboxLabelEnabled
+              }
             >
-              Show resolved{' '}
+              Show resolved
             </label>
             <input
               type="checkbox"
               className="form-check-input"
               id="controls"
               onClick={this.toggleResolved}
+              disabled={this.props.cardExpanded}
             />
           </div>
           {/* Checkbox End */}
           {/* Dropdown Start */}
           <label
             className={this.bsc.dropdownLabel}
-            style={this.styles.dropdownLabel}
+            style={
+              this.props.cardExpanded
+                ? this.styles.dropdownLabelDisabled
+                : this.styles.dropdownLabelEnabled
+            }
           >
             Sort By: {this.itemPicked}
           </label>
@@ -97,6 +115,7 @@ export class AppHeaderOptions extends React.Component<
               className={this.bsc.dropdownButton}
               style={this.styles.dropdownButton}
               data-toggle="dropdown"
+              disabled={this.props.cardExpanded}
             />
             <div className={menuClass}>{this.getSortItems()}</div>
           </div>
@@ -193,21 +212,39 @@ export class AppHeaderOptions extends React.Component<
    */
   styles = {
     optionBar: { height: '28px', borderRadius: 0 },
-    dropdownLabel: {
+    dropdownLabelEnabled: {
       height: '27px',
       lineHeight: 'normal',
       fontSize: '13px',
       paddingTop: '5px',
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: '#a3a1a0'
+      borderLeftColor: '#a3a1a0',
+      color: 'black'
+    },
+    dropdownLabelDisabled: {
+      height: '27px',
+      lineHeight: 'normal',
+      fontSize: '13px',
+      paddingTop: '5px',
+      borderLeftWidth: '1px',
+      borderLeftStyle: 'solid' as 'solid',
+      borderLeftColor: '#a3a1a0',
+      color: '#E0E0E0'
     },
     dropdownButton: { height: '28px', width: '40px' },
     checkbox: {},
-    checkboxLabel: {
+    checkboxLabelEnabled: {
       paddingRight: '24px',
       lineHeight: 'normal',
-      fontSize: '13px'
+      fontSize: '13px',
+      color: 'black'
+    },
+    checkboxLabelDisabled: {
+      paddingRight: '24px',
+      lineHeight: 'normal',
+      fontSize: '13px',
+      color: '#E0E0E0'
     }
   };
 }
