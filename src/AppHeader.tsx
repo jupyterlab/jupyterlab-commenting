@@ -28,6 +28,10 @@ interface IAppHeaderProps {
    * @type React.ReactNode
    */
   headerOptions: React.ReactNode;
+  /**
+   * Sets the state of if creating a new thread state is active
+   */
+  setNewThreadActive: (state: boolean, itemId: string) => void;
 }
 
 /**
@@ -45,6 +49,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     this.renderAppHeader = this.renderAppHeader.bind(this);
     this.getBackButton = this.getBackButton.bind(this);
     this.setShrink = this.setShrink.bind(this);
+    this.handleNewThreadButton = this.handleNewThreadButton.bind(this);
   }
 
   /**
@@ -57,8 +62,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           <div className={'col-lg-2'}>
             {this.props.expanded && this.getBackButton()}
           </div>
-          <div className={'col-lg-9 text-center px-0'}>
+          <div className={'col-lg-7 text-center px-0'}>
             {this.renderAppHeader(this.props.header)}
+          </div>
+          <div className={'col-lg-2'}>
+            {!this.props.expanded && this.getNewThreadButton()}
           </div>
         </div>
         <div>{this.props.headerOptions}</div>
@@ -152,40 +160,37 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   }
 
   /**
+   * Creates the new thread button
+   *
+   * @return Type: React.ReactNode - new thread button JSX
+   */
+  getNewThreadButton(): React.ReactNode {
+    return (
+      <input
+        type="image"
+        style={this.styles.newCommentButton}
+        src={
+          'https://material.io/tools/icons/static/icons/baseline-add-24px.svg'
+        }
+        alt="New"
+        onClick={this.handleNewThreadButton}
+      />
+    );
+  }
+
+  /**
+   * Handles the state of if new thread box should be open
+   */
+  handleNewThreadButton(): void {
+    this.props.setNewThreadActive(true, this.props.header);
+  }
+
+  /**
    * Sets the state expandedCard to ' ' in App.tsx, which will shrink
    */
   setShrink(): void {
     this.props.setExpandedCard(' ');
   }
-
-  /**
-   * App header styles
-   */
-  styles = {
-    emptyHeader: { background: 'white', color: '#a3a1a0' },
-    header: { display: 'inline-block', alignItems: 'center' },
-    headerLabel: {
-      paddingLeft: '5px',
-      background: 'white',
-      paddingTop: '0.5rem',
-      paddingBottom: '0.5rem',
-      fontSize: '24px'
-    },
-    headerIcon: {
-      minWidth: '28px',
-      minHeight: '28px',
-      backgroundSize: '28px',
-      marginTop: '13px',
-      marginBottom: '18px',
-      padding: '8px'
-    },
-    backButton: {
-      width: '16px',
-      height: '16px',
-      marginTop: '20px',
-      marginLeft: '15px'
-    }
-  };
 
   /**
    * Stores all the available file extension types
@@ -257,4 +262,39 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       iconClass: 'jp-Icon jp-ImageIcon'
     }
   ];
+
+  /**
+   * App header styles
+   */
+  styles = {
+    emptyHeader: { background: 'white', color: '#a3a1a0' },
+    header: { display: 'inline-block', alignItems: 'center' },
+    headerLabel: {
+      paddingLeft: '5px',
+      background: 'white',
+      paddingTop: '0.5rem',
+      paddingBottom: '0.5rem',
+      fontSize: '24px'
+    },
+    headerIcon: {
+      minWidth: '28px',
+      minHeight: '28px',
+      backgroundSize: '28px',
+      marginTop: '13px',
+      marginBottom: '18px',
+      padding: '8px'
+    },
+    backButton: {
+      width: '16px',
+      height: '16px',
+      marginTop: '20px',
+      marginLeft: '15px'
+    },
+    newCommentButton: {
+      width: '20px',
+      height: '20px',
+      marginTop: '17px',
+      marginLeft: '15px'
+    }
+  };
 }

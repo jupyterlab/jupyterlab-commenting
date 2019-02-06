@@ -19,15 +19,21 @@ interface ICommentFooterProps {
   /**
    * Tracks if the reply box is active
    *
-   * @type boolean
+   * @type return function
    */
   replyActive: boolean;
   /**
-   * Function to call to parent component to handle reply active
+   * Function to call to parent component to open the reply box
    *
    * @type VoidFunction
    */
-  handleReplyActive: VoidFunction;
+  handleReplyOpen: VoidFunction;
+  /**
+   * Function to call to parent component to close the reply box
+   *
+   * @type VoidFunction
+   */
+  handleReplyClose: VoidFunction;
   /**
    * Function to call to parent component to handle expanding and opening the reply box
    *
@@ -200,6 +206,7 @@ export class CommentFooter extends React.Component<
   handleCommentButton(): void {
     this.props.getInput(this.state.commentBox);
     this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
   }
 
   /**
@@ -277,7 +284,7 @@ export class CommentFooter extends React.Component<
   getCancelButton(): React.ReactNode {
     return (
       <button
-        onClick={this.props.handleReplyActive}
+        onClick={this.props.handleReplyClose}
         className="commentCancelButton commentFooterLeftButton float-right"
         type="button"
       >

@@ -41,7 +41,20 @@ interface ICommentCardProps {
    *
    * @return boolean: true if card is expanded, false if not
    */
-  getExpandedCard: (cardId: string) => boolean;
+  checkExpandedCard: (cardId: string) => boolean;
+  /**
+   * Sets this.state.replyActiveCard to the passed in cardId
+   *
+   * @param cardId Type: string - CommentCard unique id
+   */
+  setReplyActiveCard: (cardId: string) => void;
+  /**
+   * Used to check if the cardId passed in has reply box active
+   *
+   * @param cardId Type: string - CommentCard unique id
+   * @return type: boolean - True if cardId has reply box open, false if not active
+   */
+  checkReplyActiveCard: (cardId: string) => boolean;
   /**
    * Pushed comment back to MetadataCommentsService
    *
@@ -64,7 +77,12 @@ interface ICommentCardProps {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment: (itemId: string, comment: string, cardId: string) => void;
+  putComment: (
+    itemId: string,
+    cardId: string,
+    name: string,
+    comment: string
+  ) => void;
   /**
    * Path of file used to itemize comment thread to file
    */
@@ -74,14 +92,7 @@ interface ICommentCardProps {
 /**
  * React States interface
  */
-interface ICommentCardStates {
-  /**
-   * State for if the reply box is active
-   *
-   * @type boolean
-   */
-  replyActive?: boolean;
-}
+interface ICommentCardStates {}
 
 /**
  * CommentCard React Component
@@ -97,14 +108,13 @@ export class CommentCard extends React.Component<
    */
   constructor(props: any) {
     super(props);
-    this.state = {
-      replyActive: false
-    };
+    this.state = {};
 
     // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
     this.handleShrink = this.handleShrink.bind(this);
-    this.handleReplyActive = this.handleReplyActive.bind(this);
+    this.handleReplyOpen = this.handleReplyOpen.bind(this);
+    this.handleReplyClose = this.handleReplyClose.bind(this);
     this.expandAndReply = this.expandAndReply.bind(this);
     this.getInput = this.getInput.bind(this);
     this.handleResolve = this.handleResolve.bind(this);
@@ -122,7 +132,7 @@ export class CommentCard extends React.Component<
         <div className={this.bsc.cardBody} style={this.styles.cardBody}>
           <CommentBody
             comments={this.getAllComments()}
-            expanded={this.props.getExpandedCard(this.props.cardId)}
+            expanded={this.props.checkExpandedCard(this.props.cardId)}
           />
         </div>
         <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
@@ -137,8 +147,8 @@ export class CommentCard extends React.Component<
    */
   handleExpand(): void {
     this.props.setExpandedCard(this.props.cardId);
-    if (this.state.replyActive) {
-      this.handleReplyActive();
+    if (this.props.checkReplyActiveCard(this.props.cardId)) {
+      this.handleReplyOpen();
     }
   }
 
@@ -147,24 +157,30 @@ export class CommentCard extends React.Component<
    */
   handleShrink(): void {
     this.props.setExpandedCard(' ');
-    if (this.state.replyActive) {
-      this.handleReplyActive();
+    if (this.props.checkReplyActiveCard(this.props.cardId)) {
+      this.handleReplyClose();
     }
   }
 
   /**
-   * Handles the state of this.state.replyActive.
-   * Changes the state to the opposite boolean
+   * Sets the state of replyActive to true
    */
-  handleReplyActive(): void {
-    this.setState({ replyActive: !this.state.replyActive });
+  handleReplyOpen(): void {
+    this.props.setReplyActiveCard(this.props.cardId);
+  }
+
+  /**
+   * Sets the state of replyActive to false
+   */
+  handleReplyClose(): void {
+    this.props.setReplyActiveCard(' ');
   }
 
   /**
    * Handles expanding and opening the reply box
    */
   expandAndReply(): void {
-    this.handleReplyActive();
+    this.handleReplyOpen();
     this.handleExpand();
   }
 
@@ -174,8 +190,13 @@ export class CommentCard extends React.Component<
    * @param comment Type: string - comment message
    */
   getInput(comment: string): void {
-    this.props.putComment(this.props.itemId, comment, this.props.cardId);
-    this.handleReplyActive();
+    this.props.putComment(
+      this.props.itemId,
+      this.props.cardId,
+      'Jacob Houssian',
+      comment
+    );
+    this.handleReplyClose();
   }
 
   /**
@@ -192,7 +213,7 @@ export class CommentCard extends React.Component<
     );
 
     if (this.props.resolved) {
-      if (this.props.getExpandedCard(this.props.cardId)) {
+      if (this.props.checkExpandedCard(this.props.cardId)) {
         this.handleExpand();
       } else {
         this.handleShrink();
@@ -219,7 +240,7 @@ export class CommentCard extends React.Component<
             context={allComments[key].context}
             timestamp={allComments[key].timestamp}
             photo={allComments[key].photoMain}
-            expanded={this.props.getExpandedCard(this.props.cardId)}
+            expanded={this.props.checkExpandedCard(this.props.cardId)}
           />
         );
       }
@@ -241,7 +262,7 @@ export class CommentCard extends React.Component<
         timestamp={this.props.data['startComment'].timestamp}
         photo={this.props.data['startComment'].photoMain}
         tag={this.props.data['startComment'].tag}
-        expanded={this.props.getExpandedCard(this.props.cardId)}
+        expanded={this.props.checkExpandedCard(this.props.cardId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
@@ -259,10 +280,11 @@ export class CommentCard extends React.Component<
   getCommentFooter(): React.ReactNode {
     return (
       <CommentFooter
-        expanded={this.props.getExpandedCard(this.props.cardId)}
-        replyActive={this.state.replyActive}
+        expanded={this.props.checkExpandedCard(this.props.cardId)}
+        replyActive={this.props.checkReplyActiveCard(this.props.cardId)}
         resolved={this.props.resolved}
-        handleReplyActive={this.handleReplyActive}
+        handleReplyOpen={this.handleReplyOpen}
+        handleReplyClose={this.handleReplyClose}
         expandAndReply={this.expandAndReply}
         getInput={this.getInput}
         handleResolve={this.handleResolve}
