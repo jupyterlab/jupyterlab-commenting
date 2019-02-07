@@ -15,7 +15,13 @@ interface IAppHeaderProps {
    *
    * @type boolean
    */
-  expanded?: boolean;
+  cardExpanded?: boolean;
+  /**
+   * Tracks if the new thread window is active
+   *
+   * @type boolean
+   */
+  threadOpen?: boolean;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
    *
@@ -138,10 +144,22 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     }
   }
 
+  /**
+   * Returns a button from the current state of the comment box
+   *
+   * @return Type: React.ReactNode
+   */
   getCornerButton(): React.ReactNode {
-    if (!this.props.expanded && this.props.header !== undefined) {
+    if (
+      !this.props.cardExpanded &&
+      this.props.header !== undefined &&
+      !this.props.threadOpen
+    ) {
       return this.getNewThreadButton();
-    } else if (this.props.expanded && this.props.header !== undefined) {
+    } else if (
+      (this.props.cardExpanded || this.props.threadOpen) &&
+      this.props.header !== undefined
+    ) {
       return this.getBackButton();
     } else {
       return;
@@ -187,14 +205,18 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * Handles the state of if new thread box should be open
    */
   handleNewThreadButton(): void {
-    this.props.setNewThreadActive(true, this.props.header);
+    if (!this.props.cardExpanded) {
+      this.props.setNewThreadActive(!this.props.threadOpen, this.props.header);
+    }
   }
 
   /**
    * Sets the state expandedCard to ' ' in App.tsx, which will shrink
+   * or closes "New Thread" window
    */
   setShrink(): void {
     this.props.setExpandedCard(' ');
+    this.handleNewThreadButton();
   }
 
   /**

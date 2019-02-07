@@ -144,7 +144,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         <div>
           <AppHeader
             header={args.newValue.context.session._name}
-            expanded={this.state.expandedCard !== ' '}
+            cardExpanded={this.state.expandedCard !== ' '}
+            threadOpen={this.state.newThreadActive}
             setExpandedCard={this.setExpandedCard}
             setNewThreadActive={this.setNewThreadActive}
             headerOptions={
@@ -168,7 +169,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         <AppHeader
           header={undefined}
           setExpandedCard={this.setExpandedCard}
-          expanded={this.state.expandedCard !== ' '}
+          cardExpanded={this.state.expandedCard !== ' '}
+          threadOpen={this.state.newThreadActive}
           setNewThreadActive={this.setNewThreadActive}
           headerOptions={
             <AppHeaderOptions
@@ -374,8 +376,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   async setUserInfo(user: string) {
     const response = await fetch('http://api.github.com/users/' + user);
     const myJSON = await response.json();
-
-    console.log(myJSON);
 
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
