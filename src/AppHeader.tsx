@@ -59,11 +59,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <div className="card border-0 py-1">
         <div style={this.styles.headercard}>
-          <div>
-            {this.props.expanded
-              ? this.getBackButton()
-              : this.getNewThreadButton()}
-          </div>
+          <div>{this.getCornerButton()}</div>
           {this.renderAppHeader(this.props.header)}
           <div style={this.styles.placeholder} />
         </div>
@@ -141,6 +137,17 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       return <span />;
     }
   }
+
+  getCornerButton(): React.ReactNode {
+    if (!this.props.expanded && this.props.header !== undefined) {
+      return this.getNewThreadButton();
+    } else if (this.props.expanded && this.props.header !== undefined) {
+      return this.getBackButton();
+    } else {
+      return;
+    }
+  }
+
   /**
    * Renders a back button inside the header
    *
