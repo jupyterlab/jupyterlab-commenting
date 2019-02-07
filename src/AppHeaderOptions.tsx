@@ -64,62 +64,12 @@ export class AppHeaderOptions extends React.Component<
       this.state.isOpen ? ' show' : ''
     }`;
     return (
-      <div
-        className="card border-left-0 border-right-0"
-        style={this.styles.optionBar}
-      >
-        <div
-          className="card-title row border-left-0 border-right-0"
-          style={this.styles.optionBar}
-        >
-          {/* Checkbox start */}
-          <div className={this.bsc.checkbox} style={this.styles.checkbox}>
-            <label
-              className={this.bsc.checkboxLabel}
-              htmlFor="controls"
-              style={
-                this.props.cardExpanded
-                  ? this.styles.checkboxLabelDisabled
-                  : this.styles.checkboxLabelEnabled
-              }
-            >
-              Show resolved
-            </label>
-            <input
-              type="checkbox"
-              className="form-check-input"
-              id="controls"
-              onClick={this.toggleResolved}
-              disabled={this.props.cardExpanded}
-            />
-          </div>
-          {/* Checkbox End */}
-          {/* Dropdown Start */}
-          <label
-            className={this.bsc.dropdownLabel}
-            style={
-              this.props.cardExpanded
-                ? this.styles.dropdownLabelDisabled
-                : this.styles.dropdownLabelEnabled
-            }
-          >
-            Sort By: {this.itemPicked}
-          </label>
-          <div
-            className={this.bsc.dropdown}
-            style={this.styles.dropdownButton}
-            onClick={this.toggleOpen}
-          >
-            <button
-              type="button"
-              className={this.bsc.dropdownButton}
-              style={this.styles.dropdownButton}
-              data-toggle="dropdown"
-              disabled={this.props.cardExpanded}
-            />
-            <div className={menuClass}>{this.getSortItems()}</div>
-          </div>
-          {/* Dropdown End */}
+      <div className="card border-left-0 border-right-0">
+        <div style={this.styles.optionBar}>
+          {this.renderCheckbox()}
+          <div style={this.styles.divider} />
+          {this.renderDropdown()}
+          <div className={menuClass}>{this.getSortItems()}</div>
         </div>
       </div>
     );
@@ -129,6 +79,58 @@ export class AppHeaderOptions extends React.Component<
    * Stores the Sort by: option string
    */
   itemPicked = 'Latest Reply';
+
+  renderCheckbox() {
+    return (
+      <div style={this.styles.checkbox}>
+        <label
+          htmlFor="controls"
+          style={
+            this.props.cardExpanded
+              ? this.styles.checkboxLabelDisabled
+              : this.styles.checkboxLabelEnabled
+          }
+          className={'jp-DirListing-itemText'}
+        >
+          Show resolved
+        </label>
+        <input
+          type="checkbox"
+          id="controls"
+          onClick={this.toggleResolved}
+          disabled={this.props.cardExpanded}
+        />
+      </div>
+    );
+  }
+
+  renderDropdown() {
+    return (
+      <div style={this.styles.dropdownBox}>
+        <label
+          style={
+            this.props.cardExpanded
+              ? this.styles.dropdownLabelDisabled
+              : this.styles.dropdownLabelEnabled
+          }
+          className={'jp-DirListing-itemText'}
+        >
+          Sort By: {this.itemPicked}
+        </label>
+        <div style={this.styles.dropdownButton} onClick={this.toggleOpen}>
+          <input
+            type="image"
+            style={this.styles.dropdownButton}
+            src={
+              'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
+            }
+            data-toggle="dropdown"
+            disabled={this.props.cardExpanded}
+          />
+        </div>
+      </div>
+    );
+  }
 
   /**
    * Sets the "isOpen" state to control the dropdown menu
@@ -196,55 +198,70 @@ export class AppHeaderOptions extends React.Component<
   ];
 
   /**
-   * Bootstrap classes
-   */
-  bsc = {
-    checkbox: 'col-lg-5 col-md-5 col-sm-5 form-check text-center',
-    checkboxLabel: '',
-    dropdown: 'col-lg-1 col-md-1 col-sm-1 px-0',
-    dropdownLabel: 'col-lg-5 col-md-5 col-sm-5 text-center my-0 px-0',
-    dropdownButton:
-      'col-lg-12 col-md-12 col-sm-12 btn dropdown-toggle px-0 py-0'
-  };
-
-  /**
    * Custom styles
    */
   styles = {
-    optionBar: { height: '28px', borderRadius: 0 },
+    optionBar: {
+      height: '28px',
+      borderRadius: 0,
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      justifyContent: 'space-around'
+    },
+    dropdownBox: {
+      height: '27px',
+      display: 'flex',
+      flexDirection: 'row' as 'row'
+    },
     dropdownLabelEnabled: {
       height: '27px',
       lineHeight: 'normal',
       fontSize: '13px',
-      paddingTop: '5px',
-      borderLeftWidth: '1px',
-      borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: '#a3a1a0',
-      color: 'black'
+      paddingTop: '6px',
+      paddingLeft: '15px',
+      paddingRight: '10px',
+      color: 'black',
+      textAlign: 'center' as 'center'
     },
     dropdownLabelDisabled: {
       height: '27px',
       lineHeight: 'normal',
       fontSize: '13px',
-      paddingTop: '5px',
-      borderLeftWidth: '1px',
-      borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: '#a3a1a0',
-      color: '#E0E0E0'
+      paddingTop: '6px',
+      paddingLeft: '15px',
+      paddingRight: '20px',
+      color: '#E0E0E0',
+      textAlign: 'center' as 'center'
     },
-    dropdownButton: { height: '28px', width: '40px' },
-    checkbox: {},
+    dropdownButton: { height: '27px', width: '40px' },
+    divider: {
+      borderRightWidth: '1px',
+      borderRightStyle: 'solid' as 'solid',
+      borderRightColor: '#a3a1a0',
+      marginRight: '5px',
+      marginLeft: '5px'
+    },
+    checkbox: {
+      height: '27px',
+      display: 'flex',
+      flexDirection: 'row' as 'row'
+    },
     checkboxLabelEnabled: {
-      paddingRight: '24px',
-      lineHeight: 'normal',
+      marginBottom: '0px',
+      paddingRight: '4px',
+      paddingTop: '3px',
       fontSize: '13px',
-      color: 'black'
+      color: 'black',
+      paddingLeft: '5px',
+      textAlign: 'right' as 'right'
     },
     checkboxLabelDisabled: {
-      paddingRight: '24px',
-      lineHeight: 'normal',
+      paddingRight: '4px',
+      paddingTop: '3px',
       fontSize: '13px',
-      color: '#E0E0E0'
+      color: '#E0E0E0',
+      paddingLeft: '5px',
+      textAlign: 'right' as 'right'
     }
   };
 }

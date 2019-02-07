@@ -58,16 +58,14 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   render() {
     return (
       <div className="card border-0 py-1">
-        <div className="row">
-          <div className={'col-lg-2'}>
-            {this.props.expanded && this.getBackButton()}
+        <div style={this.styles.headercard}>
+          <div>
+            {this.props.expanded
+              ? this.getBackButton()
+              : this.getNewThreadButton()}
           </div>
-          <div className={'col-lg-7 text-center px-0'}>
-            {this.renderAppHeader(this.props.header)}
-          </div>
-          <div className={'col-lg-2'}>
-            {!this.props.expanded && this.getNewThreadButton()}
-          </div>
+          {this.renderAppHeader(this.props.header)}
+          <div style={this.styles.placeholder} />
         </div>
         <div>{this.props.headerOptions}</div>
       </div>
@@ -84,24 +82,26 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   renderAppHeader(header: string): React.ReactNode {
     if (this.props.header === undefined) {
       return (
-        <h5
-          className="card-header text-center border-0"
-          style={this.styles.emptyHeader}
-        >
-          Select a file to view comments
-        </h5>
+        <div>
+          <h5
+            className="card-header text-center border-0"
+            style={this.styles.emptyHeader}
+          >
+            Select a file to view comments
+          </h5>
+        </div>
       );
     } else {
       return (
-        <div style={this.styles.header}>
+        <span style={this.styles.header}>
           {this.getFileIcon(this.props.header)}
-          <label
-            className="card-header text-center border-0 py-0"
+          <span
             style={this.styles.headerLabel}
+            className={'jp-DirListing-itemText'}
           >
             {this.props.header}
-          </label>
-        </div>
+          </span>
+        </span>
       );
     }
   }
@@ -267,34 +267,42 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * App header styles
    */
   styles = {
+    headercard: {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      justifyContent: 'space-around'
+    },
     emptyHeader: { background: 'white', color: '#a3a1a0' },
-    header: { display: 'inline-block', alignItems: 'center' },
+    header: {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      padding: '4px',
+      marginTop: '10px',
+      marginBottom: '10px'
+    },
     headerLabel: {
       paddingLeft: '5px',
-      background: 'white',
-      paddingTop: '0.5rem',
-      paddingBottom: '0.5rem',
-      fontSize: '24px'
+      fontSize: '24px',
+      textAlign: 'left' as 'left'
     },
     headerIcon: {
       minWidth: '28px',
       minHeight: '28px',
       backgroundSize: '28px',
-      marginTop: '13px',
-      marginBottom: '18px',
       padding: '8px'
     },
     backButton: {
+      display: 'flex',
       width: '16px',
       height: '16px',
-      marginTop: '20px',
-      marginLeft: '15px'
+      marginTop: '21px'
     },
     newCommentButton: {
+      display: 'flex',
       width: '20px',
       height: '20px',
-      marginTop: '17px',
-      marginLeft: '15px'
-    }
+      marginTop: '21px'
+    },
+    placeholder: { width: '20px' }
   };
 }
