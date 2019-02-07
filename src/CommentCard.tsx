@@ -77,12 +77,7 @@ interface ICommentCardProps {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment: (
-    itemId: string,
-    cardId: string,
-    name: string,
-    comment: string
-  ) => void;
+  putComment: (itemId: string, cardId: string, comment: string) => void;
   /**
    * Path of file used to itemize comment thread to file
    */
@@ -190,12 +185,7 @@ export class CommentCard extends React.Component<
    * @param comment Type: string - comment message
    */
   getInput(comment: string): void {
-    this.props.putComment(
-      this.props.itemId,
-      this.props.cardId,
-      'Jacob Houssian',
-      comment
-    );
+    this.props.putComment(this.props.itemId, this.props.cardId, comment);
     this.handleReplyClose();
   }
 

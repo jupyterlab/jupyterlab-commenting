@@ -20,7 +20,6 @@ interface INewThreadCardProps {
   putComment: (
     itemId: string,
     cardId: string,
-    name: string,
     comment?: string,
     tag?: string
   ) => void;
@@ -47,12 +46,6 @@ interface INewThreadCardStates {
    * @type string
    */
   tagBox: string;
-  /**
-   * Text for name box
-   *
-   * @type string
-   */
-  nameBox: string;
 }
 
 export class NewThreadCard extends React.Component<
@@ -66,12 +59,11 @@ export class NewThreadCard extends React.Component<
    */
   constructor(props: any) {
     super(props);
-    this.state = { inputBox: '', tagBox: '', nameBox: '' };
+    this.state = { inputBox: '', tagBox: '' };
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleChangeTagBox = this.handleChangeTagBox.bind(this);
-    this.handleChangeNameBox = this.handleChangeNameBox.bind(this);
   }
 
   /**
@@ -87,13 +79,6 @@ export class NewThreadCard extends React.Component<
           style={this.styles.field}
           placeholder="Tag"
           onChange={this.handleChangeTagBox}
-        />
-        <input
-          type="text"
-          className="form-control form-control-sm"
-          style={this.styles.field}
-          placeholder="Name"
-          onChange={this.handleChangeNameBox}
         />
         <textarea
           className={this.bsc.input}
@@ -127,16 +112,6 @@ export class NewThreadCard extends React.Component<
     this.setState({ tagBox: e.target.value });
   }
 
-  // TODO: Get correct type
-  /**
-   * Handles when the name box changes
-   *
-   * @param e Type: any - input box event
-   */
-  handleChangeNameBox(e: any): void {
-    this.setState({ nameBox: e.target.value });
-  }
-
   /**
    * Handles key events
    *
@@ -148,7 +123,6 @@ export class NewThreadCard extends React.Component<
       this.props.putComment(
         this.props.itemId,
         'new',
-        this.state.nameBox,
         this.state.inputBox,
         this.state.tagBox
       );

@@ -29,9 +29,9 @@ export class AppBody extends React.Component<IAppBodyProps> {
    * React render function
    */
   render() {
-    const items = this.props.cards.map((props, i) => (
-      <div key={i}>{props}</div>
-    ));
+    const reverseCards = this.props.cards.reverse();
+
+    const items = reverseCards.map((card, i) => <div key={i}>{card}</div>);
 
     return (
       <div style={this.bodyStyle} className={this.bootstrapGrid}>

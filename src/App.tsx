@@ -16,6 +16,7 @@ import { CommentCard } from './CommentCard';
 import { AppHeader } from './AppHeader';
 import { AppHeaderOptions } from './AppHeaderOptions';
 import { NewThreadCard } from './NewThreadCard';
+import { UserSet } from './UserSet';
 
 /**
  * React States interface
@@ -57,6 +58,9 @@ interface IAppStates {
    * @type string
    */
   newThreadFile: string;
+  gitName: string;
+  gitPhoto: string;
+  userSet: boolean;
 }
 
 /**
@@ -94,7 +98,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       sortState: 'latest',
       showResolved: false,
       newThreadActive: false,
-      newThreadFile: ''
+      newThreadFile: '',
+      gitName: '',
+      gitPhoto: '',
+      userSet: false
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -107,18 +114,21 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setNewThreadActive = this.setNewThreadActive.bind(this);
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
+    this.setUserInfo = this.setUserInfo.bind(this);
   }
 
   /**
    * React render function
    */
   render() {
-    return (
+    return this.state.userSet ? (
       <UseSignal signal={this.props.signal}>
         {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
           return <div>{this.checkAppHeader(args)}</div>;
         }}
       </UseSignal>
+    ) : (
+      <UserSet setUserInfo={this.setUserInfo} />
     );
   }
 
@@ -265,25 +275,26 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   async putComment(
     itemId: string,
     cardId: string,
-    name: string,
     comment?: string,
     tag?: string
   ): Promise<void> {
     await this.props.commentsService.createComment(
       itemId,
       cardId,
-      name,
+      this.state.gitName,
+      this.state.gitPhoto,
       comment,
       tag
     );
   }
 
   /**
-   * Sets the value of the given key value pair in specific itemId and cardId
+   * Used to set a specific field of a card
    *
-   * @param cardId Type: string - id of card to set value on
+   * @param itemId Type: string - id of a thread
+   * @param cardId Type: string - id of a specific card
    * @param key Type: string - key of value to set
-   * @param value Type: sting - value to set to key
+   * @param value Type: string - value to set
    */
   setCardValue(itemId: string, cardId: string, key: string, value: any): void {
     this.props.commentsService.setCardValue(itemId, cardId, key, value);
@@ -353,5 +364,23 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   showResolvedState() {
     this.setState({ showResolved: !this.state.showResolved });
+  }
+
+  /**
+   * Uses Github API to fetch users name and photo
+   *
+   * @param user Type: string - users github username
+   */
+  async setUserInfo(user: string) {
+    const response = await fetch('http://api.github.com/users/' + user);
+    const myJSON = await response.json();
+
+    console.log('User set to: ' + myJSON.name);
+
+    this.setState({
+      gitName: myJSON.name,
+      gitPhoto: myJSON.avatar_url,
+      userSet: true
+    });
   }
 }
