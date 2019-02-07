@@ -80,7 +80,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       return (
         <div>
           <h5
-            className="card-header text-center border-0"
+            className={'jp-DirListing-itemText'}
             style={this.styles.emptyHeader}
           >
             Select a file to view comments
@@ -160,7 +160,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
         type="image"
         style={this.styles.backButton}
         src={'https://i.ibb.co/xg3hwy8/Vector.png'}
-        alt="Back"
         onClick={this.setShrink}
       />
     );
@@ -179,7 +178,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
         src={
           'https://material.io/tools/icons/static/icons/baseline-add-24px.svg'
         }
-        alt="New"
         onClick={this.handleNewThreadButton}
       />
     );
@@ -279,7 +277,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       flexDirection: 'row' as 'row',
       justifyContent: 'space-around'
     },
-    emptyHeader: { background: 'white', color: '#a3a1a0' },
+    emptyHeader: {
+      background: 'white',
+      color: '#4F4F4F',
+      marginTop: '20px',
+      marginBottom: '20px'
+    },
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
