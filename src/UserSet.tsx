@@ -1,9 +1,20 @@
 import * as React from 'react';
 
+/**
+ * React Props
+ */
 interface IUserSetProps {
+  /**
+   * Sets the users information from github username
+   *
+   * @param user Type: string - username for github
+   */
   setUserInfo: (user: string) => void;
 }
 
+/**
+ * React States
+ */
 interface IUserSetStates {
   /**
    * Text in the input box
@@ -25,6 +36,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -33,7 +45,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
   render() {
     return (
       <div className="card" style={this.styles.card}>
-        <label>Enter Git Username</label>
+        <label>Enter Github Username</label>
         <input
           type="text"
           className="form-control form-control-sm"
@@ -42,6 +54,15 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
           onChange={this.handleInputChange}
           onKeyPress={this.handleKeyPress}
         />
+        <button
+          className={
+            'commentCommentButton commentFooterRightButton float-right'
+          }
+          type="button"
+          onClick={this.handleSubmit}
+        >
+          Create
+        </button>
       </div>
     );
   }
@@ -63,8 +84,15 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   handleKeyPress(e: any): void {
     if (e.key === 'Enter' && !e.shiftKey) {
-      this.props.setUserInfo(this.state.inputBox);
+      this.handleSubmit();
     }
+  }
+
+  /**
+   * Handles submit
+   */
+  handleSubmit(): void {
+    this.props.setUserInfo(this.state.inputBox);
   }
 
   /**
