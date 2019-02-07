@@ -375,12 +375,19 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     const response = await fetch('http://api.github.com/users/' + user);
     const myJSON = await response.json();
 
-    console.log('User set to: ' + myJSON.name);
+    console.log(myJSON);
 
-    this.setState({
-      gitName: myJSON.name,
-      gitPhoto: myJSON.avatar_url,
-      userSet: true
-    });
+    // If users does not have a name set, use username
+    const name = myJSON.name === null ? myJSON.login : myJSON.name;
+
+    if (myJSON.message !== 'Not Found') {
+      this.setState({
+        gitName: name,
+        gitPhoto: myJSON.avatar_url,
+        userSet: true
+      });
+    } else {
+      window.alert('Username not found');
+    }
   }
 }

@@ -64,6 +64,7 @@ export class NewThreadCard extends React.Component<
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleChangeTagBox = this.handleChangeTagBox.bind(this);
+    this.createNewThread = this.createNewThread.bind(this);
   }
 
   /**
@@ -88,6 +89,15 @@ export class NewThreadCard extends React.Component<
           onChange={this.handleChangeCommentBox}
           onKeyPress={this.handleKeyPress}
         />
+        <button
+          className={
+            'commentCommentButton commentFooterRightButton float-right'
+          }
+          type="button"
+          onClick={this.createNewThread}
+        >
+          Create
+        </button>
       </div>
     );
   }
@@ -112,6 +122,16 @@ export class NewThreadCard extends React.Component<
     this.setState({ tagBox: e.target.value });
   }
 
+  createNewThread(): void {
+    this.props.setNewThreadActive(false);
+    this.props.putComment(
+      this.props.itemId,
+      'new',
+      this.state.inputBox,
+      this.state.tagBox
+    );
+  }
+
   /**
    * Handles key events
    *
@@ -119,13 +139,7 @@ export class NewThreadCard extends React.Component<
    */
   handleKeyPress(e: any): void {
     if (e.key === 'Enter' && !e.shiftKey) {
-      this.props.setNewThreadActive(false);
-      this.props.putComment(
-        this.props.itemId,
-        'new',
-        this.state.inputBox,
-        this.state.tagBox
-      );
+      this.createNewThread();
     }
   }
 
