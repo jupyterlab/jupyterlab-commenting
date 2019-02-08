@@ -122,18 +122,19 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               .sort()
               .every(function(value: React.ReactNode, index: number) {
                 return value === threads.sort()[index];
-              })
+              }) &&
+            response.loading
           ) {
             this.setState({
               myCards: threads
             });
           }
         });
+    } else {
+      if (this.state.myCards.length !== 0) {
+        this.setState({ myCards: [] });
+      }
     }
-  }
-
-  componentWillMount(): void {
-    //
   }
 
   /**
