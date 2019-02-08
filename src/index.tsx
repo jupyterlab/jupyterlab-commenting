@@ -33,13 +33,23 @@ function activate(
   const widget = ReactWidget.create(
     <UseSignal signal={labShell.currentChanged}>
       {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
-        return (
-          <App
-            commentsService={comments}
-            target={args && getPath(args.newValue)}
-            targetName={args && getName(args.newValue)}
-          />
-        );
+        try {
+          return (
+            <App
+              commentsService={comments}
+              target={args && getPath(args.newValue)}
+              targetName={args && getName(args.newValue)}
+            />
+          );
+        } catch {
+          return (
+            <App
+              commentsService={comments}
+              target={undefined}
+              targetName={undefined}
+            />
+          );
+        }
       }}
     </UseSignal>
   );
