@@ -1,13 +1,5 @@
 import * as React from 'react';
 
-import { ISignal } from '@phosphor/signaling';
-
-import { UseSignal } from '@jupyterlab/apputils';
-
-import { ILabShell } from '@jupyterlab/application';
-
-import { FocusTracker, Widget } from '@phosphor/widgets';
-
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
 // Components
@@ -68,17 +60,13 @@ interface IAppStates {
  */
 interface IAppProps {
   /**
-   * Signal that updates when file events happen
-   *
-   * @type ISignal
-   */
-  signal?: ISignal<ILabShell, FocusTracker.IChangedArgs<Widget>>;
-  /**
    * Comments Service that communicates with graphql server
    *
    * @type IMetadataCommentsService
    */
   commentsService?: IMetadataCommentsService;
+  target: string;
+  targetName: string;
 }
 
 /**
@@ -115,13 +103,19 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
+  }
 
-    this.props.commentsService.queryAllByTarget('clean.py').then(response => {
-      console.log('In Constructor ', response);
-      this.setState({
-        myCards: this.getAllCommentCards(response.data.annotationsByTarget)
-      });
-    });
+  componentDidMount(): void {
+    if (this.props.target !== undefined) {
+      this.props.commentsService
+        .queryAllByTarget(this.props.target)
+        .then((response: any) => {
+          console.log('In Constructor ', response);
+          this.setState({
+            myCards: this.getAllCommentCards(response.data.annotationsByTarget)
+          });
+        });
+    }
   }
 
   /**
@@ -129,28 +123,23 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return this.state.userSet ? (
-      <UseSignal signal={this.props.signal}>
-        {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
-          return <div>{this.checkAppHeader(args)}</div>;
-        }}
-      </UseSignal>
+      <div>{this.checkAppHeader()}</div>
     ) : (
       <UserSet setUserInfo={this.setUserInfo} />
     );
   }
-
   /**
    * Checks the the prop returned by the signal and returns App header with correct data
    *
    * @param args Type: any - FocusTracker.IChangedArgs<Widget> Argument returned by the signal listener
    * @return Type: React.ReactNode[] - App Header with correct header string
    */
-  checkAppHeader(args: any): React.ReactNode {
+  checkAppHeader(): React.ReactNode {
     try {
       return (
         <div>
           <AppHeader
-            header={args.newValue.context.session._name}
+            header={this.props.targetName}
             cardExpanded={this.state.expandedCard !== ' '}
             threadOpen={this.state.newThreadActive}
             setExpandedCard={this.setExpandedCard}
@@ -219,7 +208,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               resolved={false}
               putComment={this.putComment}
               setCardValue={this.setCardValue}
-              target={'clean.py'}
+              target={this.props.target}
             />
           );
         }
