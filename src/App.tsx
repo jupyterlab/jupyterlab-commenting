@@ -105,17 +105,35 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setUserInfo = this.setUserInfo.bind(this);
   }
 
-  componentDidMount(): void {
+  componentDidUpdate(): void {
+    console.log('Component did update');
+
     if (this.props.target !== undefined) {
       this.props.commentsService
         .queryAllByTarget(this.props.target)
         .then((response: any) => {
-          console.log('In Constructor ', response);
-          this.setState({
-            myCards: this.getAllCommentCards(response.data.annotationsByTarget)
-          });
+          console.log('In did mount ', response);
+
+          let threads = this.getAllCommentCards(
+            response.data.annotationsByTarget
+          );
+          if (
+            this.state.myCards
+              .sort()
+              .every(function(value: React.ReactNode, index: number) {
+                return value === threads.sort()[index];
+              })
+          ) {
+            this.setState({
+              myCards: threads
+            });
+          }
         });
     }
+  }
+
+  componentWillMount(): void {
+    //
   }
 
   /**
@@ -185,8 +203,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     let cards: React.ReactNode[] = [];
 
     console.log('Getting all comments');
-    console.log(this.state.newThreadActive);
-    console.log('In get comments ', allData);
 
     if (!this.state.newThreadActive) {
       for (let key in allData) {
