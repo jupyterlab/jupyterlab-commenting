@@ -85,11 +85,11 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   render() {
     return (
       <div style={this.styles.cardHeader}>
-        <div style={this.styles.upperHeader} className={this.bsc.upperHeader}>
+        <div style={this.styles.upperHeader}>
           <div>
             <img style={this.styles.photo} src={this.props.photo} />
           </div>
-          <div style={this.styles.nameArea} className={this.bsc.nameArea}>
+          <div style={this.styles.nameArea}>
             <h1 style={this.styles.name} className={this.bsc.name}>
               {this.props.name}
             </h1>
@@ -115,7 +115,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
                     type="image"
                     style={this.styles.cornerButton}
                     src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
-                    alt="Expand"
                     onClick={this.props.handleExpand}
                   />
                 )}
@@ -156,8 +155,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * Bootstrap classNames
    */
   bsc = {
-    upperHeader: 'row',
-    nameArea: 'col',
     tag: 'badge badge-secondary row-offset-1',
     tagArea: 'col',
     name: 'row-offset-1',
@@ -168,23 +165,22 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * CSS styles
    */
   styles = {
-    upperHeader: {},
-    cardHeader: {
-      marginBottom: '10px',
-      background: 'white'
-    },
-    resolveButton: {
-      marginRight: '20px',
-      marginTop: '5px'
-    },
+    upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
+    cardHeader: { marginBottom: '10px', background: 'white' },
+    resolveButton: { marginRight: '20px', marginTop: '5px' },
     nameArea: {
-      paddingLeft: '5px'
+      paddingLeft: '5px',
+      display: 'flex',
+      flexGrow: 2,
+      flexDirection: 'column' as 'column'
     },
     photo: {
+      display: 'flex',
+      flexGrow: 1,
       height: '2.7em',
       width: '2.7em',
       marginTop: '5px',
-      marginLeft: '20px'
+      marginLeft: '5px'
     },
     name: {
       fontSize: '12px',
@@ -192,11 +188,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       marginTop: '3px',
       marginBottom: '1px'
     },
-    timestamp: {
-      fontSize: '.7em',
-      marginBottom: '0px',
-      marginTop: '-5px'
-    },
+    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
     contextNotExpanded: {
       height: '30px',
       maxWidth: '350px',
@@ -218,10 +210,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       paddingRight: '10px'
     },
     cornerButton: {
-      marginTop: '5px',
-      marginRight: '25px',
-      width: '1.3em',
-      height: '1.3em'
+      display: 'flex',
+      flexGrow: 1,
+      marginTop: '9px',
+      marginRight: '9px',
+      width: '24px',
+      height: '24px'
     },
     tag: {
       background: '#E0E0E0',
@@ -242,10 +236,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       marginTop: '-4px',
       marginLeft: '5px'
     },
-    tagArea: {
-      marginTop: '-5px',
-      paddingLeft: '0px',
-      paddingRight: '0px'
-    }
+    tagArea: { marginTop: '-5px', paddingLeft: '0px', paddingRight: '0px' }
   };
+  // justifyContent: 'space-between'
 }
