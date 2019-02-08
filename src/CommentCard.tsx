@@ -21,7 +21,7 @@ interface ICommentCardProps {
    *
    * @type string
    */
-  cardId: string;
+  threadId: string;
   /**
    * Is the card resolved
    *
@@ -77,11 +77,11 @@ interface ICommentCardProps {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment: (itemId: string, cardId: string, comment: string) => void;
+  putComment: (threadId: string, value: string) => void;
   /**
    * Path of file used to itemize comment thread to file
    */
-  itemId?: string;
+  target?: string;
 }
 
 /**
@@ -127,7 +127,7 @@ export class CommentCard extends React.Component<
         <div className={this.bsc.cardBody} style={this.styles.cardBody}>
           <CommentBody
             comments={this.getAllComments()}
-            expanded={this.props.checkExpandedCard(this.props.cardId)}
+            expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         </div>
         <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
@@ -141,8 +141,8 @@ export class CommentCard extends React.Component<
    * Handle a CommentCard expanding
    */
   handleExpand(): void {
-    this.props.setExpandedCard(this.props.cardId);
-    if (this.props.checkReplyActiveCard(this.props.cardId)) {
+    this.props.setExpandedCard(this.props.threadId);
+    if (this.props.checkReplyActiveCard(this.props.threadId)) {
       this.handleReplyOpen();
     }
   }
@@ -152,7 +152,7 @@ export class CommentCard extends React.Component<
    */
   handleShrink(): void {
     this.props.setExpandedCard(' ');
-    if (this.props.checkReplyActiveCard(this.props.cardId)) {
+    if (this.props.checkReplyActiveCard(this.props.threadId)) {
       this.handleReplyClose();
     }
   }
@@ -161,7 +161,7 @@ export class CommentCard extends React.Component<
    * Sets the state of replyActive to true
    */
   handleReplyOpen(): void {
-    this.props.setReplyActiveCard(this.props.cardId);
+    this.props.setReplyActiveCard(this.props.threadId);
   }
 
   /**
@@ -185,7 +185,7 @@ export class CommentCard extends React.Component<
    * @param comment Type: string - comment message
    */
   getInput(comment: string): void {
-    this.props.putComment(this.props.itemId, this.props.cardId, comment);
+    this.props.putComment(this.props.threadId, comment);
     this.handleReplyClose();
   }
 
@@ -196,14 +196,14 @@ export class CommentCard extends React.Component<
    */
   handleResolve(): void {
     this.props.setCardValue(
-      this.props.itemId,
-      this.props.cardId,
+      this.props.target,
+      this.props.threadId,
       'resolved',
       !this.props.resolved
     );
 
     if (this.props.resolved) {
-      if (this.props.checkExpandedCard(this.props.cardId)) {
+      if (this.props.checkExpandedCard(this.props.threadId)) {
         this.handleExpand();
       } else {
         this.handleShrink();
@@ -220,17 +220,17 @@ export class CommentCard extends React.Component<
    */
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
-    let allComments: any = this.props.data['allComments'];
+    let allComments: any = this.props.data.body;
 
     if (this.props.data !== undefined) {
       for (let key in allComments) {
         comments.push(
           <Comment
-            name={allComments[key].name}
-            context={allComments[key].context}
-            timestamp={allComments[key].timestamp}
-            photo={allComments[key].photoMain}
-            expanded={this.props.checkExpandedCard(this.props.cardId)}
+            name={allComments[key].creator.name}
+            context={allComments[key].value}
+            timestamp={allComments[key].created}
+            photo={allComments[key].creator.image}
+            expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         );
       }
@@ -247,12 +247,12 @@ export class CommentCard extends React.Component<
   getCommentHeader(): React.ReactNode {
     return (
       <CommentHeader
-        name={this.props.data['startComment'].name}
-        context={this.props.data['startComment'].context}
-        timestamp={this.props.data['startComment'].timestamp}
-        photo={this.props.data['startComment'].photoMain}
-        tag={this.props.data['startComment'].tag}
-        expanded={this.props.checkExpandedCard(this.props.cardId)}
+        name={this.props.data.body[0].creator.name}
+        context={this.props.data.body[0].value}
+        timestamp={this.props.data.body[0].created}
+        photo={this.props.data.body[0].creator.image}
+        tag={this.props.data.meta}
+        expanded={this.props.checkExpandedCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
@@ -270,8 +270,8 @@ export class CommentCard extends React.Component<
   getCommentFooter(): React.ReactNode {
     return (
       <CommentFooter
-        expanded={this.props.checkExpandedCard(this.props.cardId)}
-        replyActive={this.props.checkReplyActiveCard(this.props.cardId)}
+        expanded={this.props.checkExpandedCard(this.props.threadId)}
+        replyActive={this.props.checkReplyActiveCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleReplyOpen={this.handleReplyOpen}
         handleReplyClose={this.handleReplyClose}
