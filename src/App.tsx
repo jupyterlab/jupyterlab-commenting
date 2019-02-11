@@ -182,7 +182,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           }
         });
     } else {
-      this.state.myThreads.length !== 0 && this.setState({ myThreads: [] });
+      this.state.myThreads.length !== 0 &&
+        this.setState({
+          myThreads: [],
+          response: { data: { annotationsByTarget: { length: 0 } } }
+        });
     }
   }
 
@@ -191,45 +195,12 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return this.state.userSet ? (
-      <div>{this.checkAppHeader()}</div>
-    ) : (
-      <UserSet setUserInfo={this.setUserInfo} />
-    );
-  }
-  /**
-   * Checks the the prop returned by the signal and returns App header with correct data
-   *
-   * @param args Type: any - FocusTracker.IChangedArgs<Widget> Argument returned by the signal listener
-   * @return Type: React.ReactNode[] - App Header with correct header string
-   */
-  checkAppHeader(): React.ReactNode {
-    try {
-      return (
-        <div>
-          <AppHeader
-            header={this.props.targetName}
-            cardExpanded={this.state.expandedCard !== ' '}
-            threadOpen={this.state.newThreadActive}
-            setExpandedCard={this.setExpandedCard}
-            setNewThreadActive={this.setNewThreadActive}
-            headerOptions={
-              <AppHeaderOptions
-                setSortState={this.setSortState}
-                showResolvedState={this.showResolvedState}
-                cardExpanded={this.state.expandedCard !== ' '}
-              />
-            }
-          />
-          <AppBody cards={this.state.myThreads} />
-        </div>
-      );
-    } catch {
-      return (
+      <div>
         <AppHeader
-          header={undefined}
-          setExpandedCard={this.setExpandedCard}
+          header={this.props.targetName}
           cardExpanded={this.state.expandedCard !== ' '}
           threadOpen={this.state.newThreadActive}
+          setExpandedCard={this.setExpandedCard}
           setNewThreadActive={this.setNewThreadActive}
           headerOptions={
             <AppHeaderOptions
@@ -239,8 +210,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             />
           }
         />
-      );
-    }
+        <AppBody cards={this.state.myThreads} />
+      </div>
+    ) : (
+      <UserSet setUserInfo={this.setUserInfo} />
+    );
   }
 
   /**
@@ -252,15 +226,13 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   getAllCommentCards(allData: any): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
 
-    console.log('Getting all comments');
-
     if (!this.state.newThreadActive) {
       for (let key in allData) {
         if (
           this.shouldRenderCard(
             false, // TODO: Add resolved to thread value
             this.state.expandedCard !== ' ',
-            this.state.expandedCard === key
+            this.state.expandedCard === allData[key].id
           )
         ) {
           cards.push(
@@ -329,8 +301,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   getComments(target: string): Promise<any> {
     let allComments = this.props.commentsService.queryAllByTarget(target);
-
-    console.log('In async ', allComments);
 
     return allComments;
   }
@@ -439,7 +409,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
 
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
-    console.log(myJSON.name);
     if (myJSON.message !== 'Not Found') {
       this.setState({
         creator: {
