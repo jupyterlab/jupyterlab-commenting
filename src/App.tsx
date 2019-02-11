@@ -50,9 +50,30 @@ interface IAppStates {
    * @type string
    */
   newThreadFile: string;
+  /**
+   * Tracks when a user is set
+   *
+   * @type boolean
+   */
   userSet: boolean;
+  /**
+   * Hold the users information
+   *
+   * @type Person
+   */
   creator: object;
-  myCards: React.ReactNode[];
+  /**
+   * State of threads to be rendered
+   *
+   * @type React.ReactNode[]
+   */
+  myThreads: React.ReactNode[];
+  /**
+   * State to hold last response
+   *
+   * @type any
+   */
+  response: any;
 }
 
 /**
@@ -65,7 +86,17 @@ interface IAppProps {
    * @type IMetadataCommentsService
    */
   commentsService?: IMetadataCommentsService;
+  /**
+   * Path of open file, used as unique id to fetch comments and annotations
+   *
+   * @type string
+   */
   target: string;
+  /**
+   * Name of the open file used in the commenting header
+   *
+   * @type: string
+   */
   targetName: string;
 }
 
@@ -89,7 +120,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       newThreadFile: '',
       userSet: false,
       creator: {},
-      myCards: []
+      myThreads: [],
+      response: undefined
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -103,37 +135,54 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
+
+    // Sets the initial response state used to compare when update
+    this.props.commentsService
+      .queryAllByTarget(
+        this.props.target === undefined ? ' ' : this.props.target
+      )
+      .then((response: any) => {
+        this.setState({ response: response });
+      });
   }
 
+  /**
+   * Called each time the component updates
+   */
   componentDidUpdate(): void {
-    console.log('Component did update');
-
+    // Handles fetching from GraphQL server and setting states
     if (this.props.target !== undefined) {
       this.props.commentsService
         .queryAllByTarget(this.props.target)
         .then((response: any) => {
-          console.log('In did mount ', response);
-
-          let threads = this.getAllCommentCards(
-            response.data.annotationsByTarget
-          );
-          if (
-            this.state.myCards
-              .sort()
-              .every(function(value: React.ReactNode, index: number) {
-                return value === threads.sort()[index];
-              }) &&
-            response.loading
-          ) {
-            this.setState({
-              myCards: threads
-            });
+          if (response.data.annotationsByTarget.length !== 0) {
+            if (this.state.response.data.annotationsByTarget.length !== 0) {
+              if (
+                this.state.response.data.annotationsByTarget[0].target !==
+                response.data.annotationsByTarget[0].target
+              ) {
+                this.setState({
+                  myThreads: this.getAllCommentCards(
+                    response.data.annotationsByTarget
+                  ),
+                  response: response
+                });
+              }
+            } else {
+              this.setState({
+                myThreads: this.getAllCommentCards(
+                  response.data.annotationsByTarget
+                ),
+                response: response
+              });
+            }
+          } else {
+            this.state.myThreads.length !== 0 &&
+              this.setState({ myThreads: [], response: response });
           }
         });
     } else {
-      if (this.state.myCards.length !== 0) {
-        this.setState({ myCards: [] });
-      }
+      this.state.myThreads.length !== 0 && this.setState({ myThreads: [] });
     }
   }
 
@@ -171,7 +220,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               />
             }
           />
-          <AppBody cards={this.state.myCards} />
+          <AppBody cards={this.state.myThreads} />
         </div>
       );
     } catch {
