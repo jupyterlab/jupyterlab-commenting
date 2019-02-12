@@ -1,0 +1,81 @@
+.commentFooterLeftButton {
+  background: #E0E0E0;
+  color: black;
+  border-radius: 2px;
+  box-shadow: none;
+  border: none;
+  outline: 0px;
+  margin-left: 0px;
+  margin-right: 4px;
+}
+
+.commentFooterLeftButton:active {
+  background-color: #BDBDBD;
+  outline: 0px;
+}
+
+.commentFooterLeftButton:hover {
+  background-color: #BDBDBD;
+  outline: 0px;
+}
+
+.commentFooterLeftButton:focus {
+  outline: 0px;
+}
+
+.commentFooterRightButton {
+  background: #E0E0E0;
+  color: black;
+  border-radius: 2px;
+  border: none;
+  box-shadow: none;
+  outline: 0px;
+  margin-left: 4px;
+  margin-right: -5px;
+}
+
+.commentFooterRightButton:active {
+  background-color: #BDBDBD;
+  outline: 0px;
+}
+
+.commentFooterRightButton:hover {
+  background-color: #BDBDBD;
+  outline: 0px;
+}
+
+.commentFooterRightButton:focus {
+  outline: 0px;
+}
+
+.commentCommentButton {
+  background: white;
+  color: #2196F3;
+  outline: 0px;
+}
+
+.commentCommentButton:hover {
+  background: #E0E0E0;
+  outline: 0px;
+}
+
+.commentCommentButton:active {
+  background: #BDBDBD;
+  outline: 0px;
+}
+
+.commentCancelButton {
+  background: white;
+  color: #E57373;
+  outline: 0px;
+}
+
+.commentCancelButton:hover {
+  background: #E0E0E0;
+  outline: 0px;
+}
+
+.commentCancelButton:active {
+  background: #BDBDBD;
+  outline: 0px;
+}

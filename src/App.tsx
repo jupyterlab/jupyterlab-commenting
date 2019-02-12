@@ -1,0 +1,452 @@
+import * as React from 'react';
+
+import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+
+// Components
+import { AppBody } from './AppBody';
+import { CommentCard } from './CommentCard';
+import { AppHeader } from './AppHeader';
+import { AppHeaderOptions } from './AppHeaderOptions';
+import { NewThreadCard } from './NewThreadCard';
+import { UserSet } from './UserSet';
+
+/**
+ * React States interface
+ */
+interface IAppStates {
+  /**
+   * Card unique id that is expanded / full screen
+   *
+   * @type string
+   */
+  expandedCard: string;
+  /**
+   * Card unique id that has the reply active
+   *
+   * @type string
+   */
+  replyActiveCard: string;
+  /**
+   * Current state of the sort dropdown in the header
+   *
+   * @type string
+   */
+  sortState: string;
+  /**
+   * Check box state in the header
+   *
+   * @type boolean
+   */
+  showResolved: boolean;
+  /**
+   * State for if new thread button pressed
+   *
+   * @type boolean
+   */
+  newThreadActive: boolean;
+  /**
+   * File to add new thread to
+   *
+   * @type string
+   */
+  newThreadFile: string;
+  /**
+   * Tracks when a user is set
+   *
+   * @type boolean
+   */
+  userSet: boolean;
+  /**
+   * Hold the users information
+   *
+   * @type Person
+   */
+  creator: object;
+  /**
+   * State of threads to be rendered
+   *
+   * @type React.ReactNode[]
+   */
+  myThreads: React.ReactNode[];
+  /**
+   * State to hold last response
+   *
+   * @type any
+   */
+  response: any;
+  /**
+   * State to track when to query
+   *
+   * @type boolean
+   */
+  shouldQuery: boolean;
+}
+
+/**
+ * React Props interface
+ */
+interface IAppProps {
+  /**
+   * Comments Service that communicates with graphql server
+   *
+   * @type IMetadataCommentsService
+   */
+  commentsService?: IMetadataCommentsService;
+  /**
+   * Path of open file, used as unique id to fetch comments and annotations
+   *
+   * @type string
+   */
+  target: string;
+  /**
+   * Name of the open file used in the commenting header
+   *
+   * @type: string
+   */
+  targetName: string;
+}
+
+/**
+ * Main App React Component
+ */
+export default class App extends React.Component<IAppProps, IAppStates> {
+  /**
+   * Constructor
+   *
+   * @param props React props
+   */
+  constructor(props: IAppProps) {
+    super(props);
+    this.state = {
+      expandedCard: ' ',
+      replyActiveCard: ' ',
+      newThreadFile: '',
+      sortState: 'latest',
+      showResolved: false,
+      newThreadActive: false,
+      userSet: false,
+      shouldQuery: true,
+      creator: {},
+      myThreads: [],
+      response: { data: { annotationsByTarget: { length: 0 } } }
+    };
+
+    this.getAllCommentCards = this.getAllCommentCards.bind(this);
+    this.setExpandedCard = this.setExpandedCard.bind(this);
+    this.checkExpandedCard = this.checkExpandedCard.bind(this);
+    this.setSortState = this.setSortState.bind(this);
+    this.showResolvedState = this.showResolvedState.bind(this);
+    this.putComment = this.putComment.bind(this);
+    this.putThread = this.putThread.bind(this);
+    this.setCardValue = this.setCardValue.bind(this);
+    this.setNewThreadActive = this.setNewThreadActive.bind(this);
+    this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
+    this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
+    this.setUserInfo = this.setUserInfo.bind(this);
+    this.shouldQuery = this.shouldQuery.bind(this);
+  }
+
+  /**
+   * Called each time the component updates
+   */
+  componentDidUpdate(): void {
+    if (this.state.response.data.annotationsByTarget !== undefined) {
+      if (this.state.response.data.annotationsByTarget.length !== 0) {
+        if (
+          this.state.response.data.annotationsByTarget[0].target !==
+            this.props.target &&
+          !this.state.shouldQuery
+        ) {
+          this.setState({ shouldQuery: true });
+        }
+      }
+    }
+
+    if (this.state.shouldQuery) {
+      if (this.props.target !== undefined) {
+        this.props.commentsService
+          .queryAllByTarget(this.props.target)
+          .then((response: any) => {
+            if (response.data.annotationsByTarget.length !== 0) {
+              this.setState({
+                myThreads: this.getAllCommentCards(
+                  response.data.annotationsByTarget
+                ),
+                response: response,
+                shouldQuery: false
+              });
+            } else {
+              this.state.myThreads.length !== 0 &&
+                this.setState({
+                  myThreads: [],
+                  shouldQuery: false
+                });
+            }
+          });
+      }
+    }
+
+    if (this.props.target === undefined) {
+      this.state.myThreads.length !== 0 &&
+        this.setState({
+          myThreads: [],
+          shouldQuery: false
+        });
+    }
+  }
+
+  /**
+   * React render function
+   */
+  render() {
+    return this.state.userSet ? (
+      <div>
+        <AppHeader
+          header={this.props.targetName}
+          cardExpanded={this.state.expandedCard !== ' '}
+          threadOpen={this.state.newThreadActive}
+          setExpandedCard={this.setExpandedCard}
+          setNewThreadActive={this.setNewThreadActive}
+          headerOptions={
+            <AppHeaderOptions
+              setSortState={this.setSortState}
+              showResolvedState={this.showResolvedState}
+              cardExpanded={this.state.expandedCard !== ' '}
+            />
+          }
+        />
+        <AppBody
+          cards={
+            this.state.newThreadActive
+              ? [
+                  <NewThreadCard
+                    putThread={this.putThread}
+                    setNewThreadActive={this.setNewThreadActive}
+                  />
+                ]
+              : this.state.myThreads
+          }
+        />
+      </div>
+    ) : (
+      <UserSet setUserInfo={this.setUserInfo} />
+    );
+  }
+
+  /**
+   * Creates and returns all CommentCard components with correct data
+   *
+   * @param allData Type: any - Comment data from this.props.data
+   * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
+   */
+  getAllCommentCards(allData: any): React.ReactNode[] {
+    let cards: React.ReactNode[] = [];
+
+    for (let key in allData) {
+      if (
+        this.shouldRenderCard(
+          false,
+          this.state.expandedCard !== ' ',
+          this.state.expandedCard === allData[key].id
+        )
+      ) {
+        cards.push(
+          <CommentCard
+            data={allData[key]}
+            threadId={allData[key].id}
+            setExpandedCard={this.setExpandedCard}
+            checkExpandedCard={this.checkExpandedCard}
+            setReplyActiveCard={this.setReplyActiveCard}
+            checkReplyActiveCard={this.checkReplyActiveCard}
+            resolved={allData[key].resolved}
+            putComment={this.putComment}
+            setCardValue={this.setCardValue}
+            target={this.props.target}
+          />
+        );
+      }
+    }
+    return cards;
+  }
+
+  /**
+   * Checks if a card should be rendered in based on the states of
+   * the current view
+   *
+   * @param resolved Type: boolean - resolved state of the card
+   * @param expandedCard Type: boolean - State if there is a card expanded
+   * @param curCardExpanded Type: boolean - State if the current card is expanded
+   */
+  shouldRenderCard(
+    resolved: boolean,
+    expandedCard: boolean,
+    curCardExpanded: boolean
+  ): boolean {
+    if (!this.state.showResolved) {
+      if (!resolved) {
+        if (expandedCard) {
+          return curCardExpanded;
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (expandedCard) {
+        return curCardExpanded;
+      }
+      return true;
+    }
+  }
+
+  /**
+   * Sets the state should query to query when component updates
+   */
+  shouldQuery(): void {
+    this.setState({ shouldQuery: true });
+  }
+
+  /**
+   * Pushed comment back to MetadataCommentsService
+   *
+   * @param value Type: string - comment message
+   * @param threadId Type: string - commend card / thread the comment applies to
+   */
+  putComment(threadId: string, value: string): void {
+    this.props.commentsService.createComment(
+      threadId,
+      value,
+      this.state.creator
+    );
+    this.shouldQuery();
+  }
+
+  /**
+   * Pushes new thread to GraphQL server
+   *
+   * @param value Type: string - comment message
+   * @param label Type: string - label / tag of a thread
+   */
+  putThread(value: string, label?: string): void {
+    this.props.commentsService.createThread(
+      this.props.target,
+      value,
+      this.state.creator,
+      label
+    );
+    this.shouldQuery();
+  }
+
+  /**
+   * Used to set a specific field of a card
+   *
+   * @param target Type: string - id of a thread
+   * @param threadId Type: string - id of a specific card
+   * @param key Type: string - key of value to set
+   * @param value Type: string - value to set
+   */
+  setCardValue(
+    target: string,
+    threadId: string,
+    key: string,
+    value: any
+  ): void {
+    this.props.commentsService.setCardValue(target, threadId, key, value);
+  }
+
+  /**
+   * Used to check if the cardId passed in is the current expanded card
+   *
+   * @param threadId Type: string - CommentCard unique id
+   * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
+   */
+  checkExpandedCard(threadId: string): boolean {
+    return threadId === this.state.expandedCard;
+  }
+
+  /**
+   * Sets this.state.expandedCard to the passed in cardId
+   *
+   * @param threadId Type: string - CommentCard unique id
+   */
+  setExpandedCard(threadId: string) {
+    this.setState({ expandedCard: threadId });
+    this.shouldQuery();
+  }
+
+  /**
+   * Sets this.state.replyActiveCard to the passed in cardId
+   *
+   * @param threadId Type: string - CommentCard unique id
+   */
+  setReplyActiveCard(threadId: string) {
+    this.setState({ replyActiveCard: threadId });
+    this.shouldQuery();
+  }
+
+  /**
+   * Used to check if the cardId passed in has reply box active
+   *
+   * @param threadId Type: string - CommentCard unique id
+   * @return type: boolean - True if cardId has reply box open, false if not active
+   */
+  checkReplyActiveCard(threadId: string): boolean {
+    return threadId === this.state.replyActiveCard;
+  }
+
+  /**
+   * Sets this.state fields for active new thread card
+   *
+   * @param state Type: boolean - State to set if new thread card is active
+   * @param target Type: string - target of the file to add new thread to
+   */
+  setNewThreadActive(state: boolean) {
+    this.setState({ newThreadActive: state });
+    this.setState({ newThreadFile: this.props.target });
+    this.shouldQuery();
+  }
+
+  /**
+   * Sets this.state.sortState to the selected sort by
+   *
+   * @param state Type: string - Sort by type
+   */
+  setSortState(state: string) {
+    this.setState({ sortState: state });
+    this.shouldQuery();
+  }
+
+  /**
+   * Sets this.state.showResolved to the state of the checkbox
+   * "Show resolved"
+   */
+  showResolvedState() {
+    this.setState({ showResolved: !this.state.showResolved });
+    this.shouldQuery();
+  }
+
+  /**
+   * Uses Github API to fetch users name and photo
+   *
+   * @param user Type: string - users github username
+   */
+  async setUserInfo(user: string) {
+    const response = await fetch('http://api.github.com/users/' + user);
+    const myJSON = await response.json();
+
+    // If users does not have a name set, use username
+    const name = myJSON.name === null ? myJSON.login : myJSON.name;
+    if (myJSON.message !== 'Not Found') {
+      this.setState({
+        creator: {
+          id: 'person/1',
+          name: name,
+          image: myJSON.avatar_url
+        },
+        userSet: true
+      });
+    } else {
+      window.alert('Username not found');
+    }
+  }
+}
