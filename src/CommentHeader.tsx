@@ -116,15 +116,15 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
                 )}
           </div>
         </div>
-        <div
+        <p
           style={
             this.props.expanded
               ? this.styles.contextExpanded
               : this.styles.contextNotExpanded
           }
         >
-          <p>{this.props.context}</p>
-        </div>
+          {this.props.context}
+        </p>
       </div>
     );
   }
@@ -215,7 +215,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
     contextNotExpanded: {
-      height: '30px',
+      maxHeight: '30px',
       maxWidth: '350px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -225,7 +225,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       lineHeight: 'normal'
     },
     contextExpanded: {
-      height: '100%',
+      maxHeight: '100%',
       maxWidth: '350px',
       overflow: '',
       textOverflow: 'ellipsis',

@@ -316,8 +316,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.props.commentsService.createComment(
       threadId,
       value,
-      this.state.creator,
-      false
+      this.state.creator
     );
     this.shouldQuery();
   }
