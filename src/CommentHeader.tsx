@@ -90,12 +90,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             <img style={this.styles.photo} src={this.props.photo} />
           </div>
           <div style={this.styles.nameArea}>
-            <h1 style={this.styles.name} className={this.bsc.name}>
-              {this.props.name}
-            </h1>
-            <p style={this.styles.timestamp} className={this.bsc.timestamp}>
-              {this.timeStampStyle()}
-            </p>
+            <h1 style={this.styles.name}>{this.props.name}</h1>
+            <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
             <div style={this.styles.tagArea} className={this.bsc.tagArea}>
               <h6 style={this.styles.tag} className={this.bsc.tag}>
                 {this.props.tag}
@@ -188,9 +184,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   bsc = {
     tag: 'badge badge-secondary row-offset-1',
-    tagArea: 'col',
-    name: 'row-offset-1',
-    timestamp: 'row-offset-1'
+    tagArea: 'col'
   };
 
   /**

@@ -52,17 +52,13 @@ export class Comment extends React.Component<ICommentProps> {
   render() {
     return (
       <div style={this.styles.commentHeader}>
-        <div style={this.styles.upperComment} className={this.bsc.upperComment}>
+        <div style={this.styles.upperComment}>
           <div>
             <img style={this.styles.photo} src={this.props.photo} />
           </div>
-          <div style={this.styles.nameArea} className={this.bsc.nameArea}>
-            <h1 style={this.styles.name} className={this.bsc.name}>
-              {this.props.name}
-            </h1>
-            <p style={this.styles.timestamp} className={this.bsc.timestamp}>
-              {this.timeStampStyle()}
-            </p>
+          <div style={this.styles.nameArea}>
+            <h1 style={this.styles.name}>{this.props.name}</h1>
+            <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
           </div>
         </div>
         <div
@@ -113,11 +109,18 @@ export class Comment extends React.Component<ICommentProps> {
    * CSS Styles
    */
   styles = {
-    upperComment: {},
+    upperComment: {
+      display: 'flex',
+      flexDirection: 'row' as 'row'
+    },
     commentHeader: { marginBottom: '10px' },
-    nameArea: { paddingLeft: '5px' },
+    nameArea: {
+      paddingLeft: '5px',
+      display: 'flex',
+      flexDirection: 'column' as 'column'
+    },
     commentStyle: { marginBottom: '0px' },
-    photo: { height: '2em', width: '2em', marginLeft: '20px' },
+    photo: { height: '2em', width: '2em', marginLeft: '6px' },
     name: {
       fontSize: '12px',
       fontWeight: 'bold' as 'bold',
@@ -146,15 +149,5 @@ export class Comment extends React.Component<ICommentProps> {
       paddingRight: '10px',
       marginBottom: '0px'
     }
-  };
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    upperComment: 'row',
-    nameArea: 'col',
-    timestamp: 'row-offset-1',
-    name: 'row-offset-1'
   };
 }
