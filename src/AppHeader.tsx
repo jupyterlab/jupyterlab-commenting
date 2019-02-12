@@ -37,7 +37,7 @@ interface IAppHeaderProps {
   /**
    * Sets the state of if creating a new thread state is active
    */
-  setNewThreadActive: (state: boolean, itemId: string) => void;
+  setNewThreadActive: (state: boolean) => void;
 }
 
 /**
@@ -205,9 +205,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * Handles the state of if new thread box should be open
    */
   handleNewThreadButton(): void {
-    if (!this.props.cardExpanded) {
-      this.props.setNewThreadActive(!this.props.threadOpen, this.props.header);
-    }
+    this.props.setNewThreadActive(true);
   }
 
   /**
@@ -216,7 +214,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   setShrink(): void {
     this.props.setExpandedCard(' ');
-    this.handleNewThreadButton();
+    this.props.setNewThreadActive(false);
   }
 
   /**

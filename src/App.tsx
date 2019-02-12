@@ -74,6 +74,12 @@ interface IAppStates {
    * @type any
    */
   response: any;
+  /**
+   * State to track when to query
+   *
+   * @type boolean
+   */
+  shouldQuery: boolean;
 }
 
 /**
@@ -114,14 +120,15 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.state = {
       expandedCard: ' ',
       replyActiveCard: ' ',
+      newThreadFile: '',
       sortState: 'latest',
       showResolved: false,
       newThreadActive: false,
-      newThreadFile: '',
       userSet: false,
+      shouldQuery: true,
       creator: {},
       myThreads: [],
-      response: undefined
+      response: { data: { annotationsByTarget: { length: 0 } } }
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -135,57 +142,54 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
-
-    // Sets the initial response state used to compare when update
-    this.props.commentsService
-      .queryAllByTarget(
-        this.props.target === undefined ? ' ' : this.props.target
-      )
-      .then((response: any) => {
-        this.setState({ response: response });
-      });
+    this.shouldQuery = this.shouldQuery.bind(this);
   }
 
   /**
    * Called each time the component updates
    */
   componentDidUpdate(): void {
-    // Handles fetching from GraphQL server and setting states
-    if (this.props.target !== undefined) {
-      this.props.commentsService
-        .queryAllByTarget(this.props.target)
-        .then((response: any) => {
-          if (response.data.annotationsByTarget.length !== 0) {
-            if (this.state.response.data.annotationsByTarget.length !== 0) {
-              if (
-                this.state.response.data.annotationsByTarget[0].target !==
-                response.data.annotationsByTarget[0].target
-              ) {
-                this.setState({
-                  myThreads: this.getAllCommentCards(
-                    response.data.annotationsByTarget
-                  ),
-                  response: response
-                });
-              }
-            } else {
+    if (this.state.response.data.annotationsByTarget !== undefined) {
+      if (this.state.response.data.annotationsByTarget.length !== 0) {
+        if (
+          this.state.response.data.annotationsByTarget[0].target !==
+            this.props.target &&
+          !this.state.shouldQuery
+        ) {
+          this.setState({ shouldQuery: true });
+        }
+      }
+    }
+
+    if (this.state.shouldQuery) {
+      if (this.props.target !== undefined) {
+        this.props.commentsService
+          .queryAllByTarget(this.props.target)
+          .then((response: any) => {
+            if (response.data.annotationsByTarget.length !== 0) {
               this.setState({
                 myThreads: this.getAllCommentCards(
                   response.data.annotationsByTarget
                 ),
-                response: response
+                response: response,
+                shouldQuery: false
               });
+            } else {
+              this.state.myThreads.length !== 0 &&
+                this.setState({
+                  myThreads: [],
+                  shouldQuery: false
+                });
             }
-          } else {
-            this.state.myThreads.length !== 0 &&
-              this.setState({ myThreads: [], response: response });
-          }
-        });
-    } else {
+          });
+      }
+    }
+
+    if (this.props.target === undefined) {
       this.state.myThreads.length !== 0 &&
         this.setState({
           myThreads: [],
-          response: { data: { annotationsByTarget: { length: 0 } } }
+          shouldQuery: false
         });
     }
   }
@@ -210,7 +214,19 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             />
           }
         />
-        <AppBody cards={this.state.myThreads} />
+        <AppBody
+          cards={
+            this.state.newThreadActive
+              ? [
+                  <NewThreadCard
+                    putComment={this.putComment}
+                    itemId={this.state.newThreadFile}
+                    setNewThreadActive={this.setNewThreadActive}
+                  />
+                ]
+              : this.state.myThreads
+          }
+        />
       </div>
     ) : (
       <UserSet setUserInfo={this.setUserInfo} />
@@ -226,39 +242,29 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   getAllCommentCards(allData: any): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
 
-    if (!this.state.newThreadActive) {
-      for (let key in allData) {
-        if (
-          this.shouldRenderCard(
-            false, // TODO: Add resolved to thread value
-            this.state.expandedCard !== ' ',
-            this.state.expandedCard === allData[key].id
-          )
-        ) {
-          cards.push(
-            <CommentCard
-              data={allData[key]}
-              threadId={allData[key].id}
-              setExpandedCard={this.setExpandedCard}
-              checkExpandedCard={this.checkExpandedCard}
-              setReplyActiveCard={this.setReplyActiveCard}
-              checkReplyActiveCard={this.checkReplyActiveCard}
-              resolved={false}
-              putComment={this.putComment}
-              setCardValue={this.setCardValue}
-              target={this.props.target}
-            />
-          );
-        }
+    for (let key in allData) {
+      if (
+        this.shouldRenderCard(
+          false,
+          this.state.expandedCard !== ' ',
+          this.state.expandedCard === allData[key].id
+        )
+      ) {
+        cards.push(
+          <CommentCard
+            data={allData[key]}
+            threadId={allData[key].id}
+            setExpandedCard={this.setExpandedCard}
+            checkExpandedCard={this.checkExpandedCard}
+            setReplyActiveCard={this.setReplyActiveCard}
+            checkReplyActiveCard={this.checkReplyActiveCard}
+            resolved={allData[key].resolved}
+            putComment={this.putComment}
+            setCardValue={this.setCardValue}
+            target={this.props.target}
+          />
+        );
       }
-    } else {
-      cards.push(
-        <NewThreadCard
-          putComment={this.putComment}
-          itemId={this.state.newThreadFile}
-          setNewThreadActive={this.setNewThreadActive}
-        />
-      );
     }
     return cards;
   }
@@ -294,15 +300,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   }
 
   /**
-   * Query the comments from MetadataCommentsService based on itemId
-   *
-   * @param target Type: String - Path of file to get comments for
-   * @return Type: any - Stream of comments
+   * Sets the state should query to query when component updates
    */
-  getComments(target: string): Promise<any> {
-    let allComments = this.props.commentsService.queryAllByTarget(target);
-
-    return allComments;
+  shouldQuery(): void {
+    this.setState({ shouldQuery: true });
   }
 
   /**
@@ -315,59 +316,66 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     await this.props.commentsService.createComment(
       threadId,
       value,
-      this.state.creator,
-      false
+      this.state.creator
     );
+    this.setState({ shouldQuery: true });
   }
 
   /**
    * Used to set a specific field of a card
    *
-   * @param itemId Type: string - id of a thread
-   * @param cardId Type: string - id of a specific card
+   * @param target Type: string - id of a thread
+   * @param threadId Type: string - id of a specific card
    * @param key Type: string - key of value to set
    * @param value Type: string - value to set
    */
-  setCardValue(itemId: string, cardId: string, key: string, value: any): void {
-    this.props.commentsService.setCardValue(itemId, cardId, key, value);
+  setCardValue(
+    target: string,
+    threadId: string,
+    key: string,
+    value: any
+  ): void {
+    this.props.commentsService.setCardValue(target, threadId, key, value);
   }
 
   /**
    * Used to check if the cardId passed in is the current expanded card
    *
-   * @param cardId Type: string - CommentCard unique id
+   * @param threadId Type: string - CommentCard unique id
    * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
    */
-  checkExpandedCard(cardId: string): boolean {
-    return cardId === this.state.expandedCard;
+  checkExpandedCard(threadId: string): boolean {
+    return threadId === this.state.expandedCard;
   }
 
   /**
    * Sets this.state.expandedCard to the passed in cardId
    *
-   * @param cardId Type: string - CommentCard unique id
+   * @param threadId Type: string - CommentCard unique id
    */
-  setExpandedCard(cardId: string) {
-    this.setState({ expandedCard: cardId });
+  setExpandedCard(threadId: string) {
+    this.setState({ expandedCard: threadId });
+    this.shouldQuery();
   }
 
   /**
    * Sets this.state.replyActiveCard to the passed in cardId
    *
-   * @param cardId Type: string - CommentCard unique id
+   * @param threadId Type: string - CommentCard unique id
    */
-  setReplyActiveCard(cardId: string) {
-    this.setState({ replyActiveCard: cardId });
+  setReplyActiveCard(threadId: string) {
+    this.setState({ replyActiveCard: threadId });
+    this.shouldQuery();
   }
 
   /**
    * Used to check if the cardId passed in has reply box active
    *
-   * @param cardId Type: string - CommentCard unique id
+   * @param threadId Type: string - CommentCard unique id
    * @return type: boolean - True if cardId has reply box open, false if not active
    */
-  checkReplyActiveCard(cardId: string): boolean {
-    return cardId === this.state.replyActiveCard;
+  checkReplyActiveCard(threadId: string): boolean {
+    return threadId === this.state.replyActiveCard;
   }
 
   /**
@@ -376,9 +384,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param state Type: boolean - State to set if new thread card is active
    * @param target Type: string - target of the file to add new thread to
    */
-  setNewThreadActive(state: boolean, target?: string) {
+  setNewThreadActive(state: boolean) {
     this.setState({ newThreadActive: state });
-    this.setState({ newThreadFile: target });
+    this.setState({ newThreadFile: this.props.target });
+    this.shouldQuery();
   }
 
   /**
@@ -388,6 +397,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   setSortState(state: string) {
     this.setState({ sortState: state });
+    this.shouldQuery();
   }
 
   /**
@@ -396,6 +406,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   showResolvedState() {
     this.setState({ showResolved: !this.state.showResolved });
+    this.shouldQuery();
   }
 
   /**

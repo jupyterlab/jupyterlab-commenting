@@ -251,7 +251,7 @@ export class CommentCard extends React.Component<
         context={this.props.data.body[0].value}
         timestamp={this.props.data.body[0].created}
         photo={this.props.data.body[0].creator.image}
-        tag={this.props.data.meta}
+        tag={this.props.data.label}
         expanded={this.props.checkExpandedCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
