@@ -50,7 +50,7 @@ export class AppHeaderOptions extends React.Component<
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: IAppHeaderOptionsProps) {
     super(props);
 
     this.state = { isOpen: false };

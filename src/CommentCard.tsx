@@ -101,7 +101,7 @@ export class CommentCard extends React.Component<
    *
    * @param props React Props
    */
-  constructor(props: any) {
+  constructor(props: ICommentCardProps) {
     super(props);
     this.state = {};
 

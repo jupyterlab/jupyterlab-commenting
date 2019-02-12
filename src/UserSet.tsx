@@ -30,7 +30,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: IUserSetProps) {
     super(props);
     this.state = { inputBox: '' };
 

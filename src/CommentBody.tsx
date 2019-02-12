@@ -29,7 +29,7 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: ICommentBodyProps) {
     super(props);
   }
 

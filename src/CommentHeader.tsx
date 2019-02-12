@@ -75,7 +75,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: ICommentHeaderProps) {
     super(props);
   }
 
@@ -94,7 +94,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
               {this.props.name}
             </h1>
             <p style={this.styles.timestamp} className={this.bsc.timestamp}>
-              {this.props.timestamp}
+              {this.timeStampStyle()}
             </p>
             <div style={this.styles.tagArea} className={this.bsc.tagArea}>
               <h6 style={this.styles.tag} className={this.bsc.tag}>
@@ -151,6 +151,38 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  timeStampStyle(): string {
+    let serverTimeStamp = new Date(this.props.timestamp);
+    let localTimeStamp = serverTimeStamp.toLocaleString();
+    let fullDate = localTimeStamp.split(',')[0].split('/');
+    let fullTime = localTimeStamp.split(',')[1].split(':');
+    let timeIdentifier = fullTime[2].slice(3).toLowerCase();
+
+    let month: any = {
+      '1': 'Jan',
+      '2': 'Feb',
+      '3': 'Mar',
+      '4': 'Apr',
+      '5': 'May',
+      '6': 'Jun',
+      '7': 'Jul',
+      '8': 'Aug',
+      '9': 'Sep',
+      '10': 'Oct',
+      '11': 'Nov',
+      '12': 'Dec'
+    };
+    let timestamp =
+      month[fullDate[0]] +
+      ' ' +
+      fullDate[1] +
+      fullTime[0] +
+      ':' +
+      fullTime[1] +
+      timeIdentifier;
+    return timestamp;
+  }
+
   /**
    * Bootstrap classNames
    */
@@ -177,10 +209,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     photo: {
       display: 'flex',
       flexGrow: 1,
-      height: '2.7em',
-      width: '2.7em',
-      marginTop: '5px',
-      marginLeft: '5px'
+      height: '36px',
+      width: '36px',
+      margin: '5px'
     },
     name: {
       fontSize: '12px',

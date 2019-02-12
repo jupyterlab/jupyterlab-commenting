@@ -42,7 +42,7 @@ export class Comment extends React.Component<ICommentProps> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: ICommentProps) {
     super(props);
   }
 
@@ -61,7 +61,7 @@ export class Comment extends React.Component<ICommentProps> {
               {this.props.name}
             </h1>
             <p style={this.styles.timestamp} className={this.bsc.timestamp}>
-              {this.props.timestamp}
+              {this.timeStampStyle()}
             </p>
           </div>
         </div>
@@ -78,35 +78,52 @@ export class Comment extends React.Component<ICommentProps> {
     );
   }
 
+  timeStampStyle(): string {
+    let serverTimeStamp = new Date(this.props.timestamp);
+    let localTimeStamp = serverTimeStamp.toLocaleString();
+    let fullDate = localTimeStamp.split(',')[0].split('/');
+    let fullTime = localTimeStamp.split(',')[1].split(':');
+    let timeIdentifier = fullTime[2].slice(3).toLowerCase();
+
+    let month: any = {
+      '1': 'Jan',
+      '2': 'Feb',
+      '3': 'Mar',
+      '4': 'Apr',
+      '5': 'May',
+      '6': 'Jun',
+      '7': 'Jul',
+      '8': 'Aug',
+      '9': 'Sep',
+      '10': 'Oct',
+      '11': 'Nov',
+      '12': 'Dec'
+    };
+    let timestamp =
+      month[fullDate[0]] +
+      ' ' +
+      fullDate[1] +
+      fullTime[0] +
+      ':' +
+      fullTime[1] +
+      timeIdentifier;
+    return timestamp;
+  }
   /**
    * CSS Styles
    */
   styles = {
     upperComment: {},
-    commentHeader: {
-      marginBottom: '10px'
-    },
-    nameArea: {
-      paddingLeft: '5px'
-    },
-    commentStyle: {
-      marginBottom: '0px'
-    },
-    photo: {
-      height: '2em',
-      width: '2em',
-      marginLeft: '20px'
-    },
+    commentHeader: { marginBottom: '10px' },
+    nameArea: { paddingLeft: '5px' },
+    commentStyle: { marginBottom: '0px' },
+    photo: { height: '2em', width: '2em', marginLeft: '20px' },
     name: {
       fontSize: '12px',
       fontWeight: 'bold' as 'bold',
       marginBottom: '1px'
     },
-    timestamp: {
-      fontSize: '.7em',
-      marginBottom: '0px',
-      marginTop: '-5px'
-    },
+    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
     contextNotExpanded: {
       maxHeight: '30px',
       maxWidth: '350px',

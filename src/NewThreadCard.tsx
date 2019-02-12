@@ -57,7 +57,7 @@ export class NewThreadCard extends React.Component<
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: INewThreadCardProps) {
     super(props);
     this.state = { inputBox: '', tagBox: '' };
 

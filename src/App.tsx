@@ -115,7 +115,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: IAppProps) {
     super(props);
     this.state = {
       expandedCard: ' ',
@@ -316,7 +316,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     await this.props.commentsService.createComment(
       threadId,
       value,
-      this.state.creator
+      this.state.creator,
+      false
     );
     this.setState({ shouldQuery: true });
   }

@@ -49,7 +49,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: IAppHeaderProps) {
     super(props);
 
     this.renderAppHeader = this.renderAppHeader.bind(this);

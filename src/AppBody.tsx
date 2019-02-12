@@ -21,7 +21,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: IAppBodyProps) {
     super(props);
   }
 

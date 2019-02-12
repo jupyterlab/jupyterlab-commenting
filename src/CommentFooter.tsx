@@ -75,7 +75,7 @@ export class CommentFooter extends React.Component<
    *
    * @param props React props
    */
-  constructor(props: any) {
+  constructor(props: ICommentFooterProps) {
     super(props);
     this.state = {
       commentBox: ''
