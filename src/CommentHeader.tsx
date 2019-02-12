@@ -141,7 +141,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getResolveButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton float-right"
+        className="commentFooterLeftButton"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -199,7 +199,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   styles = {
     upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
     cardHeader: { marginBottom: '10px', background: 'white' },
-    resolveButton: { marginRight: '20px', marginTop: '5px' },
+    resolveButton: { marginRight: '5px', marginTop: '5px' },
     nameArea: {
       paddingLeft: '5px',
       display: 'flex',

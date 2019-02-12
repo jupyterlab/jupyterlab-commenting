@@ -2,27 +2,14 @@ import * as React from 'react';
 
 interface INewThreadCardProps {
   /**
-   * File path as id for determining where to put new thread
-   *
-   * @type string
-   */
-  itemId: string;
-  /**
    * Function to put comment back to server
    *
-   * @param itemId Type: string - file path of open file
-   * @param cardId Type: string - cardId for comment thread
    * @param comment Type: string -  the comment to be added
    * @param tag Type: string - category tag / label for thread
    *
    * @type void function
    */
-  putComment: (
-    itemId: string,
-    cardId: string,
-    comment?: string,
-    tag?: string
-  ) => void;
+  putThread: (comment?: string, tag?: string) => void;
   /**
    * Sets the state if a new thread is to be created
    *
@@ -124,12 +111,7 @@ export class NewThreadCard extends React.Component<
 
   createNewThread(): void {
     this.props.setNewThreadActive(false);
-    this.props.putComment(
-      this.props.itemId,
-      'new',
-      this.state.inputBox,
-      this.state.tagBox
-    );
+    this.props.putThread(this.state.inputBox, this.state.tagBox);
   }
 
   /**

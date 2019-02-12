@@ -54,15 +54,15 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
           onChange={this.handleInputChange}
           onKeyPress={this.handleKeyPress}
         />
-        <button
-          className={
-            'commentCommentButton commentFooterRightButton float-right'
-          }
-          type="button"
-          onClick={this.handleSubmit}
-        >
-          Create
-        </button>
+        <div style={{ float: 'right' }}>
+          <button
+            className={'commentCommentButton commentFooterRightButton'}
+            type="button"
+            onClick={this.handleSubmit}
+          >
+            Enter
+          </button>
+        </div>
       </div>
     );
   }

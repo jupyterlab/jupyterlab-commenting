@@ -137,6 +137,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setSortState = this.setSortState.bind(this);
     this.showResolvedState = this.showResolvedState.bind(this);
     this.putComment = this.putComment.bind(this);
+    this.putThread = this.putThread.bind(this);
     this.setCardValue = this.setCardValue.bind(this);
     this.setNewThreadActive = this.setNewThreadActive.bind(this);
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
@@ -219,8 +220,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             this.state.newThreadActive
               ? [
                   <NewThreadCard
-                    putComment={this.putComment}
-                    itemId={this.state.newThreadFile}
+                    putThread={this.putThread}
                     setNewThreadActive={this.setNewThreadActive}
                   />
                 ]
@@ -310,16 +310,32 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Pushed comment back to MetadataCommentsService
    *
    * @param value Type: string - comment message
-   * @param threadId Type: String - commend card / thread the comment applies to
+   * @param threadId Type: string - commend card / thread the comment applies to
    */
-  async putComment(threadId: string, value: string): Promise<void> {
-    await this.props.commentsService.createComment(
+  putComment(threadId: string, value: string): void {
+    this.props.commentsService.createComment(
       threadId,
       value,
       this.state.creator,
       false
     );
-    this.setState({ shouldQuery: true });
+    this.shouldQuery();
+  }
+
+  /**
+   * Pushes new thread to GraphQL server
+   *
+   * @param value Type: string - comment message
+   * @param label Type: string - label / tag of a thread
+   */
+  putThread(value: string, label?: string): void {
+    this.props.commentsService.createThread(
+      this.props.target,
+      value,
+      this.state.creator,
+      label
+    );
+    this.shouldQuery();
   }
 
   /**

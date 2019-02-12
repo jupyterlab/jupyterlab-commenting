@@ -223,7 +223,7 @@ export class CommentCard extends React.Component<
     let allComments: any = this.props.data.body;
 
     if (this.props.data !== undefined) {
-      for (let key in allComments) {
+      for (let key: number = 1; key < allComments.length; key++) {
         comments.push(
           <Comment
             name={allComments[key].creator.name}
