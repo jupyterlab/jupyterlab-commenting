@@ -182,10 +182,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   /**
    * Bootstrap classNames
    */
-  bsc = {
-    tag: 'badge badge-secondary row-offset-1',
-    tagArea: 'col'
-  };
+  bsc = { tag: 'badge badge-secondary row-offset-1', tagArea: 'col' };
 
   /**
    * CSS styles
@@ -215,6 +212,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
     contextNotExpanded: {
+      display: 'flex',
       maxHeight: '30px',
       maxWidth: '350px',
       overflow: 'hidden',
@@ -225,6 +223,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       lineHeight: 'normal'
     },
     contextExpanded: {
+      display: 'flex',
       maxHeight: '100%',
       maxWidth: '350px',
       overflow: '',

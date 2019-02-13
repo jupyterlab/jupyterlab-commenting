@@ -12,11 +12,9 @@ import { ReactWidget } from '@jupyterlab/apputils';
 
 import { UseSignal } from '@jupyterlab/apputils';
 
-import { FocusTracker, Widget } from '@phosphor/widgets';
-
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
-import { DocumentWidget } from '@jupyterlab/docregistry';
+import { IActiveDataset } from '@jupyterlab/databus';
 
 import App from './App';
 
@@ -27,18 +25,19 @@ import 'bootstrap/dist/css/bootstrap.css';
  */
 function activate(
   app: JupyterFrontEnd,
+  activeDataset: IActiveDataset,
   labShell: ILabShell,
   comments: IMetadataCommentsService
 ) {
   const widget = ReactWidget.create(
-    <UseSignal signal={labShell.currentChanged}>
-      {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
+    <UseSignal signal={activeDataset.signal}>
+      {(sender, args) => {
         try {
           return (
             <App
               commentsService={comments}
-              target={args && getPath(args.newValue)}
-              targetName={args && getName(args.newValue)}
+              target={activeDataset.active.pathname}
+              targetName={activeDataset.active.pathname.split('/').pop()}
             />
           );
         } catch {
@@ -59,22 +58,6 @@ function activate(
   labShell.add(widget, 'right');
 }
 
-function getName(widget: Widget): string | undefined {
-  if (isDocumentWidget(widget)) {
-    return widget.context.session.name;
-  }
-}
-
-function getPath(widget: Widget): string | undefined {
-  if (isDocumentWidget(widget)) {
-    return widget.context.session.path;
-  }
-}
-
-function isDocumentWidget(widget: Widget): widget is DocumentWidget {
-  return (widget as DocumentWidget).context !== undefined;
-}
-
 /**
  * Initialization data for the jupyterlab-commenting extension
  */
@@ -82,7 +65,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
   activate: activate,
-  requires: [ILabShell, IMetadataCommentsService]
+  requires: [IActiveDataset, ILabShell, IMetadataCommentsService]
 };
 
 export default extension;
