@@ -16,6 +16,8 @@ import { FocusTracker, Widget } from '@phosphor/widgets';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
+import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
+
 import { DocumentWidget } from '@jupyterlab/docregistry';
 
 import App from './App';
@@ -28,7 +30,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 function activate(
   app: JupyterFrontEnd,
   labShell: ILabShell,
-  comments: IMetadataCommentsService
+  comments: IMetadataCommentsService,
+  people: IMetadataPeopleService
 ) {
   const widget = ReactWidget.create(
     <UseSignal signal={labShell.currentChanged}>
@@ -37,6 +40,7 @@ function activate(
           return (
             <App
               commentsService={comments}
+              peopleService={people}
               target={args && getPath(args.newValue)}
               targetName={args && getName(args.newValue)}
             />
@@ -45,6 +49,7 @@ function activate(
           return (
             <App
               commentsService={comments}
+              peopleService={people}
               target={undefined}
               targetName={undefined}
             />
@@ -82,7 +87,7 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
   activate: activate,
-  requires: [ILabShell, IMetadataCommentsService]
+  requires: [ILabShell, IMetadataCommentsService, IMetadataPeopleService]
 };
 
 export default extension;

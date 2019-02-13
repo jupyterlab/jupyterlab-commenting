@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 // Components
 import { AppBody } from './AppBody';
@@ -93,6 +94,10 @@ interface IAppProps {
    */
   commentsService?: IMetadataCommentsService;
   /**
+   * People Service that communicates with graphql server
+   */
+  peopleService?: IMetadataPeopleService;
+  /**
    * Path of open file, used as unique id to fetch comments and annotations
    *
    * @type string
@@ -144,12 +149,15 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
     this.shouldQuery = this.shouldQuery.bind(this);
+
+    setInterval(this.shouldQuery, 5000);
   }
 
   /**
    * Called each time the component updates
    */
   componentDidUpdate(): void {
+    console.log('update');
     if (this.state.response.data.annotationsByTarget !== undefined) {
       if (this.state.response.data.annotationsByTarget.length !== 0) {
         if (
@@ -437,13 +445,36 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      this.setState({
-        creator: {
-          id: 'person/1',
-          name: name,
-          image: myJSON.avatar_url
-        },
-        userSet: true
+      this.props.peopleService.queryAll().then((response: any) => {
+        if (response.data.people.length !== 0) {
+          for (let index in response.data.people) {
+            if (
+              response.data.people[index].name === name &&
+              !this.state.userSet
+            ) {
+              this.setState({
+                creator: {
+                  id: response.data.people[index].id,
+                  name: name,
+                  image: myJSON.avatar_url
+                },
+                userSet: true
+              });
+            }
+          }
+          if (!this.state.userSet) {
+            this.props.peopleService.create(name, '', myJSON.avatar_url);
+            let personCount: number = Number(response.data.people.length) + 1;
+            this.setState({
+              creator: {
+                id: 'person/' + personCount,
+                name: name,
+                image: myJSON.avatar_url
+              },
+              userSet: true
+            });
+          }
+        }
       });
     } else {
       window.alert('Username not found');

@@ -220,16 +220,15 @@ export class CommentCard extends React.Component<
    */
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
-    let allComments: any = this.props.data.body;
 
     if (this.props.data !== undefined) {
-      for (let key: number = 1; key < allComments.length; key++) {
+      for (let key: number = 1; key < this.props.data.body.length; key++) {
         comments.push(
           <Comment
-            name={allComments[key].creator.name}
-            context={allComments[key].value}
-            timestamp={allComments[key].created}
-            photo={allComments[key].creator.image}
+            name={this.props.data.body[key].creator.name}
+            context={this.props.data.body[key].value}
+            timestamp={this.props.data.body[key].created}
+            photo={this.props.data.body[key].creator.image}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         );
