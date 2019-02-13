@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "lib": ["es2015", "dom", "esnext.asynciterable"],
+    "lib": [
+      "es2015",
+      "dom",
+      "esnext.asynciterable"
+    ],
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmitOnError": true,
@@ -15,7 +19,9 @@
     "types": [],
     "composite": true
   },
-  "include": ["src/*"],
+  "include": [
+    "src/*"
+  ],
   "references": [
     {
       "path": "../application"
@@ -28,6 +34,9 @@
     },
     {
       "path": "../frontend"
+    },
+    {
+      "path": "../databus"
     }
   ]
 }

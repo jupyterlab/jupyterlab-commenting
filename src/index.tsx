@@ -16,6 +16,8 @@ import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
 import { IActiveDataset } from '@jupyterlab/databus';
 
+import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
+
 import App from './App';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -27,7 +29,8 @@ function activate(
   app: JupyterFrontEnd,
   activeDataset: IActiveDataset,
   labShell: ILabShell,
-  comments: IMetadataCommentsService
+  comments: IMetadataCommentsService,
+  people: IMetadataPeopleService
 ) {
   const widget = ReactWidget.create(
     <UseSignal signal={activeDataset.signal}>
@@ -36,6 +39,7 @@ function activate(
           return (
             <App
               commentsService={comments}
+              peopleService={people}
               target={activeDataset.active.pathname}
               targetName={activeDataset.active.pathname.split('/').pop()}
             />
@@ -44,6 +48,7 @@ function activate(
           return (
             <App
               commentsService={comments}
+              peopleService={people}
               target={undefined}
               targetName={undefined}
             />
@@ -65,7 +70,12 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
   activate: activate,
-  requires: [IActiveDataset, ILabShell, IMetadataCommentsService]
+  requires: [
+    IActiveDataset,
+    ILabShell,
+    IMetadataCommentsService,
+    IMetadataPeopleService
+  ]
 };
 
 export default extension;
