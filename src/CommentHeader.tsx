@@ -104,16 +104,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             </div>
           </div>
           <div>
-            {this.props.expanded && !this.props.resolved
+            {!this.props.resolved
               ? this.getResolveButton()
-              : !this.props.expanded && (
-                  <input
-                    type="image"
-                    style={this.styles.cornerButton}
-                    src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
-                    onClick={this.props.handleExpand}
-                  />
-                )}
+              : this.getReopenButton()}
           </div>
         </div>
         <p
@@ -143,6 +136,19 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         onClick={this.props.handleResolve}
       >
         Resolve
+      </button>
+    );
+  }
+
+  getReopenButton(): React.ReactNode {
+    return (
+      <button
+        className="commentFooterLeftButton"
+        style={this.styles.resolveButton}
+        type="button"
+        onClick={this.props.handleResolve}
+      >
+        Re-open
       </button>
     );
   }

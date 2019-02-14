@@ -136,24 +136,7 @@ export class CommentFooter extends React.Component<
       !this.props.replyActive &&
       !this.props.resolved
     ) {
-      return (
-        <div>
-          {this.getReplyAndExpandButton()}
-          {this.getResolveButton()}
-        </div>
-      );
-    } else if (
-      this.props.expanded &&
-      !this.props.replyActive &&
-      this.props.resolved
-    ) {
-      return <div>{this.getReopenButton()}</div>;
-    } else if (
-      !this.props.expanded &&
-      !this.props.replyActive &&
-      this.props.resolved
-    ) {
-      return <div>{this.getReopenButton()}</div>;
+      return <div>{this.getReplyAndExpandButton()}</div>;
     } else if (
       this.props.expanded &&
       this.props.replyActive &&
@@ -170,12 +153,7 @@ export class CommentFooter extends React.Component<
       this.props.replyActive &&
       !this.props.resolved
     ) {
-      return (
-        <div>
-          {this.getReplyAndExpandButton()}
-          {this.getResolveButton()}
-        </div>
-      );
+      return <div>{this.getReplyAndExpandButton()}</div>;
     }
   }
 
@@ -221,40 +199,6 @@ export class CommentFooter extends React.Component<
         onClick={this.props.expandAndReply}
       >
         Reply
-      </button>
-    );
-  }
-
-  /**
-   * Creates and returns re-open button
-   *
-   * @return Type: React.ReactNode
-   */
-  getReopenButton(): React.ReactNode {
-    return (
-      <button
-        className={'commentFooterRightButton float-right'}
-        type="button"
-        onClick={this.props.handleResolve}
-      >
-        Re-open
-      </button>
-    );
-  }
-
-  /**
-   * Creates and returns resolve button
-   *
-   * @return Type: React.ReactNode
-   */
-  getResolveButton(): React.ReactNode {
-    return (
-      <button
-        className="commentFooterLeftButton float-right"
-        type="button"
-        onClick={this.props.handleResolve}
-      >
-        Resolve
       </button>
     );
   }

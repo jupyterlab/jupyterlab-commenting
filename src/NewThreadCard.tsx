@@ -9,7 +9,7 @@ interface INewThreadCardProps {
    *
    * @type void function
    */
-  putThread: (comment?: string, tag?: string) => void;
+  putThread: (comment?: string) => void;
   /**
    * Sets the state if a new thread is to be created
    *
@@ -18,6 +18,7 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
+  creator: any;
 }
 
 interface INewThreadCardStates {
@@ -27,12 +28,6 @@ interface INewThreadCardStates {
    * @type string
    */
   inputBox: string;
-  /**
-   * Text for thread tag
-   *
-   * @type string
-   */
-  tagBox: string;
 }
 
 export class NewThreadCard extends React.Component<
@@ -46,11 +41,10 @@ export class NewThreadCard extends React.Component<
    */
   constructor(props: INewThreadCardProps) {
     super(props);
-    this.state = { inputBox: '', tagBox: '' };
+    this.state = { inputBox: '' };
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleChangeTagBox = this.handleChangeTagBox.bind(this);
     this.createNewThread = this.createNewThread.bind(this);
   }
 
@@ -60,14 +54,7 @@ export class NewThreadCard extends React.Component<
   render() {
     return (
       <div className="card" style={this.styles.card}>
-        <label>New Thread</label>
-        <input
-          type="text"
-          className="form-control form-control-sm"
-          style={this.styles.field}
-          placeholder="Tag"
-          onChange={this.handleChangeTagBox}
-        />
+        <label style={this.styles.name}>{this.props.creator.name}</label>
         <textarea
           className={this.bsc.input}
           style={this.styles.inputBox}
@@ -83,7 +70,7 @@ export class NewThreadCard extends React.Component<
           type="button"
           onClick={this.createNewThread}
         >
-          Create
+          Comment
         </button>
       </div>
     );
@@ -99,19 +86,9 @@ export class NewThreadCard extends React.Component<
     this.setState({ inputBox: e.target.value });
   }
 
-  // TODO: Get correct type
-  /**
-   * Handles when the tag box changes
-   *
-   * @param e Type: any - input box event
-   */
-  handleChangeTagBox(e: any): void {
-    this.setState({ tagBox: e.target.value });
-  }
-
   createNewThread(): void {
     this.props.setNewThreadActive(false);
-    this.props.putThread(this.state.inputBox, this.state.tagBox);
+    this.props.putThread(this.state.inputBox);
   }
 
   /**
@@ -146,6 +123,13 @@ export class NewThreadCard extends React.Component<
       width: '100%',
       height: '80px',
       lineHeight: 'normal'
+    },
+    name: {
+      fontSize: '16px',
+      fontWeight: 'bold' as 'bold',
+      marginTop: '6px',
+      marginBottom: '6px',
+      marginLeft: '3px'
     }
   };
 }

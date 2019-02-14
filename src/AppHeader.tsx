@@ -69,7 +69,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           {this.renderAppHeader(this.props.header)}
           <div style={this.styles.placeholder} />
         </div>
-        <div>{this.props.headerOptions}</div>
+        {this.shouldRenderOptions()}
       </div>
     );
   }
@@ -141,6 +141,19 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       );
     } catch {
       return <span />;
+    }
+  }
+
+  /**
+   * Checks the state of New Thread
+   *
+   * @returns Type: React.ReactNode. If the New Thread is not open
+   */
+  shouldRenderOptions(): React.ReactNode {
+    if (!this.props.threadOpen) {
+      return <div>{this.props.headerOptions}</div>;
+    } else {
+      return <div />;
     }
   }
 

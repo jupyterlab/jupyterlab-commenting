@@ -157,7 +157,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Called each time the component updates
    */
   componentDidUpdate(): void {
-    console.log('update');
+    // console.log('update');
     if (this.state.response.data.annotationsByTarget !== undefined) {
       if (this.state.response.data.annotationsByTarget.length !== 0) {
         if (
@@ -220,6 +220,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               setSortState={this.setSortState}
               showResolvedState={this.showResolvedState}
               cardExpanded={this.state.expandedCard !== ' '}
+              header={this.props.targetName}
             />
           }
         />
@@ -230,6 +231,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                   <NewThreadCard
                     putThread={this.putThread}
                     setNewThreadActive={this.setNewThreadActive}
+                    creator={this.state.creator}
                   />
                 ]
               : this.state.myThreads
@@ -335,12 +337,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param value Type: string - comment message
    * @param label Type: string - label / tag of a thread
    */
-  putThread(value: string, label?: string): void {
+  putThread(value: string): void {
     this.props.commentsService.createThread(
       this.props.target,
       value,
-      this.state.creator,
-      label
+      this.state.creator
     );
     this.shouldQuery();
   }

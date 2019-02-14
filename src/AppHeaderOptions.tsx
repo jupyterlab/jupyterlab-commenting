@@ -24,6 +24,7 @@ interface IAppHeaderOptionsProps {
    * @type boolean
    */
   cardExpanded: boolean;
+  header: string;
 }
 
 /**
@@ -86,7 +87,7 @@ export class AppHeaderOptions extends React.Component<
         <label
           htmlFor="controls"
           style={
-            this.props.cardExpanded
+            this.props.cardExpanded || this.props.header === undefined
               ? this.styles.checkboxLabelDisabled
               : this.styles.checkboxLabelEnabled
           }
@@ -98,7 +99,7 @@ export class AppHeaderOptions extends React.Component<
           type="checkbox"
           id="controls"
           onClick={this.toggleResolved}
-          disabled={this.props.cardExpanded}
+          disabled={this.props.cardExpanded || this.props.header === undefined}
         />
       </div>
     );
@@ -109,7 +110,7 @@ export class AppHeaderOptions extends React.Component<
       <div style={this.styles.dropdownBox}>
         <label
           style={
-            this.props.cardExpanded
+            this.props.cardExpanded || this.props.header === undefined
               ? this.styles.dropdownLabelDisabled
               : this.styles.dropdownLabelEnabled
           }
@@ -125,7 +126,9 @@ export class AppHeaderOptions extends React.Component<
               'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
             }
             data-toggle="dropdown"
-            disabled={this.props.cardExpanded}
+            disabled={
+              this.props.cardExpanded || this.props.header === undefined
+            }
           />
         </div>
       </div>
