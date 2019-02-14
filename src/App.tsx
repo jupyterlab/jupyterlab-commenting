@@ -236,6 +236,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                 ]
               : this.state.myThreads
           }
+          expanded={this.state.expandedCard !== ' '}
         />
       </div>
     ) : (

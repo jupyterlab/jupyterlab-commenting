@@ -122,9 +122,7 @@ export class CommentFooter extends React.Component<
               ))}
         </div>
         <div>
-          <div style={this.styles.buttonArea}>
-            {this.props.replyActive ? this.getButtons() : <div />}
-          </div>
+          <div style={this.styles.buttonArea}>{this.getButtons()}</div>
         </div>
       </div>
     );
@@ -136,14 +134,7 @@ export class CommentFooter extends React.Component<
    * @return Type: React.ReactNode - JSX with buttons
    */
   getButtons(): React.ReactNode {
-    if (this.props.expanded && this.props.replyActive) {
-      return (
-        <div>
-          {this.getCommentButton()}
-          {this.getCancelButton()}
-        </div>
-      );
-    } else if (this.props.expanded && !this.props.replyActive) {
+    if (this.props.replyActive) {
       return (
         <div>
           {this.getCommentButton()}
@@ -195,7 +186,7 @@ export class CommentFooter extends React.Component<
    */
   handleKeyPress(e: any): void {
     if (e.key === 'Enter' && !e.shiftKey) {
-      // this.handleCommentButton();
+      this.handleCommentButton();
     }
   }
 

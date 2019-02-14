@@ -93,16 +93,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
           <div style={this.styles.nameArea}>
             <h1 style={this.styles.name}>{this.props.name}</h1>
             <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
-            <div style={this.styles.tagArea} className={this.bsc.tagArea}>
-              <h6 style={this.styles.tag} className={this.bsc.tag}>
-                {this.props.tag}
-              </h6>
-              {this.props.resolved && (
-                <h6 style={this.styles.resolvedTag} className={this.bsc.tag}>
-                  Resolved
-                </h6>
-              )}
-            </div>
           </div>
           {this.props.hover ? (
             <div>
@@ -218,12 +208,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       borderRadius: '5px'
     },
     name: {
-      fontSize: '12px',
+      fontSize: '13px',
       fontWeight: 'bold' as 'bold',
-      marginTop: '3px',
-      marginBottom: '1px'
+      marginTop: '11px',
+      marginBottom: '0px'
     },
-    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
+    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '0px' },
     contextNotExpanded: {
       display: 'flex',
       maxHeight: '30px',

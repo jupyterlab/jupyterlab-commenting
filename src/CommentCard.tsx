@@ -135,7 +135,7 @@ export class CommentCard extends React.Component<
         }
         onClick={
           !this.props.checkExpandedCard(this.props.threadId)
-            ? this.expandAndReply
+            ? this.handleExpand
             : undefined
         }
         onMouseEnter={this.handleMouseEnter}
