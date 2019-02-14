@@ -130,7 +130,9 @@ export class CommentCard extends React.Component<
             ? 'threadCardDisabled'
             : 'threadCard'
         }
-        style={this.styles.card}
+        style={
+          this.props.resolved ? this.styles.resolvedCard : this.styles.card
+        }
         onClick={
           !this.props.checkExpandedCard(this.props.threadId)
             ? this.expandAndReply
@@ -309,10 +311,12 @@ export class CommentCard extends React.Component<
    * CSS styles
    */
   styles = {
-    card: {
+    card: { marginTop: '5px', marginBottom: '5px', background: 'white' },
+    resolvedCard: {
       marginTop: '5px',
       marginBottom: '5px',
-      background: 'white'
+      background: 'white',
+      color: '#4f4f4f'
     },
     cardHeading: {
       display: 'flex' as 'flex',
