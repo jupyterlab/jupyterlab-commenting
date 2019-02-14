@@ -83,6 +83,7 @@ export class CommentFooter extends React.Component<
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleCommentButton = this.handleCommentButton.bind(this);
+    this.handleCancelButton = this.handleCancelButton.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
@@ -121,7 +122,9 @@ export class CommentFooter extends React.Component<
               ))}
         </div>
         <div>
-          <div style={this.styles.buttonArea}>{this.getButtons()}</div>
+          <div style={this.styles.buttonArea}>
+            {this.props.replyActive ? this.getButtons() : <div />}
+          </div>
         </div>
       </div>
     );
@@ -151,13 +154,48 @@ export class CommentFooter extends React.Component<
   }
 
   /**
+   * Creates and returns reply button
+   *
+   * @return Type: React.ReactNode
+   */
+  getCommentButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleCommentButton}
+        className="commentCommentButton commentFooterRightButton float-right"
+        type="button"
+        disabled={this.state.commentBox.trim() === ''}
+      >
+        Comment
+      </button>
+    );
+  }
+
+  /**
+   * Creates and returns cancel button
+   *
+   * @return Type: React.ReactNode
+   */
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleCancelButton}
+        className="commentCancelButton commentFooterLeftButton float-right"
+        type="button"
+      >
+        Cancel
+      </button>
+    );
+  }
+
+  /**
    * Handles key events
    *
    * @param e Type: ? - keyboard event
    */
   handleKeyPress(e: any): void {
     if (e.key === 'Enter' && !e.shiftKey) {
-      this.handleCommentButton();
+      // this.handleCommentButton();
     }
   }
 
@@ -176,58 +214,12 @@ export class CommentFooter extends React.Component<
    */
   handleCommentButton(): void {
     this.props.getInput(this.state.commentBox);
-    this.props.handleReplyClose();
     this.setState({ commentBox: '' });
   }
 
-  /**
-   * Creates and returns a button to handle expanding and replying
-   * @return Type: React.ReactNode
-   */
-  getReplyAndExpandButton(): React.ReactNode {
-    return (
-      <button
-        className={'commentFooterRightButton float-right'}
-        type="button"
-        onClick={this.props.expandAndReply}
-      >
-        Reply
-      </button>
-    );
-  }
-
-  /**
-   * Creates and returns reply button
-   *
-   * @return Type: React.ReactNode
-   */
-  getCommentButton(): React.ReactNode {
-    return (
-      <button
-        className="commentCommentButton commentFooterRightButton float-right"
-        type="button"
-        onClick={this.handleCommentButton}
-      >
-        Comment
-      </button>
-    );
-  }
-
-  /**
-   * Creates and returns cancel button
-   *
-   * @return Type: React.ReactNode
-   */
-  getCancelButton(): React.ReactNode {
-    return (
-      <button
-        onClick={this.props.handleReplyClose}
-        className="commentCancelButton commentFooterLeftButton float-right"
-        type="button"
-      >
-        Cancel
-      </button>
-    );
+  handleCancelButton(): void {
+    this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
   }
 
   /**

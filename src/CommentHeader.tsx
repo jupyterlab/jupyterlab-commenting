@@ -130,7 +130,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getResolveButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton"
+        className="commentFooterLeftButton commentResolveButton"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -143,7 +143,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getReopenButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton"
+        className="commentFooterLeftButton commentResolveButton"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}

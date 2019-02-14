@@ -128,8 +128,9 @@ export class CommentCard extends React.Component<
         }
         style={this.styles.card}
         onClick={
-          !this.props.checkExpandedCard(this.props.threadId) &&
-          this.expandAndReply
+          !this.props.checkExpandedCard(this.props.threadId)
+            ? this.expandAndReply
+            : undefined
         }
       >
         <div style={this.styles.cardHeading}>{this.getCommentHeader()}</div>
