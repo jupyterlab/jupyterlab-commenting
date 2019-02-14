@@ -150,7 +150,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setUserInfo = this.setUserInfo.bind(this);
     this.shouldQuery = this.shouldQuery.bind(this);
 
-    setInterval(this.shouldQuery, 5000);
+    setInterval(this.shouldQuery, 1000);
   }
 
   /**

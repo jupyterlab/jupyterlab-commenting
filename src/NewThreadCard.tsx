@@ -140,7 +140,8 @@ export class NewThreadCard extends React.Component<
    */
   styles = {
     card: {
-      padding: '5px'
+      padding: '5px',
+      marginTop: '5px'
     },
     field: {
       marginBottom: '5px'

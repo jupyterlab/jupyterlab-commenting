@@ -120,7 +120,13 @@ export class Comment extends React.Component<ICommentProps> {
       flexDirection: 'column' as 'column'
     },
     commentStyle: { marginBottom: '0px' },
-    photo: { height: '2em', width: '2em', marginLeft: '6px' },
+    photo: {
+      height: '2em',
+      width: '2em',
+      marginLeft: '6px',
+      marginTop: '5px',
+      borderRadius: '5px'
+    },
     name: {
       fontSize: '12px',
       fontWeight: 'bold' as 'bold',

@@ -63,9 +63,10 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
       } else if (!this.props.expanded) {
         items = (
           <div>
-            <div style={this.styles.circle} />
-            <div style={this.styles.circle} />
-            <div style={this.styles.circle} />
+            <span
+              className={'jp-Icon jp-MoreHorizIcon'}
+              style={this.styles.circles}
+            />
             <div>{this.props.comments[this.props.comments.length - 1]}</div>
           </div>
         );
@@ -88,13 +89,12 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
     commentBodyStyle: {
       padding: '0px'
     },
-    circle: {
-      width: '8px',
-      height: '8px',
-      background: '#C4C4C4',
-      borderRadius: '4px',
-      marginBottom: '8px',
-      marginLeft: '8px'
+    circles: {
+      minWidth: '28px',
+      minHeight: '28px',
+      backgroundSize: '28px',
+      padding: '8px',
+      transform: 'rotate(90deg)'
     }
   };
 }

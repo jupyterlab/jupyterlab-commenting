@@ -195,7 +195,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   styles = {
     upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    cardHeader: { marginBottom: '10px', background: 'white' },
+    cardHeader: { background: 'white' },
     resolveButton: { marginRight: '5px', marginTop: '5px' },
     nameArea: {
       paddingLeft: '5px',
@@ -208,7 +208,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       flexGrow: 1,
       height: '36px',
       width: '36px',
-      margin: '5px'
+      marginLeft: '5px',
+      marginTop: '5px',
+      borderRadius: '5px'
     },
     name: {
       fontSize: '12px',
@@ -224,8 +226,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       fontSize: '.8em',
-      paddingLeft: '5px',
-      paddingRight: '10px',
+      marginLeft: '5px',
+      marginRight: '10px',
+      marginTop: '5px',
+      marginBottom: '5px',
       lineHeight: 'normal'
     },
     contextExpanded: {
@@ -236,8 +240,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       textOverflow: 'ellipsis',
       fontSize: '.8em',
       lineHeight: 'normal',
-      paddingLeft: '5px',
-      paddingRight: '10px'
+      marginLeft: '5px',
+      marginRight: '10px',
+      marginTop: '5px',
+      marginBottom: '5px'
     },
     cornerButton: {
       display: 'flex',

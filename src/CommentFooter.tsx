@@ -93,17 +93,32 @@ export class CommentFooter extends React.Component<
     return (
       <div className={this.bsc.buttonArea} style={this.styles.footerArea}>
         <div>
-          {this.props.expanded &&
+          {(this.props.expanded &&
             this.props.replyActive && (
               <textarea
                 className={this.bsc.input}
-                style={this.styles.replyBox}
+                style={this.styles.replyBoxActive}
                 id={'commentBox'}
                 value={this.state.commentBox}
                 onChange={this.handleChangeCommentBox}
+                onBlurCapture={this.props.handleReplyClose}
                 onKeyPress={this.handleKeyPress}
+                placeholder="Reply..."
               />
-            )}
+            )) ||
+            (this.props.expanded &&
+              !this.props.replyActive && (
+                <textarea
+                  className={this.bsc.input}
+                  style={this.styles.replyBoxDisabled}
+                  id={'commentBox'}
+                  value={this.state.commentBox}
+                  onChange={this.handleChangeCommentBox}
+                  onKeyPress={this.handleKeyPress}
+                  onFocusCapture={this.props.handleReplyOpen}
+                  placeholder="Reply..."
+                />
+              ))}
         </div>
         <div>
           <div style={this.styles.buttonArea}>{this.getButtons()}</div>
@@ -118,42 +133,20 @@ export class CommentFooter extends React.Component<
    * @return Type: React.ReactNode - JSX with buttons
    */
   getButtons(): React.ReactNode {
-    if (this.props.expanded && this.props.replyActive && !this.props.resolved) {
+    if (this.props.expanded && this.props.replyActive) {
       return (
         <div>
           {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
       );
-    } else if (
-      this.props.expanded &&
-      !this.props.replyActive &&
-      !this.props.resolved
-    ) {
-      return <div>{this.getReplyAndExpandButton()}</div>;
-    } else if (
-      !this.props.expanded &&
-      !this.props.replyActive &&
-      !this.props.resolved
-    ) {
-      return <div>{this.getReplyAndExpandButton()}</div>;
-    } else if (
-      this.props.expanded &&
-      this.props.replyActive &&
-      this.props.resolved
-    ) {
+    } else if (this.props.expanded && !this.props.replyActive) {
       return (
         <div>
           {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
       );
-    } else if (
-      !this.props.expanded &&
-      this.props.replyActive &&
-      !this.props.resolved
-    ) {
-      return <div>{this.getReplyAndExpandButton()}</div>;
     }
   }
 
@@ -183,8 +176,8 @@ export class CommentFooter extends React.Component<
    */
   handleCommentButton(): void {
     this.props.getInput(this.state.commentBox);
-    this.setState({ commentBox: '' });
     this.props.handleReplyClose();
+    this.setState({ commentBox: '' });
   }
 
   /**
@@ -261,11 +254,15 @@ export class CommentFooter extends React.Component<
       marginRight: '5px',
       marginTop: '8px'
     },
-    replyBox: {
+    replyBoxActive: {
       width: '100%',
       height: '80px',
-      lineHeight: 'normal',
-      marginTop: '8px'
+      lineHeight: 'normal'
+    },
+    replyBoxDisabled: {
+      width: '100%',
+      height: '25px',
+      lineHeight: 'normal'
     }
   };
 }

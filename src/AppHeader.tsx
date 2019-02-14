@@ -63,7 +63,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   render() {
     return (
-      <div className="card border-0 py-1">
+      <div className="headerCard">
         <div style={this.styles.headercard}>
           <div>{this.getCornerButton()}</div>
           {this.renderAppHeader(this.props.header)}
@@ -315,9 +315,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      padding: '4px',
-      marginTop: '10px',
-      marginBottom: '10px'
+      padding: '8px'
     },
     headerLabel: {
       paddingLeft: '5px',
@@ -334,13 +332,13 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       display: 'flex',
       width: '16px',
       height: '16px',
-      marginTop: '21px'
+      marginTop: '15px'
     },
     newCommentButton: {
       display: 'flex',
       width: '20px',
       height: '20px',
-      marginTop: '21px'
+      marginTop: '15px'
     },
     placeholder: { width: '20px' }
   };

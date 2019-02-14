@@ -121,22 +121,25 @@ export class CommentCard extends React.Component<
   render() {
     return (
       <div
-        className="threadCard"
+        className={
+          this.props.checkExpandedCard(this.props.threadId)
+            ? 'threadCardDisabled'
+            : 'threadCard'
+        }
         style={this.styles.card}
-        onClick={this.expandAndReply}
+        onClick={
+          !this.props.checkExpandedCard(this.props.threadId) &&
+          this.expandAndReply
+        }
       >
-        <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
-          {this.getCommentHeader()}
-        </div>
-        <div className={this.bsc.cardBody} style={this.styles.cardBody}>
+        <div style={this.styles.cardHeading}>{this.getCommentHeader()}</div>
+        <div style={this.styles.cardBody}>
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         </div>
-        <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
-          {this.getCommentFooter()}
-        </div>
+        <div style={this.styles.cardFooter}>{this.getCommentFooter()}</div>
       </div>
     );
   }
@@ -271,53 +274,48 @@ export class CommentCard extends React.Component<
    * @return React.ReactNode: CommentFooter ReactNode / Component
    */
   getCommentFooter(): React.ReactNode {
-    return (
-      <CommentFooter
-        expanded={this.props.checkExpandedCard(this.props.threadId)}
-        replyActive={this.props.checkReplyActiveCard(this.props.threadId)}
-        resolved={this.props.resolved}
-        handleReplyOpen={this.handleReplyOpen}
-        handleReplyClose={this.handleReplyClose}
-        expandAndReply={this.expandAndReply}
-        getInput={this.getInput}
-        handleResolve={this.handleResolve}
-      />
-    );
+    if (this.props.checkExpandedCard(this.props.threadId)) {
+      return (
+        <CommentFooter
+          expanded={this.props.checkExpandedCard(this.props.threadId)}
+          replyActive={this.props.checkReplyActiveCard(this.props.threadId)}
+          resolved={this.props.resolved}
+          handleReplyOpen={this.handleReplyOpen}
+          handleReplyClose={this.handleReplyClose}
+          expandAndReply={this.expandAndReply}
+          getInput={this.getInput}
+          handleResolve={this.handleResolve}
+        />
+      );
+    }
   }
-
-  /**
-   * Bootstrap style classNames
-   */
-  bsc = {
-    card: 'card',
-    cardHeader: 'card-header border-bottom-0',
-    cardBody: 'card-body border-bottom-0',
-    cardFooter: 'card-footer border-top-0'
-  };
 
   /**
    * CSS styles
    */
   styles = {
     card: {
+      marginTop: '5px',
       marginBottom: '5px',
       background: 'white'
     },
     cardHeading: {
-      padding: '0px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginBottom: '-8px'
+      borderBottom: '0px'
     },
     cardBody: {
-      padding: '0px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginBottom: '-15px'
+      borderBottom: '0px'
     },
     cardFooter: {
-      padding: '0px',
-      paddingBottom: '5px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginTop: '10px'
+      borderBottom: '0px'
     }
   };
 }

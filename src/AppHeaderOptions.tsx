@@ -65,7 +65,7 @@ export class AppHeaderOptions extends React.Component<
       this.state.isOpen ? ' show' : ''
     }`;
     return (
-      <div className="card border-left-0 border-right-0">
+      <div className="headerOptionsCard">
         <div style={this.styles.optionBar}>
           {this.renderCheckbox()}
           <div style={this.styles.divider} />
@@ -206,7 +206,6 @@ export class AppHeaderOptions extends React.Component<
   styles = {
     optionBar: {
       height: '28px',
-      borderRadius: 0,
       display: 'flex',
       flexDirection: 'row' as 'row',
       justifyContent: 'space-around'
