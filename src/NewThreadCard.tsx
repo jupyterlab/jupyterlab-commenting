@@ -46,6 +46,7 @@ export class NewThreadCard extends React.Component<
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.createNewThread = this.createNewThread.bind(this);
+    this.cancelThread = this.cancelThread.bind(this);
   }
 
   /**
@@ -63,15 +64,36 @@ export class NewThreadCard extends React.Component<
           onChange={this.handleChangeCommentBox}
           onKeyPress={this.handleKeyPress}
         />
-        <button
-          className="commentCommentButton commentFooterRightButton float-right"
-          type="button"
-          onClick={this.createNewThread}
-          disabled={this.state.inputBox === ''}
-        >
-          Comment
-        </button>
+        <div style={this.styles.buttons}>
+          {this.getCommentButton()}
+          {this.getCancelButton()}
+        </div>
       </div>
+    );
+  }
+
+  getCommentButton(): React.ReactNode {
+    return (
+      <button
+        className={'commentCommentButton commentFooterRightButton float-right'}
+        type="button"
+        onClick={this.createNewThread}
+        disabled={this.state.inputBox.trim() === ''}
+      >
+        Comment
+      </button>
+    );
+  }
+
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        className="commentCancelButton commentFooterLeftButton float-right"
+        type="button"
+        onClick={this.cancelThread}
+      >
+        Cancel
+      </button>
     );
   }
 
@@ -88,6 +110,11 @@ export class NewThreadCard extends React.Component<
   createNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
+  }
+
+  cancelThread(): void {
+    this.setState({ inputBox: '' });
+    this.props.setNewThreadActive(false);
   }
 
   /**
@@ -129,6 +156,10 @@ export class NewThreadCard extends React.Component<
       marginTop: '6px',
       marginBottom: '6px',
       marginLeft: '3px'
+    },
+    buttons: {
+      marginTop: '5px',
+      marginRight: '10px'
     }
   };
 }

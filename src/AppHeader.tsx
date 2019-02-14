@@ -169,10 +169,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       !this.props.threadOpen
     ) {
       return this.getNewThreadButton();
-    } else if (
-      (this.props.cardExpanded || this.props.threadOpen) &&
-      this.props.header !== undefined
-    ) {
+    } else if (this.props.cardExpanded && this.props.header !== undefined) {
       return this.getBackButton();
     } else {
       return;
@@ -227,7 +224,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   setShrink(): void {
     this.props.setExpandedCard(' ');
-    this.props.setNewThreadActive(false);
   }
 
   /**
