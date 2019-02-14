@@ -34,6 +34,7 @@
   margin-right: -5px;
 }
 
+
 .commentFooterRightButton:active {
   background-color: #BDBDBD;
   outline: 0px;
@@ -53,6 +54,13 @@
   color: #2196F3;
   outline: 0px;
 }
+
+.commentCommentButton:disabled {
+  background: white;
+  color: #E0E0E0;
+  outline: 0px;
+}
+
 
 .commentCommentButton:hover {
   background: #E0E0E0;
@@ -78,4 +86,20 @@
 .commentCancelButton:active {
   background: #BDBDBD;
   outline: 0px;
+}
+
+.threadCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+  padding: 1px;
+  border: 1px solid #E0E0E0;
+  box-sizing: border-box;
+  box-shadow: 1px 1px rgba(82, 82, 82, 0.616))
+}
+
+.threadCard:hover {
+  box-shadow: 0 0 0 2px rgba(0, 119, 255, 0.74);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  box-sizing: border-box;
 }

@@ -64,11 +64,10 @@ export class NewThreadCard extends React.Component<
           onKeyPress={this.handleKeyPress}
         />
         <button
-          className={
-            'commentCommentButton commentFooterRightButton float-right'
-          }
+          className="commentCommentButton commentFooterRightButton float-right"
           type="button"
           onClick={this.createNewThread}
+          disabled={this.state.inputBox === ''}
         >
           Comment
         </button>

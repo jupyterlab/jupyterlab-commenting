@@ -120,7 +120,11 @@ export class CommentCard extends React.Component<
    */
   render() {
     return (
-      <div className={this.bsc.card} style={this.styles.card}>
+      <div
+        className="threadCard"
+        style={this.styles.card}
+        onClick={this.expandAndReply}
+      >
         <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
           {this.getCommentHeader()}
         </div>

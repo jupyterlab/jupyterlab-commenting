@@ -30,13 +30,13 @@
       "path": "../apputils"
     },
     {
+      "path": "../databus"
+    },
+    {
       "path": "../docregistry"
     },
     {
       "path": "../frontend"
-    },
-    {
-      "path": "../databus"
     }
   ]
 }
