@@ -123,8 +123,8 @@ export class NewThreadCard extends React.Component<
    * @param e Type: ? - keyboard event
    */
   handleKeyPress(e: any): void {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      // this.createNewThread();
+    if (this.state.inputBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
+      this.createNewThread();
     }
   }
 

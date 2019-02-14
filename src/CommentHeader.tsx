@@ -64,6 +64,7 @@ interface ICommentHeaderProps {
    * @type: void function
    */
   handleResolve: VoidFunction;
+  hover: boolean;
 }
 
 /**
@@ -103,11 +104,15 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
               )}
             </div>
           </div>
-          <div>
-            {!this.props.resolved
-              ? this.getResolveButton()
-              : this.getReopenButton()}
-          </div>
+          {this.props.hover ? (
+            <div>
+              {!this.props.resolved
+                ? this.getResolveButton()
+                : this.getReopenButton()}
+            </div>
+          ) : (
+            <div />
+          )}
         </div>
         <p
           style={

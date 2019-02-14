@@ -87,7 +87,9 @@ interface ICommentCardProps {
 /**
  * React States interface
  */
-interface ICommentCardStates {}
+interface ICommentCardStates {
+  hover: boolean;
+}
 
 /**
  * CommentCard React Component
@@ -103,7 +105,7 @@ export class CommentCard extends React.Component<
    */
   constructor(props: ICommentCardProps) {
     super(props);
-    this.state = {};
+    this.state = { hover: false };
 
     // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
@@ -113,6 +115,8 @@ export class CommentCard extends React.Component<
     this.expandAndReply = this.expandAndReply.bind(this);
     this.getInput = this.getInput.bind(this);
     this.handleResolve = this.handleResolve.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
   }
 
   /**
@@ -132,6 +136,8 @@ export class CommentCard extends React.Component<
             ? this.expandAndReply
             : undefined
         }
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
       >
         <div style={this.styles.cardHeading}>{this.getCommentHeader()}</div>
         <div style={this.styles.cardBody}>
@@ -145,6 +151,13 @@ export class CommentCard extends React.Component<
     );
   }
 
+  handleMouseEnter(e: any): void {
+    this.setState({ hover: true });
+  }
+
+  handleMouseLeave(e: any): void {
+    this.setState({ hover: false });
+  }
   /**
    * Handle a CommentCard expanding
    */
@@ -264,6 +277,7 @@ export class CommentCard extends React.Component<
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
         handleResolve={this.handleResolve}
+        hover={this.state.hover}
       />
     );
   }
