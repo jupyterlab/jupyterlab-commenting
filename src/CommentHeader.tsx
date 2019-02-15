@@ -94,15 +94,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             <h1 style={this.styles.name}>{this.props.name}</h1>
             <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
           </div>
-          {this.props.hover ? (
-            <div>
-              {!this.props.resolved
-                ? this.getResolveButton()
-                : this.getReopenButton()}
-            </div>
-          ) : (
-            <div />
-          )}
+          {this.shouldRenderCornerButtons()}
         </div>
         <p
           style={
@@ -146,6 +138,28 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         Re-open
       </button>
     );
+  }
+
+  shouldRenderCornerButtons(): React.ReactNode {
+    if (this.props.hover && !this.props.expanded) {
+      return (
+        <div>
+          {!this.props.resolved
+            ? this.getResolveButton()
+            : this.getReopenButton()}
+        </div>
+      );
+    } else if (this.props.expanded) {
+      return (
+        <div>
+          {!this.props.resolved
+            ? this.getResolveButton()
+            : this.getReopenButton()}
+        </div>
+      );
+    } else {
+      return;
+    }
   }
 
   timeStampStyle(): string {
