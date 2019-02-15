@@ -188,7 +188,11 @@ export class CommentFooter extends React.Component<
    * @param e Type: ? - keyboard event
    */
   handleKeyPress(e: any): void {
-    if (this.state.commentBox.trim() !== '' && e.key === 'Enter') {
+    if (
+      this.state.commentBox.trim() !== '' &&
+      e.key === 'Enter' &&
+      !e.shiftKey
+    ) {
       this.handleCommentButton();
       document.getElementById('commentBox').blur();
     }

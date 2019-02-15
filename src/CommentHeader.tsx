@@ -97,10 +97,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
           {this.shouldRenderCornerButtons()}
         </div>
         <p
-          style={
-            this.props.expanded
-              ? this.styles.contextExpanded
-              : this.styles.contextNotExpanded
+          className={
+            this.props.expanded ? 'textFieldExpanded' : 'textFieldNotExpanded'
           }
         >
           {this.props.context}
