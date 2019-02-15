@@ -25,6 +25,7 @@ interface IAppHeaderOptionsProps {
    */
   cardExpanded: boolean;
   header: string;
+  hasThreads: boolean;
 }
 
 /**
@@ -87,7 +88,9 @@ export class AppHeaderOptions extends React.Component<
         <label
           htmlFor="controls"
           style={
-            this.props.cardExpanded || this.props.header === undefined
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
               ? this.styles.checkboxLabelDisabled
               : this.styles.checkboxLabelEnabled
           }
@@ -99,7 +102,12 @@ export class AppHeaderOptions extends React.Component<
           type="checkbox"
           id="controls"
           onClick={this.toggleResolved}
-          disabled={this.props.cardExpanded || this.props.header === undefined}
+          disabled={
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
+          }
+          style={{ marginBottom: '6px', marginTop: '5px' }}
         />
       </div>
     );
@@ -110,7 +118,9 @@ export class AppHeaderOptions extends React.Component<
       <div style={this.styles.dropdownBox}>
         <label
           style={
-            this.props.cardExpanded || this.props.header === undefined
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
               ? this.styles.dropdownLabelDisabled
               : this.styles.dropdownLabelEnabled
           }
@@ -127,7 +137,9 @@ export class AppHeaderOptions extends React.Component<
             }
             data-toggle="dropdown"
             disabled={
-              this.props.cardExpanded || this.props.header === undefined
+              this.props.cardExpanded ||
+              this.props.header === undefined ||
+              !this.props.hasThreads
             }
           />
         </div>
@@ -244,12 +256,11 @@ export class AppHeaderOptions extends React.Component<
       marginLeft: '5px'
     },
     checkbox: {
-      height: '27px',
+      height: '28px',
       display: 'flex',
       flexDirection: 'row' as 'row'
     },
     checkboxLabelEnabled: {
-      marginBottom: '0px',
       paddingRight: '4px',
       paddingTop: '3px',
       fontSize: '13px',

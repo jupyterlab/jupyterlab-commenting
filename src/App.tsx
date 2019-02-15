@@ -81,6 +81,7 @@ interface IAppStates {
    * @type boolean
    */
   shouldQuery: boolean;
+  curThreadHasCards: boolean;
 }
 
 /**
@@ -133,7 +134,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       shouldQuery: true,
       creator: {},
       myThreads: [],
-      response: { data: { annotationsByTarget: { length: 0 } } }
+      response: { data: { annotationsByTarget: { length: 0 } } },
+      curThreadHasCards: false
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -182,13 +184,15 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                   response.data.annotationsByTarget
                 ),
                 response: response,
-                shouldQuery: false
+                shouldQuery: false,
+                curThreadHasCards: true
               });
             } else {
               this.state.myThreads.length !== 0 &&
                 this.setState({
                   myThreads: [],
-                  shouldQuery: false
+                  shouldQuery: false,
+                  curThreadHasCards: false
                 });
             }
           });
@@ -199,7 +203,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       this.state.myThreads.length !== 0 &&
         this.setState({
           myThreads: [],
-          shouldQuery: false
+          shouldQuery: false,
+          curThreadHasCards: false
         });
     }
   }
@@ -222,6 +227,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               showResolvedState={this.showResolvedState}
               cardExpanded={this.state.expandedCard !== ' '}
               header={this.props.targetName}
+              hasThreads={this.state.curThreadHasCards}
             />
           }
         />
@@ -257,7 +263,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     for (let key in allData) {
       if (
         this.shouldRenderCard(
-          false,
+          allData[key].resolved,
           this.state.expandedCard !== ' ',
           this.state.expandedCard === allData[key].id
         )
@@ -278,7 +284,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         );
       }
     }
-    return cards;
+    return cards.reverse();
   }
 
   /**

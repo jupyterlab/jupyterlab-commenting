@@ -89,6 +89,7 @@ interface ICommentCardProps {
  */
 interface ICommentCardStates {
   hover: boolean;
+  shouldExpand: boolean;
 }
 
 /**
@@ -105,7 +106,7 @@ export class CommentCard extends React.Component<
    */
   constructor(props: ICommentCardProps) {
     super(props);
-    this.state = { hover: false };
+    this.state = { hover: false, shouldExpand: true };
 
     // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
@@ -117,6 +118,7 @@ export class CommentCard extends React.Component<
     this.handleResolve = this.handleResolve.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleShouldExpand = this.handleShouldExpand.bind(this);
   }
 
   /**
@@ -135,10 +137,12 @@ export class CommentCard extends React.Component<
         }
         onClick={
           !this.props.checkExpandedCard(this.props.threadId)
-            ? this.handleExpand
+            ? this.state.shouldExpand
+              ? this.handleExpand
+              : undefined
             : undefined
         }
-        onMouseEnter={this.handleMouseEnter}
+        onMouseMoveCapture={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
         <div style={this.styles.cardHeading}>{this.getCommentHeader()}</div>
@@ -160,6 +164,11 @@ export class CommentCard extends React.Component<
   handleMouseLeave(e: any): void {
     this.setState({ hover: false });
   }
+
+  handleShouldExpand(state: boolean) {
+    this.setState({ shouldExpand: state });
+  }
+
   /**
    * Handle a CommentCard expanding
    */
@@ -278,6 +287,7 @@ export class CommentCard extends React.Component<
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
         handleResolve={this.handleResolve}
+        handleShouldExpand={this.handleShouldExpand}
         hover={this.state.hover}
       />
     );
@@ -290,7 +300,10 @@ export class CommentCard extends React.Component<
    * @return React.ReactNode: CommentFooter ReactNode / Component
    */
   getCommentFooter(): React.ReactNode {
-    if (this.props.checkExpandedCard(this.props.threadId)) {
+    if (
+      this.props.checkExpandedCard(this.props.threadId) &&
+      !this.props.resolved
+    ) {
       return (
         <CommentFooter
           expanded={this.props.checkExpandedCard(this.props.threadId)}

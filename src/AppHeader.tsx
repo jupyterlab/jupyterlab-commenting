@@ -99,7 +99,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           {this.getFileIcon(this.props.header)}
           <span
             style={this.styles.headerLabel}
-            className={'jp-DirListing-itemText'}
+            className={'--jp-ui-font-size1'}
           >
             {this.props.header}
           </span>
@@ -133,12 +133,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           }
         }
       }
-      return (
-        <span
-          className={'jp-Icon jp-FileIcon'}
-          style={this.styles.headerIcon}
-        />
-      );
+      return <span className={'jp-FileIcon'} style={this.styles.headerIcon} />;
     } catch {
       return <span />;
     }
@@ -309,23 +304,23 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     emptyHeader: {
       background: 'white',
       color: '#4F4F4F',
-      marginTop: '20px',
-      marginBottom: '20px'
+      marginTop: '15px',
+      marginBottom: '15px'
     },
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      padding: '8px'
+      paddingTop: '13px',
+      paddingBottom: '14px'
     },
     headerLabel: {
       paddingLeft: '5px',
-      fontSize: '24px',
       textAlign: 'left' as 'left'
     },
     headerIcon: {
-      minWidth: '28px',
-      minHeight: '28px',
-      backgroundSize: '28px',
+      minWidth: '24px',
+      minHeight: '24px',
+      backgroundSize: '24px',
       padding: '8px'
     },
     backButton: {

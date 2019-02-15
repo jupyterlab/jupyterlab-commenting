@@ -65,6 +65,7 @@ interface ICommentHeaderProps {
    */
   handleResolve: VoidFunction;
   hover: boolean;
+  handleShouldExpand: (state: boolean) => void;
 }
 
 /**
@@ -119,6 +120,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
       >
         Resolve
       </button>
@@ -132,6 +135,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
       >
         Re-open
       </button>
