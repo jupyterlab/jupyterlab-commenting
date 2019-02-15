@@ -166,6 +166,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           !this.state.shouldQuery
         ) {
           this.setState({ shouldQuery: true });
+          this.setState({ expandedCard: ' ' });
         }
       }
     }
