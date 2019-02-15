@@ -356,13 +356,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param key Type: string - key of value to set
    * @param value Type: string - value to set
    */
-  setCardValue(
-    target: string,
-    threadId: string,
-    key: string,
-    value: any
-  ): void {
-    this.props.commentsService.setCardValue(target, threadId, key, value);
+  setCardValue(target: string, threadId: string, value: boolean): void {
+    this.props.commentsService.setResolvedValue(target, threadId, value);
   }
 
   /**

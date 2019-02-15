@@ -70,7 +70,7 @@ interface ICommentCardProps {
    *
    * @type void function
    */
-  setCardValue(itemId: string, cardId: string, key: string, value: any): void;
+  setCardValue(target: string, threadId: string, value: boolean): void;
   /**
    * Pushed comment back to MetadataCommentsService
    *
@@ -221,7 +221,6 @@ export class CommentCard extends React.Component<
     this.props.setCardValue(
       this.props.target,
       this.props.threadId,
-      'resolved',
       !this.props.resolved
     );
 
