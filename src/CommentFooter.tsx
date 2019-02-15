@@ -100,9 +100,12 @@ export class CommentFooter extends React.Component<
                 className={this.bsc.input}
                 style={this.styles.replyBoxActive}
                 id={'commentBox'}
-                value={this.state.commentBox}
+                value={
+                  this.state.commentBox.trim() === ''
+                    ? this.state.commentBox.trim()
+                    : this.state.commentBox
+                }
                 onChange={this.handleChangeCommentBox}
-                onBlurCapture={this.props.handleReplyClose}
                 onKeyPress={this.handleKeyPress}
                 placeholder="Reply..."
               />
@@ -113,7 +116,7 @@ export class CommentFooter extends React.Component<
                   className={this.bsc.input}
                   style={this.styles.replyBoxDisabled}
                   id={'commentBox'}
-                  value={this.state.commentBox}
+                  value={this.state.commentBox.trim()}
                   onChange={this.handleChangeCommentBox}
                   onKeyPress={this.handleKeyPress}
                   onFocusCapture={this.props.handleReplyOpen}
@@ -185,8 +188,9 @@ export class CommentFooter extends React.Component<
    * @param e Type: ? - keyboard event
    */
   handleKeyPress(e: any): void {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (this.state.commentBox.trim() !== '' && e.key === 'Enter') {
       this.handleCommentButton();
+      document.getElementById('commentBox').blur();
     }
   }
 
@@ -206,6 +210,7 @@ export class CommentFooter extends React.Component<
   handleCommentButton(): void {
     this.props.getInput(this.state.commentBox);
     this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
   }
 
   handleCancelButton(): void {
