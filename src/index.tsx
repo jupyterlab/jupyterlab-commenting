@@ -14,7 +14,12 @@ import { UseSignal } from '@jupyterlab/apputils';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
-import { IActiveDataset } from '@jupyterlab/databus';
+import {
+  IActiveDataset,
+  IConverterRegistry,
+  singleConverter,
+  createViewerMimeType
+} from '@jupyterlab/databus';
 
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
@@ -30,7 +35,8 @@ function activate(
   activeDataset: IActiveDataset,
   labShell: ILabShell,
   comments: IMetadataCommentsService,
-  people: IMetadataPeopleService
+  people: IMetadataPeopleService,
+  converters: IConverterRegistry
 ) {
   const widget = ReactWidget.create(
     <UseSignal signal={activeDataset.signal}>
@@ -61,6 +67,15 @@ function activate(
   widget.title.iconClass = 'jp-ChatIcon jp-SideBar-tabIcon';
   widget.title.caption = 'Commenting';
   labShell.add(widget, 'right');
+
+  converters.register(
+    singleConverter((mimeType: string, url: URL) => {
+      return [
+        createViewerMimeType('Comments'),
+        async () => async () => app.shell.activateById(widget.id)
+      ];
+    })
+  );
 }
 
 /**
@@ -74,7 +89,8 @@ const extension: JupyterFrontEndPlugin<void> = {
     IActiveDataset,
     ILabShell,
     IMetadataCommentsService,
-    IMetadataPeopleService
+    IMetadataPeopleService,
+    IConverterRegistry
   ]
 };
 
