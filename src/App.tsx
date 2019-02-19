@@ -112,6 +112,8 @@ interface IAppProps {
   targetName: string;
 }
 
+let periodicUpdate: number;
+
 /**
  * Main App React Component
  */
@@ -151,15 +153,19 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
     this.shouldQuery = this.shouldQuery.bind(this);
-
-    setInterval(this.shouldQuery, 1000);
   }
 
+  componentWillMount() {
+    periodicUpdate = setInterval(this.shouldQuery, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(periodicUpdate);
+  }
   /**
    * Called each time the component updates
    */
   componentDidUpdate(): void {
-    // console.log('update');
     if (this.state.response.data.annotationsByTarget !== undefined) {
       if (this.state.response.data.annotationsByTarget.length !== 0) {
         if (
