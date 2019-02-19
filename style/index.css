@@ -1,3 +1,35 @@
+.headerCheckboxLabelEnabled {
+  display: -webkit-flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 4px;
+  padding-left: 4px;
+  font-size: 13px;
+  color: black;
+  text-align: right;
+  margin-bottom: 0px;
+  height: 18px;
+}
+
+.headerCheckboxLabelDisabled {
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 4px;
+  padding-left: 4px;
+  font-size: 13px;
+  color: #e0e0e0;
+  text-align: right;
+  margin-bottom: 0px;
+  height: 18px;
+}
+
+.headerCheckbox {
+  align-self: center;
+}
+
 .commentFooterLeftButton {
   background: #e0e0e0;
   color: black;

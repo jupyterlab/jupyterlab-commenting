@@ -45,7 +45,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
   render() {
     return (
       <div className="card" style={this.styles.card}>
-        <label>Enter Github Username</label>
+        <label style={this.styles.label}>Enter GitHub Username</label>
         <input
           type="text"
           className="form-control form-control-sm"
@@ -57,6 +57,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
         <div style={{ float: 'right' }}>
           <button
             className={'commentCommentButton commentFooterRightButton'}
+            style={{ marginLeft: '0px' }}
             type="button"
             onClick={this.handleSubmit}
           >
@@ -107,9 +108,18 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   styles = {
     card: {
-      padding: '5px'
+      paddinTop: '8px',
+      paddingBottom: '4px',
+      paddingLeft: '12px',
+      paddingRight: '12px'
     },
     field: {
+      marginBottom: '5px',
+      paddingLeft: '12px',
+      paddingRight: '12px'
+    },
+    label: {
+      paddingTop: '5px',
       marginBottom: '5px'
     }
   };

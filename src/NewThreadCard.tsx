@@ -60,7 +60,11 @@ export class NewThreadCard extends React.Component<
           className={this.bsc.input}
           style={this.styles.inputBox}
           id={'commentBox'}
-          value={this.state.inputBox}
+          value={
+            this.state.inputBox.trim() === ''
+              ? this.state.inputBox.trim()
+              : this.state.inputBox
+          }
           onChange={this.handleChangeCommentBox}
           onKeyPress={this.handleKeyPress}
         />

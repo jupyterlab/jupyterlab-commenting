@@ -195,12 +195,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   getNewThreadButton(): React.ReactNode {
     return (
-      <input
-        type="image"
-        style={this.styles.newCommentButton}
-        src={
-          'https://material.io/tools/icons/static/icons/baseline-add-24px.svg'
+      <span
+        className={
+          'jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
         }
+        style={this.styles.newCommentButton}
         onClick={this.handleNewThreadButton}
       />
     );
@@ -310,30 +309,27 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      paddingTop: '13px',
-      paddingBottom: '14px'
+      paddingTop: '4px',
+      paddingBottom: '30px'
     },
-    headerLabel: {
-      paddingLeft: '5px',
-      textAlign: 'left' as 'left'
-    },
+    headerLabel: { paddingLeft: '5px', textAlign: 'left' as 'left' },
     headerIcon: {
-      minWidth: '24px',
-      minHeight: '24px',
-      backgroundSize: '24px',
+      minWidth: '18px',
+      minHeight: '18px',
+      backgroundSize: '18px',
       padding: '8px'
     },
     backButton: {
       display: 'flex',
-      width: '16px',
-      height: '16px',
-      marginTop: '15px'
+      width: '12px',
+      height: '12px',
+      marginTop: '11px'
     },
     newCommentButton: {
       display: 'flex',
       width: '20px',
       height: '20px',
-      marginTop: '15px'
+      marginTop: '7px'
     },
     placeholder: { width: '20px' }
   };
