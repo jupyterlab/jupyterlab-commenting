@@ -12,11 +12,16 @@ import { ReactWidget } from '@jupyterlab/apputils';
 
 import { UseSignal } from '@jupyterlab/apputils';
 
-import { FocusTracker, Widget } from '@phosphor/widgets';
-
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
-import { DocumentWidget } from '@jupyterlab/docregistry';
+import {
+  IActiveDataset,
+  IConverterRegistry,
+  singleConverter,
+  createViewerMimeType
+} from '@jupyterlab/databus';
+
+import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 import App from './App';
 
@@ -27,24 +32,29 @@ import 'bootstrap/dist/css/bootstrap.css';
  */
 function activate(
   app: JupyterFrontEnd,
+  activeDataset: IActiveDataset,
   labShell: ILabShell,
-  comments: IMetadataCommentsService
+  comments: IMetadataCommentsService,
+  people: IMetadataPeopleService,
+  converters: IConverterRegistry
 ) {
   const widget = ReactWidget.create(
-    <UseSignal signal={labShell.currentChanged}>
-      {(sender: ILabShell, args: FocusTracker.IChangedArgs<Widget>) => {
+    <UseSignal signal={activeDataset.signal}>
+      {(sender, args) => {
         try {
           return (
             <App
               commentsService={comments}
-              target={args && getPath(args.newValue)}
-              targetName={args && getName(args.newValue)}
+              peopleService={people}
+              target={activeDataset.active.pathname}
+              targetName={activeDataset.active.pathname.split('/').pop()}
             />
           );
         } catch {
           return (
             <App
               commentsService={comments}
+              peopleService={people}
               target={undefined}
               targetName={undefined}
             />
@@ -57,22 +67,15 @@ function activate(
   widget.title.iconClass = 'jp-ChatIcon jp-SideBar-tabIcon';
   widget.title.caption = 'Commenting';
   labShell.add(widget, 'right');
-}
 
-function getName(widget: Widget): string | undefined {
-  if (isDocumentWidget(widget)) {
-    return widget.context.session.name;
-  }
-}
-
-function getPath(widget: Widget): string | undefined {
-  if (isDocumentWidget(widget)) {
-    return widget.context.session.path;
-  }
-}
-
-function isDocumentWidget(widget: Widget): widget is DocumentWidget {
-  return (widget as DocumentWidget).context !== undefined;
+  converters.register(
+    singleConverter((mimeType: string, url: URL) => {
+      return [
+        createViewerMimeType('Comments'),
+        async () => async () => app.shell.activateById(widget.id)
+      ];
+    })
+  );
 }
 
 /**
@@ -82,7 +85,13 @@ const extension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting',
   autoStart: true,
   activate: activate,
-  requires: [ILabShell, IMetadataCommentsService]
+  requires: [
+    IActiveDataset,
+    ILabShell,
+    IMetadataCommentsService,
+    IMetadataPeopleService,
+    IConverterRegistry
+  ]
 };
 
 export default extension;

@@ -109,10 +109,7 @@ export class Comment extends React.Component<ICommentProps> {
    * CSS Styles
    */
   styles = {
-    upperComment: {
-      display: 'flex',
-      flexDirection: 'row' as 'row'
-    },
+    upperComment: { display: 'flex', flexDirection: 'row' as 'row' },
     commentHeader: { marginBottom: '10px' },
     nameArea: {
       paddingLeft: '5px',
@@ -120,11 +117,18 @@ export class Comment extends React.Component<ICommentProps> {
       flexDirection: 'column' as 'column'
     },
     commentStyle: { marginBottom: '0px' },
-    photo: { height: '2em', width: '2em', marginLeft: '6px' },
+    photo: {
+      height: '2em',
+      width: '2em',
+      marginLeft: '6px',
+      marginTop: '5px',
+      borderRadius: '5px'
+    },
     name: {
       fontSize: '12px',
       fontWeight: 'bold' as 'bold',
-      marginBottom: '1px'
+      marginBottom: '4px',
+      marginTop: '8px'
     },
     timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
     contextNotExpanded: {

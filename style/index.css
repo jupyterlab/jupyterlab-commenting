@@ -1,5 +1,37 @@
+.headerCheckboxLabelEnabled {
+  display: -webkit-flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 4px;
+  padding-left: 4px;
+  font-size: 13px;
+  color: black;
+  text-align: right;
+  margin-bottom: 0px;
+  height: 18px;
+}
+
+.headerCheckboxLabelDisabled {
+  display: flex;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 4px;
+  padding-left: 4px;
+  font-size: 13px;
+  color: #e0e0e0;
+  text-align: right;
+  margin-bottom: 0px;
+  height: 18px;
+}
+
+.headerCheckbox {
+  align-self: center;
+}
+
 .commentFooterLeftButton {
-  background: #E0E0E0;
+  background: #e0e0e0;
   color: black;
   border-radius: 2px;
   box-shadow: none;
@@ -10,12 +42,12 @@
 }
 
 .commentFooterLeftButton:active {
-  background-color: #BDBDBD;
+  background-color: #bdbdbd;
   outline: 0px;
 }
 
 .commentFooterLeftButton:hover {
-  background-color: #BDBDBD;
+  background-color: #bdbdbd;
   outline: 0px;
 }
 
@@ -24,7 +56,7 @@
 }
 
 .commentFooterRightButton {
-  background: #E0E0E0;
+  background: #e0e0e0;
   color: black;
   border-radius: 2px;
   border: none;
@@ -35,12 +67,12 @@
 }
 
 .commentFooterRightButton:active {
-  background-color: #BDBDBD;
+  background-color: #bdbdbd;
   outline: 0px;
 }
 
 .commentFooterRightButton:hover {
-  background-color: #BDBDBD;
+  background-color: #bdbdbd;
   outline: 0px;
 }
 
@@ -50,32 +82,135 @@
 
 .commentCommentButton {
   background: white;
-  color: #2196F3;
+  color: #2196f3;
+  outline: 0px;
+}
+
+.commentCommentButton:disabled {
+  background: white;
+  color: #e0e0e0;
+  outline: 0px;
+}
+
+.commentCommentButton:disabled:hover {
+  background: white;
+  color: #e0e0e0;
   outline: 0px;
 }
 
 .commentCommentButton:hover {
-  background: #E0E0E0;
+  background: #e0e0e0;
   outline: 0px;
 }
 
 .commentCommentButton:active {
-  background: #BDBDBD;
+  background: #bdbdbd;
+  outline: 0px;
+}
+
+.commentReopenButton {
+  background: 'white';
+  color: #2196f3;
+  outline: 0px;
+}
+
+.commentReopenButton:hover {
+  background: #e0e0e0;
+  outline: 0px;
+}
+
+.commentResolveButton {
+  background: white;
+  color: #2196f3;
+  outline: 0px;
+}
+
+.commentResolveButton:hover {
+  background: #e0e0e0;
   outline: 0px;
 }
 
 .commentCancelButton {
   background: white;
-  color: #E57373;
+  color: #e57373;
   outline: 0px;
 }
 
 .commentCancelButton:hover {
-  background: #E0E0E0;
+  background: #e0e0e0;
   outline: 0px;
 }
 
 .commentCancelButton:active {
-  background: #BDBDBD;
+  background: #bdbdbd;
   outline: 0px;
+}
+
+.headerOptionsCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1px;
+  border-top: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+.headerCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1px;
+  border-bottom: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+.threadCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  padding: 1px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.threadCardDisabled {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  padding: 1px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.threadCard:hover {
+  box-shadow: var(--jp-elevation-z6);
+}
+
+.textFieldExpanded {
+  display: flex;
+  max-height: 100%;
+  max-width: 350px;
+  font-size: 0.8em;
+  line-height: normal;
+  margin-left: 5px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.textFieldNotExpanded {
+  display: flex;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  max-width: 350px;
+  max-height: 30px;
+
+  font-size: 0.8em;
+  line-height: normal;
+
+  margin-left: 5px;
+  margin-right: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

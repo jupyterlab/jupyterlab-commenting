@@ -70,7 +70,7 @@ interface ICommentCardProps {
    *
    * @type void function
    */
-  setCardValue(itemId: string, cardId: string, key: string, value: any): void;
+  setCardValue(target: string, threadId: string, value: boolean): void;
   /**
    * Pushed comment back to MetadataCommentsService
    *
@@ -87,7 +87,10 @@ interface ICommentCardProps {
 /**
  * React States interface
  */
-interface ICommentCardStates {}
+interface ICommentCardStates {
+  hover: boolean;
+  shouldExpand: boolean;
+}
 
 /**
  * CommentCard React Component
@@ -103,7 +106,7 @@ export class CommentCard extends React.Component<
    */
   constructor(props: ICommentCardProps) {
     super(props);
-    this.state = {};
+    this.state = { hover: false, shouldExpand: true };
 
     // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
@@ -113,6 +116,9 @@ export class CommentCard extends React.Component<
     this.expandAndReply = this.expandAndReply.bind(this);
     this.getInput = this.getInput.bind(this);
     this.handleResolve = this.handleResolve.bind(this);
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
+    this.handleShouldExpand = this.handleShouldExpand.bind(this);
   }
 
   /**
@@ -120,21 +126,61 @@ export class CommentCard extends React.Component<
    */
   render() {
     return (
-      <div className={this.bsc.card} style={this.styles.card}>
-        <div className={this.bsc.cardHeader} style={this.styles.cardHeading}>
+      <div
+        className={
+          this.props.checkExpandedCard(this.props.threadId)
+            ? 'threadCardDisabled'
+            : 'threadCard'
+        }
+        style={
+          this.props.resolved ? this.styles.resolvedCard : this.styles.card
+        }
+        onClick={
+          !this.props.checkExpandedCard(this.props.threadId)
+            ? this.state.shouldExpand
+              ? this.handleExpand
+              : undefined
+            : undefined
+        }
+        onMouseMoveCapture={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+      >
+        <div
+          style={
+            this.props.resolved
+              ? this.styles.resolvedCardHeading
+              : this.styles.cardHeading
+          }
+        >
           {this.getCommentHeader()}
         </div>
-        <div className={this.bsc.cardBody} style={this.styles.cardBody}>
+        <div
+          style={
+            this.props.resolved
+              ? this.styles.resolvedCardBody
+              : this.styles.cardBody
+          }
+        >
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         </div>
-        <div className={this.bsc.cardFooter} style={this.styles.cardFooter}>
-          {this.getCommentFooter()}
-        </div>
+        <div style={this.styles.cardFooter}>{this.getCommentFooter()}</div>
       </div>
     );
+  }
+
+  handleMouseEnter(e: any): void {
+    this.setState({ hover: true });
+  }
+
+  handleMouseLeave(e: any): void {
+    this.setState({ hover: false });
+  }
+
+  handleShouldExpand(state: boolean) {
+    this.setState({ shouldExpand: state });
   }
 
   /**
@@ -198,7 +244,6 @@ export class CommentCard extends React.Component<
     this.props.setCardValue(
       this.props.target,
       this.props.threadId,
-      'resolved',
       !this.props.resolved
     );
 
@@ -220,16 +265,15 @@ export class CommentCard extends React.Component<
    */
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
-    let allComments: any = this.props.data.body;
 
     if (this.props.data !== undefined) {
-      for (let key: number = 1; key < allComments.length; key++) {
+      for (let key: number = 1; key < this.props.data.body.length; key++) {
         comments.push(
           <Comment
-            name={allComments[key].creator.name}
-            context={allComments[key].value}
-            timestamp={allComments[key].created}
-            photo={allComments[key].creator.image}
+            name={this.props.data.body[key].creator.name}
+            context={this.props.data.body[key].value}
+            timestamp={this.props.data.body[key].created}
+            photo={this.props.data.body[key].creator.image}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         );
@@ -257,6 +301,8 @@ export class CommentCard extends React.Component<
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
         handleResolve={this.handleResolve}
+        handleShouldExpand={this.handleShouldExpand}
+        hover={this.state.hover}
       />
     );
   }
@@ -268,53 +314,65 @@ export class CommentCard extends React.Component<
    * @return React.ReactNode: CommentFooter ReactNode / Component
    */
   getCommentFooter(): React.ReactNode {
-    return (
-      <CommentFooter
-        expanded={this.props.checkExpandedCard(this.props.threadId)}
-        replyActive={this.props.checkReplyActiveCard(this.props.threadId)}
-        resolved={this.props.resolved}
-        handleReplyOpen={this.handleReplyOpen}
-        handleReplyClose={this.handleReplyClose}
-        expandAndReply={this.expandAndReply}
-        getInput={this.getInput}
-        handleResolve={this.handleResolve}
-      />
-    );
+    if (
+      this.props.checkExpandedCard(this.props.threadId) &&
+      !this.props.resolved
+    ) {
+      return (
+        <CommentFooter
+          expanded={this.props.checkExpandedCard(this.props.threadId)}
+          replyActive={this.props.checkReplyActiveCard(this.props.threadId)}
+          resolved={this.props.resolved}
+          handleReplyOpen={this.handleReplyOpen}
+          handleReplyClose={this.handleReplyClose}
+          expandAndReply={this.expandAndReply}
+          getInput={this.getInput}
+          handleResolve={this.handleResolve}
+        />
+      );
+    }
   }
-
-  /**
-   * Bootstrap style classNames
-   */
-  bsc = {
-    card: 'card',
-    cardHeader: 'card-header border-bottom-0',
-    cardBody: 'card-body border-bottom-0',
-    cardFooter: 'card-footer border-top-0'
-  };
 
   /**
    * CSS styles
    */
   styles = {
-    card: {
+    card: { marginTop: '5px', marginBottom: '5px', background: 'white' },
+    resolvedCard: {
+      marginTop: '5px',
       marginBottom: '5px',
-      background: 'white'
+      background: '#e6e6e6',
+      color: '#4f4f4f'
     },
     cardHeading: {
-      padding: '0px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginBottom: '-8px'
+      borderBottom: '0px'
     },
     cardBody: {
-      padding: '0px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginBottom: '-15px'
+      borderBottom: '0px'
     },
     cardFooter: {
-      padding: '0px',
-      paddingBottom: '5px',
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
       background: 'white',
-      marginTop: '10px'
+      borderBottom: '0px'
+    },
+    resolvedCardHeading: {
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
+      background: '#e6e6e6',
+      borderBottom: '0px'
+    },
+    resolvedCardBody: {
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
+      background: '#e6e6e6',
+      borderBottom: '0px'
     }
   };
 }

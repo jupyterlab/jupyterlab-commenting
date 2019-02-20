@@ -9,7 +9,7 @@ interface INewThreadCardProps {
    *
    * @type void function
    */
-  putThread: (comment?: string, tag?: string) => void;
+  putThread: (comment?: string) => void;
   /**
    * Sets the state if a new thread is to be created
    *
@@ -18,6 +18,7 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
+  creator: any;
 }
 
 interface INewThreadCardStates {
@@ -27,12 +28,6 @@ interface INewThreadCardStates {
    * @type string
    */
   inputBox: string;
-  /**
-   * Text for thread tag
-   *
-   * @type string
-   */
-  tagBox: string;
 }
 
 export class NewThreadCard extends React.Component<
@@ -46,12 +41,12 @@ export class NewThreadCard extends React.Component<
    */
   constructor(props: INewThreadCardProps) {
     super(props);
-    this.state = { inputBox: '', tagBox: '' };
+    this.state = { inputBox: '' };
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleChangeTagBox = this.handleChangeTagBox.bind(this);
     this.createNewThread = this.createNewThread.bind(this);
+    this.cancelThread = this.cancelThread.bind(this);
   }
 
   /**
@@ -60,32 +55,53 @@ export class NewThreadCard extends React.Component<
   render() {
     return (
       <div className="card" style={this.styles.card}>
-        <label>New Thread</label>
-        <input
-          type="text"
-          className="form-control form-control-sm"
-          style={this.styles.field}
-          placeholder="Tag"
-          onChange={this.handleChangeTagBox}
-        />
+        <label style={this.styles.name}>{this.props.creator.name}</label>
         <textarea
           className={this.bsc.input}
           style={this.styles.inputBox}
           id={'commentBox'}
-          value={this.state.inputBox}
+          value={
+            this.state.inputBox.trim() === ''
+              ? this.state.inputBox.trim()
+              : this.state.inputBox
+          }
           onChange={this.handleChangeCommentBox}
           onKeyPress={this.handleKeyPress}
         />
-        <button
-          className={
-            'commentCommentButton commentFooterRightButton float-right'
-          }
-          type="button"
-          onClick={this.createNewThread}
-        >
-          Create
-        </button>
+        <div style={this.styles.buttons}>
+          {this.getCommentButton()}
+          {this.getCancelButton()}
+        </div>
       </div>
+    );
+  }
+
+  componentDidMount() {
+    document.getElementById('commentBox').focus();
+  }
+
+  getCommentButton(): React.ReactNode {
+    return (
+      <button
+        className={'commentCommentButton commentFooterRightButton float-right'}
+        type="button"
+        onClick={this.createNewThread}
+        disabled={this.state.inputBox.trim() === ''}
+      >
+        Comment
+      </button>
+    );
+  }
+
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        className="commentCancelButton commentFooterLeftButton float-right"
+        type="button"
+        onClick={this.cancelThread}
+      >
+        Cancel
+      </button>
     );
   }
 
@@ -99,19 +115,14 @@ export class NewThreadCard extends React.Component<
     this.setState({ inputBox: e.target.value });
   }
 
-  // TODO: Get correct type
-  /**
-   * Handles when the tag box changes
-   *
-   * @param e Type: any - input box event
-   */
-  handleChangeTagBox(e: any): void {
-    this.setState({ tagBox: e.target.value });
-  }
-
   createNewThread(): void {
     this.props.setNewThreadActive(false);
-    this.props.putThread(this.state.inputBox, this.state.tagBox);
+    this.props.putThread(this.state.inputBox);
+  }
+
+  cancelThread(): void {
+    this.setState({ inputBox: '' });
+    this.props.setNewThreadActive(false);
   }
 
   /**
@@ -120,7 +131,7 @@ export class NewThreadCard extends React.Component<
    * @param e Type: ? - keyboard event
    */
   handleKeyPress(e: any): void {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (this.state.inputBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
       this.createNewThread();
     }
   }
@@ -137,7 +148,8 @@ export class NewThreadCard extends React.Component<
    */
   styles = {
     card: {
-      padding: '5px'
+      padding: '5px',
+      marginTop: '5px'
     },
     field: {
       marginBottom: '5px'
@@ -146,6 +158,17 @@ export class NewThreadCard extends React.Component<
       width: '100%',
       height: '80px',
       lineHeight: 'normal'
+    },
+    name: {
+      fontSize: '16px',
+      fontWeight: 'bold' as 'bold',
+      marginTop: '6px',
+      marginBottom: '6px',
+      marginLeft: '3px'
+    },
+    buttons: {
+      marginTop: '5px',
+      marginRight: '10px'
     }
   };
 }

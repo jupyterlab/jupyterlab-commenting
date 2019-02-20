@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 // Components
 import { AppBody } from './AppBody';
@@ -80,6 +81,7 @@ interface IAppStates {
    * @type boolean
    */
   shouldQuery: boolean;
+  curThreadHasCards: boolean;
 }
 
 /**
@@ -93,6 +95,10 @@ interface IAppProps {
    */
   commentsService?: IMetadataCommentsService;
   /**
+   * People Service that communicates with graphql server
+   */
+  peopleService?: IMetadataPeopleService;
+  /**
    * Path of open file, used as unique id to fetch comments and annotations
    *
    * @type string
@@ -105,6 +111,8 @@ interface IAppProps {
    */
   targetName: string;
 }
+
+let periodicUpdate: number;
 
 /**
  * Main App React Component
@@ -128,7 +136,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       shouldQuery: true,
       creator: {},
       myThreads: [],
-      response: { data: { annotationsByTarget: { length: 0 } } }
+      response: { data: { annotationsByTarget: { length: 0 } } },
+      curThreadHasCards: false
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -147,6 +156,22 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   }
 
   /**
+   * Called when the component will mount
+   */
+  componentWillMount() {
+    // Sets the interval of when to periodically query for comments
+    periodicUpdate = setInterval(this.shouldQuery, 1000);
+  }
+
+  /**
+   * Called when component will unmount
+   */
+  componentWillUnmount() {
+    // Stops the periodic query of comments
+    clearInterval(periodicUpdate);
+  }
+
+  /**
    * Called each time the component updates
    */
   componentDidUpdate(): void {
@@ -157,6 +182,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             this.props.target &&
           !this.state.shouldQuery
         ) {
+          this.setState({ expandedCard: ' ' });
+          this.setState({ newThreadActive: false });
           this.setState({ shouldQuery: true });
         }
       }
@@ -173,13 +200,15 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                   response.data.annotationsByTarget
                 ),
                 response: response,
-                shouldQuery: false
+                shouldQuery: false,
+                curThreadHasCards: true
               });
             } else {
               this.state.myThreads.length !== 0 &&
                 this.setState({
                   myThreads: [],
-                  shouldQuery: false
+                  shouldQuery: false,
+                  curThreadHasCards: false
                 });
             }
           });
@@ -190,7 +219,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       this.state.myThreads.length !== 0 &&
         this.setState({
           myThreads: [],
-          shouldQuery: false
+          shouldQuery: false,
+          curThreadHasCards: false
         });
     }
   }
@@ -212,6 +242,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               setSortState={this.setSortState}
               showResolvedState={this.showResolvedState}
               cardExpanded={this.state.expandedCard !== ' '}
+              header={this.props.targetName}
+              hasThreads={this.state.curThreadHasCards}
             />
           }
         />
@@ -222,10 +254,12 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                   <NewThreadCard
                     putThread={this.putThread}
                     setNewThreadActive={this.setNewThreadActive}
+                    creator={this.state.creator}
                   />
                 ]
               : this.state.myThreads
           }
+          expanded={this.state.expandedCard !== ' '}
         />
       </div>
     ) : (
@@ -245,7 +279,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     for (let key in allData) {
       if (
         this.shouldRenderCard(
-          false,
+          allData[key].resolved,
           this.state.expandedCard !== ' ',
           this.state.expandedCard === allData[key].id
         )
@@ -266,7 +300,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         );
       }
     }
-    return cards;
+    return cards.reverse();
   }
 
   /**
@@ -327,12 +361,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param value Type: string - comment message
    * @param label Type: string - label / tag of a thread
    */
-  putThread(value: string, label?: string): void {
+  putThread(value: string): void {
     this.props.commentsService.createThread(
       this.props.target,
       value,
-      this.state.creator,
-      label
+      this.state.creator
     );
     this.shouldQuery();
   }
@@ -345,13 +378,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param key Type: string - key of value to set
    * @param value Type: string - value to set
    */
-  setCardValue(
-    target: string,
-    threadId: string,
-    key: string,
-    value: any
-  ): void {
-    this.props.commentsService.setCardValue(target, threadId, key, value);
+  setCardValue(target: string, threadId: string, value: boolean): void {
+    this.props.commentsService.setResolvedValue(target, threadId, value);
   }
 
   /**
@@ -437,13 +465,36 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      this.setState({
-        creator: {
-          id: 'person/1',
-          name: name,
-          image: myJSON.avatar_url
-        },
-        userSet: true
+      this.props.peopleService.queryAll().then((response: any) => {
+        if (response.data.people.length !== 0) {
+          for (let index in response.data.people) {
+            if (
+              response.data.people[index].name === name &&
+              !this.state.userSet
+            ) {
+              this.setState({
+                creator: {
+                  id: response.data.people[index].id,
+                  name: name,
+                  image: myJSON.avatar_url
+                },
+                userSet: true
+              });
+            }
+          }
+          if (!this.state.userSet) {
+            this.props.peopleService.create(name, '', myJSON.avatar_url);
+            let personCount: number = Number(response.data.people.length) + 1;
+            this.setState({
+              creator: {
+                id: 'person/' + personCount,
+                name: name,
+                image: myJSON.avatar_url
+              },
+              userSet: true
+            });
+          }
+        }
       });
     } else {
       window.alert('Username not found');

@@ -63,13 +63,13 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   render() {
     return (
-      <div className="card border-0 py-1">
+      <div className="headerCard">
         <div style={this.styles.headercard}>
           <div>{this.getCornerButton()}</div>
           {this.renderAppHeader(this.props.header)}
           <div style={this.styles.placeholder} />
         </div>
-        <div>{this.props.headerOptions}</div>
+        {this.shouldRenderOptions()}
       </div>
     );
   }
@@ -99,7 +99,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           {this.getFileIcon(this.props.header)}
           <span
             style={this.styles.headerLabel}
-            className={'jp-DirListing-itemText'}
+            className={'--jp-ui-font-size1'}
           >
             {this.props.header}
           </span>
@@ -133,14 +133,22 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           }
         }
       }
-      return (
-        <span
-          className={'jp-Icon jp-FileIcon'}
-          style={this.styles.headerIcon}
-        />
-      );
+      return <span className={'jp-FileIcon'} style={this.styles.headerIcon} />;
     } catch {
       return <span />;
+    }
+  }
+
+  /**
+   * Checks the state of New Thread
+   *
+   * @returns Type: React.ReactNode. If the New Thread is not open
+   */
+  shouldRenderOptions(): React.ReactNode {
+    if (!this.props.threadOpen && !this.props.cardExpanded) {
+      return <div>{this.props.headerOptions}</div>;
+    } else {
+      return <div />;
     }
   }
 
@@ -156,10 +164,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       !this.props.threadOpen
     ) {
       return this.getNewThreadButton();
-    } else if (
-      (this.props.cardExpanded || this.props.threadOpen) &&
-      this.props.header !== undefined
-    ) {
+    } else if (this.props.cardExpanded && this.props.header !== undefined) {
       return this.getBackButton();
     } else {
       return;
@@ -190,12 +195,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   getNewThreadButton(): React.ReactNode {
     return (
-      <input
-        type="image"
-        style={this.styles.newCommentButton}
-        src={
-          'https://material.io/tools/icons/static/icons/baseline-add-24px.svg'
+      <span
+        className={
+          'jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
         }
+        style={this.styles.newCommentButton}
         onClick={this.handleNewThreadButton}
       />
     );
@@ -214,7 +218,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   setShrink(): void {
     this.props.setExpandedCard(' ');
-    this.props.setNewThreadActive(false);
   }
 
   /**
@@ -300,38 +303,41 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     emptyHeader: {
       background: 'white',
       color: '#4F4F4F',
-      marginTop: '20px',
-      marginBottom: '20px'
+      marginTop: '15px',
+      marginBottom: '15px'
     },
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      padding: '4px',
-      marginTop: '10px',
-      marginBottom: '10px'
+      maxWidth: '200px',
+      paddingTop: '4px',
+      paddingBottom: '30px'
     },
     headerLabel: {
       paddingLeft: '5px',
-      fontSize: '24px',
-      textAlign: 'left' as 'left'
+      textAlign: 'left' as 'left',
+      whiteSpace: 'nowrap' as 'nowrap',
+      width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
     },
     headerIcon: {
-      minWidth: '28px',
-      minHeight: '28px',
-      backgroundSize: '28px',
+      minWidth: '18px',
+      minHeight: '18px',
+      backgroundSize: '18px',
       padding: '8px'
     },
     backButton: {
       display: 'flex',
-      width: '16px',
-      height: '16px',
-      marginTop: '21px'
+      width: '12px',
+      height: '12px',
+      marginTop: '11px'
     },
     newCommentButton: {
       display: 'flex',
       width: '20px',
       height: '20px',
-      marginTop: '21px'
+      marginTop: '7px'
     },
     placeholder: { width: '20px' }
   };

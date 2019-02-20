@@ -64,6 +64,8 @@ interface ICommentHeaderProps {
    * @type: void function
    */
   handleResolve: VoidFunction;
+  hover: boolean;
+  handleShouldExpand: (state: boolean) => void;
 }
 
 /**
@@ -84,7 +86,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   render() {
     return (
-      <div style={this.styles.cardHeader}>
+      <div>
         <div style={this.styles.upperHeader}>
           <div>
             <img style={this.styles.photo} src={this.props.photo} />
@@ -92,35 +94,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
           <div style={this.styles.nameArea}>
             <h1 style={this.styles.name}>{this.props.name}</h1>
             <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
-            <div style={this.styles.tagArea} className={this.bsc.tagArea}>
-              <h6 style={this.styles.tag} className={this.bsc.tag}>
-                {this.props.tag}
-              </h6>
-              {this.props.resolved && (
-                <h6 style={this.styles.resolvedTag} className={this.bsc.tag}>
-                  Resolved
-                </h6>
-              )}
-            </div>
           </div>
-          <div>
-            {this.props.expanded && !this.props.resolved
-              ? this.getResolveButton()
-              : !this.props.expanded && (
-                  <input
-                    type="image"
-                    style={this.styles.cornerButton}
-                    src={'http://cdn.onlinewebfonts.com/svg/img_72157.png'}
-                    onClick={this.props.handleExpand}
-                  />
-                )}
-          </div>
+          {this.shouldRenderCornerButtons()}
         </div>
         <p
-          style={
-            this.props.expanded
-              ? this.styles.contextExpanded
-              : this.styles.contextNotExpanded
+          className={
+            this.props.expanded ? 'textFieldExpanded' : 'textFieldNotExpanded'
           }
         >
           {this.props.context}
@@ -137,14 +116,53 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getResolveButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton"
+        className="commentFooterLeftButton commentResolveButton"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
       >
         Resolve
       </button>
     );
+  }
+
+  getReopenButton(): React.ReactNode {
+    return (
+      <button
+        className="commentFooterLeftButton commentReopenButton"
+        style={this.styles.resolveButton}
+        type="button"
+        onClick={this.props.handleResolve}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
+      >
+        Re-open
+      </button>
+    );
+  }
+
+  shouldRenderCornerButtons(): React.ReactNode {
+    if (this.props.hover && !this.props.expanded) {
+      return (
+        <div>
+          {!this.props.resolved
+            ? this.getResolveButton()
+            : this.getReopenButton()}
+        </div>
+      );
+    } else if (this.props.expanded) {
+      return (
+        <div>
+          {!this.props.resolved
+            ? this.getResolveButton()
+            : this.getReopenButton()}
+        </div>
+      );
+    } else {
+      return;
+    }
   }
 
   timeStampStyle(): string {
@@ -182,17 +200,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   /**
    * Bootstrap classNames
    */
-  bsc = {
-    tag: 'badge badge-secondary row-offset-1',
-    tagArea: 'col'
-  };
+  bsc = { tag: 'badge badge-secondary row-offset-1', tagArea: 'col' };
 
   /**
    * CSS styles
    */
   styles = {
     upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    cardHeader: { marginBottom: '10px', background: 'white' },
     resolveButton: { marginRight: '5px', marginTop: '5px' },
     nameArea: {
       paddingLeft: '5px',
@@ -205,34 +219,42 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       flexGrow: 1,
       height: '36px',
       width: '36px',
-      margin: '5px'
+      marginLeft: '5px',
+      marginTop: '5px',
+      borderRadius: '5px'
     },
     name: {
-      fontSize: '12px',
+      fontSize: '13px',
       fontWeight: 'bold' as 'bold',
-      marginTop: '3px',
-      marginBottom: '1px'
+      marginTop: '11px',
+      marginBottom: '0px'
     },
-    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
+    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '0px' },
     contextNotExpanded: {
+      display: 'flex',
       maxHeight: '30px',
       maxWidth: '350px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       fontSize: '.8em',
-      paddingLeft: '5px',
-      paddingRight: '10px',
+      marginLeft: '5px',
+      marginRight: '10px',
+      marginTop: '5px',
+      marginBottom: '5px',
       lineHeight: 'normal'
     },
     contextExpanded: {
+      display: 'flex',
       maxHeight: '100%',
       maxWidth: '350px',
       overflow: '',
       textOverflow: 'ellipsis',
       fontSize: '.8em',
       lineHeight: 'normal',
-      paddingLeft: '5px',
-      paddingRight: '10px'
+      marginLeft: '5px',
+      marginRight: '10px',
+      marginTop: '5px',
+      marginBottom: '5px'
     },
     cornerButton: {
       display: 'flex',

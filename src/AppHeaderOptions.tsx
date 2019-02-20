@@ -24,6 +24,8 @@ interface IAppHeaderOptionsProps {
    * @type boolean
    */
   cardExpanded: boolean;
+  header: string;
+  hasThreads: boolean;
 }
 
 /**
@@ -64,12 +66,17 @@ export class AppHeaderOptions extends React.Component<
       this.state.isOpen ? ' show' : ''
     }`;
     return (
-      <div className="card border-left-0 border-right-0">
+      <div className="headerOptionsCard">
+        <div
+          className={menuClass}
+          style={{ top: 'inherit', marginTop: '28px' }}
+        >
+          {this.getSortItems()}
+        </div>
         <div style={this.styles.optionBar}>
           {this.renderCheckbox()}
-          <div style={this.styles.divider} />
-          {this.renderDropdown()}
-          <div className={menuClass}>{this.getSortItems()}</div>
+          {this.renderDropdownLabel()}
+          {this.renderDropdownButton()}
         </div>
       </div>
     );
@@ -82,52 +89,64 @@ export class AppHeaderOptions extends React.Component<
 
   renderCheckbox() {
     return (
-      <div style={this.styles.checkbox}>
+      <div style={this.styles.checkboxArea}>
         <label
           htmlFor="controls"
-          style={
-            this.props.cardExpanded
-              ? this.styles.checkboxLabelDisabled
-              : this.styles.checkboxLabelEnabled
+          className={
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
+              ? 'headerCheckboxLabelDisabled'
+              : 'headerCheckboxLabelEnabled'
           }
-          className={'jp-DirListing-itemText'}
         >
-          Show resolved
+          Show Resolved
         </label>
         <input
           type="checkbox"
           id="controls"
           onClick={this.toggleResolved}
-          disabled={this.props.cardExpanded}
+          className={'headerCheckbox'}
+          disabled={
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
+          }
         />
       </div>
     );
   }
 
-  renderDropdown() {
+  renderDropdownLabel() {
     return (
       <div style={this.styles.dropdownBox}>
         <label
           style={
-            this.props.cardExpanded
+            this.props.cardExpanded ||
+            this.props.header === undefined ||
+            !this.props.hasThreads
               ? this.styles.dropdownLabelDisabled
               : this.styles.dropdownLabelEnabled
           }
-          className={'jp-DirListing-itemText'}
         >
           Sort By: {this.itemPicked}
         </label>
-        <div style={this.styles.dropdownButton} onClick={this.toggleOpen}>
-          <input
-            type="image"
-            style={this.styles.dropdownButton}
-            src={
-              'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
-            }
-            data-toggle="dropdown"
-            disabled={this.props.cardExpanded}
-          />
-        </div>
+      </div>
+    );
+  }
+
+  renderDropdownButton() {
+    return (
+      <div style={this.styles.dropdownButton} onClick={this.toggleOpen}>
+        <input
+          type="image"
+          style={this.styles.dropdownButton}
+          src={
+            'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
+          }
+          data-toggle="dropdown"
+          disabled={this.props.header === undefined || !this.props.hasThreads}
+        />
       </div>
     );
   }
@@ -183,6 +202,7 @@ export class AppHeaderOptions extends React.Component<
    * @param name Type: string - Assigns passed value to show as a Sort by: label
    */
   setSortState(state: string, name: string) {
+    this.toggleOpen();
     this.itemPicked = name;
     this.props.setSortState(state);
   }
@@ -203,65 +223,50 @@ export class AppHeaderOptions extends React.Component<
   styles = {
     optionBar: {
       height: '28px',
-      borderRadius: 0,
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      justifyContent: 'space-around'
-    },
-    dropdownBox: {
-      height: '27px',
       display: 'flex',
       flexDirection: 'row' as 'row'
     },
+    dropdownBox: {
+      height: '28px',
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      flexGrow: 3,
+      borderLeftWidth: '1px',
+      borderLeftStyle: 'solid' as 'solid',
+      borderLeftColor: '#a3a1a0',
+      marginLeft: '8px'
+    },
     dropdownLabelEnabled: {
-      height: '27px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as 'nowrap',
+      height: '28px',
       lineHeight: 'normal',
       fontSize: '13px',
       paddingTop: '6px',
       paddingLeft: '15px',
       paddingRight: '10px',
-      color: 'black',
-      textAlign: 'center' as 'center'
+      color: 'black'
     },
     dropdownLabelDisabled: {
-      height: '27px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as 'nowrap',
+      height: '28px',
       lineHeight: 'normal',
       fontSize: '13px',
       paddingTop: '6px',
       paddingLeft: '15px',
       paddingRight: '20px',
-      color: '#E0E0E0',
-      textAlign: 'center' as 'center'
+      color: '#E0E0E0'
     },
-    dropdownButton: { height: '27px', width: '40px' },
-    divider: {
-      borderRightWidth: '1px',
-      borderRightStyle: 'solid' as 'solid',
-      borderRightColor: '#a3a1a0',
-      marginRight: '5px',
-      marginLeft: '5px'
-    },
-    checkbox: {
-      height: '27px',
+    dropdownButton: { display: 'flex', height: '28px', width: '40px' },
+    checkboxArea: {
+      marginTop: '5px',
+      height: '18px',
       display: 'flex',
-      flexDirection: 'row' as 'row'
-    },
-    checkboxLabelEnabled: {
-      marginBottom: '0px',
-      paddingRight: '4px',
-      paddingTop: '3px',
-      fontSize: '13px',
-      color: 'black',
-      paddingLeft: '5px',
-      textAlign: 'right' as 'right'
-    },
-    checkboxLabelDisabled: {
-      paddingRight: '4px',
-      paddingTop: '3px',
-      fontSize: '13px',
-      color: '#E0E0E0',
-      paddingLeft: '5px',
-      textAlign: 'right' as 'right'
+      flexDirection: 'row' as 'row',
+      flexGrow: 1
     }
   };
 }

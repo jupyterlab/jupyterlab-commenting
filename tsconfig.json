@@ -3,7 +3,8 @@
     "declaration": true,
     "lib": [
       "es2015",
-      "dom"
+      "dom",
+      "esnext.asynciterable"
     ],
     "module": "commonjs",
     "moduleResolution": "node",
@@ -21,11 +22,15 @@
   "include": [
     "src/*"
   ],
-  "references": [{
+  "references": [
+    {
       "path": "../application"
     },
     {
       "path": "../apputils"
+    },
+    {
+      "path": "../databus"
     },
     {
       "path": "../docregistry"

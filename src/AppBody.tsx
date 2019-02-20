@@ -10,6 +10,12 @@ interface IAppBodyProps {
    * @type React.ReactNode
    */
   cards?: React.ReactNode[];
+  /**
+   * Tracks if card is expanded
+   *
+   * @type boolean
+   */
+  expanded: boolean;
 }
 
 /**
@@ -29,12 +35,15 @@ export class AppBody extends React.Component<IAppBodyProps> {
    * React render function
    */
   render() {
-    const reverseCards = this.props.cards.reverse();
+    // const reverseCards = this.props.cards.reverse();
 
-    const items = reverseCards.map((card, i) => <div key={i}>{card}</div>);
+    const items = this.props.cards.map((card, i) => <div key={i}>{card}</div>);
 
     return (
-      <div style={this.bodyStyle} className={this.bootstrapGrid}>
+      <div
+        style={this.props.expanded ? this.bodyStyleExpanded : this.bodyStyle}
+        className={this.bootstrapGrid}
+      >
         {items}
       </div>
     );
@@ -51,6 +60,16 @@ export class AppBody extends React.Component<IAppBodyProps> {
   bodyStyle = {
     width: '100%',
     maxHeight: '81vh',
+    overflowY: 'scroll' as 'scroll',
+    overflowX: 'hidden' as 'hidden',
+    justifyContent: 'center',
+    paddingRight: '5px',
+    paddingLeft: '5px'
+  };
+
+  bodyStyleExpanded = {
+    width: '100%',
+    maxHeight: '85vh',
     overflowY: 'scroll' as 'scroll',
     overflowX: 'hidden' as 'hidden',
     justifyContent: 'center',
