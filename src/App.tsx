@@ -484,7 +484,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           }
           if (!this.state.userSet) {
             this.props.peopleService.create(name, '', myJSON.avatar_url);
-            let personCount: number = Number(response.data.people.length) + 1;
+            let personCount: number = Number(response.data.people.length + 2);
             this.setState({
               creator: {
                 id: 'person/' + personCount,
