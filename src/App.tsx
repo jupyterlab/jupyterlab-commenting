@@ -155,13 +155,22 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.shouldQuery = this.shouldQuery.bind(this);
   }
 
+  /**
+   * Called when the component will mount
+   */
   componentWillMount() {
+    // Sets the interval of when to periodically query for comments
     periodicUpdate = setInterval(this.shouldQuery, 1000);
   }
 
+  /**
+   * Called when component will unmount
+   */
   componentWillUnmount() {
+    // Stops the periodic query of comments
     clearInterval(periodicUpdate);
   }
+
   /**
    * Called each time the component updates
    */
