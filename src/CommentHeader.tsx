@@ -86,7 +86,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   render() {
     return (
-      <div style={this.styles.cardHeader}>
+      <div>
         <div style={this.styles.upperHeader}>
           <div>
             <img style={this.styles.photo} src={this.props.photo} />
@@ -131,7 +131,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getReopenButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton commentResolveButton"
+        className="commentFooterLeftButton commentReopenButton"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -207,7 +207,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   styles = {
     upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    cardHeader: { background: 'white' },
     resolveButton: { marginRight: '5px', marginTop: '5px' },
     nameArea: {
       paddingLeft: '5px',

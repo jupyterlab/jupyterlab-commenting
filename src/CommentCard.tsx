@@ -145,8 +145,22 @@ export class CommentCard extends React.Component<
         onMouseMoveCapture={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <div style={this.styles.cardHeading}>{this.getCommentHeader()}</div>
-        <div style={this.styles.cardBody}>
+        <div
+          style={
+            this.props.resolved
+              ? this.styles.resolvedCardHeading
+              : this.styles.cardHeading
+          }
+        >
+          {this.getCommentHeader()}
+        </div>
+        <div
+          style={
+            this.props.resolved
+              ? this.styles.resolvedCardBody
+              : this.styles.cardBody
+          }
+        >
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
@@ -327,7 +341,7 @@ export class CommentCard extends React.Component<
     resolvedCard: {
       marginTop: '5px',
       marginBottom: '5px',
-      background: 'white',
+      background: '#e6e6e6',
       color: '#4f4f4f'
     },
     cardHeading: {
@@ -346,6 +360,18 @@ export class CommentCard extends React.Component<
       display: 'flex' as 'flex',
       flexDirection: 'column' as 'column',
       background: 'white',
+      borderBottom: '0px'
+    },
+    resolvedCardHeading: {
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
+      background: '#e6e6e6',
+      borderBottom: '0px'
+    },
+    resolvedCardBody: {
+      display: 'flex' as 'flex',
+      flexDirection: 'column' as 'column',
+      background: '#e6e6e6',
       borderBottom: '0px'
     }
   };

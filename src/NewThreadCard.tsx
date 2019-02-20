@@ -76,6 +76,10 @@ export class NewThreadCard extends React.Component<
     );
   }
 
+  componentDidMount() {
+    document.getElementById('commentBox').focus();
+  }
+
   getCommentButton(): React.ReactNode {
     return (
       <button

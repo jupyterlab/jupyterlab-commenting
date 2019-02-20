@@ -237,6 +237,9 @@ export class AppHeaderOptions extends React.Component<
       marginLeft: '8px'
     },
     dropdownLabelEnabled: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as 'nowrap',
       height: '28px',
       lineHeight: 'normal',
       fontSize: '13px',
@@ -246,6 +249,9 @@ export class AppHeaderOptions extends React.Component<
       color: 'black'
     },
     dropdownLabelDisabled: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap' as 'nowrap',
       height: '28px',
       lineHeight: 'normal',
       fontSize: '13px',

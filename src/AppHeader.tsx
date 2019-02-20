@@ -309,10 +309,18 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
+      maxWidth: '200px',
       paddingTop: '4px',
       paddingBottom: '30px'
     },
-    headerLabel: { paddingLeft: '5px', textAlign: 'left' as 'left' },
+    headerLabel: {
+      paddingLeft: '5px',
+      textAlign: 'left' as 'left',
+      whiteSpace: 'nowrap' as 'nowrap',
+      width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
     headerIcon: {
       minWidth: '18px',
       minHeight: '18px',

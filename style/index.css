@@ -108,6 +108,17 @@
   outline: 0px;
 }
 
+.commentReopenButton {
+  background: 'white';
+  color: #2196f3;
+  outline: 0px;
+}
+
+.commentReopenButton:hover {
+  background: #e0e0e0;
+  outline: 0px;
+}
+
 .commentResolveButton {
   background: white;
   color: #2196f3;
@@ -172,10 +183,7 @@
 }
 
 .threadCard:hover {
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.219);
-  border-color: #b6b6b6;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  box-sizing: border-box;
+  box-shadow: var(--jp-elevation-z6);
 }
 
 .textFieldExpanded {
