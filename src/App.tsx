@@ -459,7 +459,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param user Type: string - users github username
    */
   async setUserInfo(user: string) {
-    const response = await fetch('http://api.github.com/users/' + user);
+    const response = await fetch('https://api.github.com/users/' + user);
     const myJSON = await response.json();
 
     // If users does not have a name set, use username
