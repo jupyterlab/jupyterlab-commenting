@@ -16,6 +16,10 @@ interface IAppBodyProps {
    * @type boolean
    */
   expanded: boolean;
+  /**
+   * New thread button card
+   */
+  newThreadButton: React.ReactNode | undefined;
 }
 
 /**
@@ -44,6 +48,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
         style={this.props.expanded ? this.bodyStyleExpanded : this.bodyStyle}
         className={this.bootstrapGrid}
       >
+        {!this.props.expanded && this.props.newThreadButton}
         {items}
       </div>
     );

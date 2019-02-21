@@ -183,9 +183,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             this.props.target &&
           !this.state.shouldQuery
         ) {
-          this.setState({ expandedCard: ' ' });
-          this.setState({ newThreadActive: false });
-          this.setState({ shouldQuery: true });
+          this.setState({
+            expandedCard: ' ',
+            newThreadActive: false,
+            shouldQuery: true
+          });
         }
       }
     }
@@ -260,6 +262,9 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               : this.state.myThreads
           }
           expanded={this.state.expandedCard !== ' '}
+          newThreadButton={
+            this.state.newThreadActive ? undefined : this.getNewThreadButton()
+          }
         />
       </div>
     ) : (
@@ -299,7 +304,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         );
       }
     }
-    cards.push(this.getNewThreadButton());
     return cards.reverse();
   }
 
@@ -309,7 +313,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         className="newThreadCard"
         onClick={() => this.setNewThreadActive(true)}
       >
-        <span className="newThreadLabel">New Thread</span>
+        <span className="newThreadLabel">New Comment Thread</span>
         <span
           className={
             'newThreadButton jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
