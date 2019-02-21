@@ -34,10 +34,6 @@ interface IAppHeaderProps {
    * @type React.ReactNode
    */
   headerOptions: React.ReactNode;
-  /**
-   * Sets the state of if creating a new thread state is active
-   */
-  setNewThreadActive: (state: boolean) => void;
 }
 
 /**
@@ -55,7 +51,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     this.renderAppHeader = this.renderAppHeader.bind(this);
     this.getBackButton = this.getBackButton.bind(this);
     this.setShrink = this.setShrink.bind(this);
-    this.handleNewThreadButton = this.handleNewThreadButton.bind(this);
   }
 
   /**
@@ -117,12 +112,8 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   getFileIcon(header: string): React.ReactNode {
     try {
       let extensionName = header.slice(header.indexOf('.'));
-      for (let key = 0; key < this.fileTypes.length; key++) {
-        for (
-          let value = 0;
-          value < this.fileTypes[key].extensions.length;
-          value++
-        ) {
+      for (let key in this.fileTypes) {
+        for (let value in this.fileTypes[key].extensions) {
           if (extensionName === this.fileTypes[key].extensions[value]) {
             return (
               <span
@@ -158,13 +149,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * @return Type: React.ReactNode
    */
   getCornerButton(): React.ReactNode {
-    if (
-      !this.props.cardExpanded &&
-      this.props.header !== undefined &&
-      !this.props.threadOpen
-    ) {
-      return this.getNewThreadButton();
-    } else if (this.props.cardExpanded && this.props.header !== undefined) {
+    if (this.props.cardExpanded && this.props.header !== undefined) {
       return this.getBackButton();
     } else {
       return;
@@ -186,30 +171,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
         onClick={this.setShrink}
       />
     );
-  }
-
-  /**
-   * Creates the new thread button
-   *
-   * @return Type: React.ReactNode - new thread button JSX
-   */
-  getNewThreadButton(): React.ReactNode {
-    return (
-      <span
-        className={
-          'jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
-        }
-        style={this.styles.newCommentButton}
-        onClick={this.handleNewThreadButton}
-      />
-    );
-  }
-
-  /**
-   * Handles the state of if new thread box should be open
-   */
-  handleNewThreadButton(): void {
-    this.props.setNewThreadActive(true);
   }
 
   /**
@@ -332,12 +293,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       width: '12px',
       height: '12px',
       marginTop: '11px'
-    },
-    newCommentButton: {
-      display: 'flex',
-      width: '20px',
-      height: '20px',
-      marginTop: '7px'
     },
     placeholder: { width: '20px' }
   };

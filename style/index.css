@@ -186,6 +186,35 @@
   box-shadow: var(--jp-elevation-z6);
 }
 
+.newThreadCard {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  border-radius: 5px;
+  padding: 1px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+}
+
+.newThreadCard:hover {
+  box-shadow: var(--jp-elevation-z6);
+}
+
+.newThreadLabel {
+  display: flex;
+  flex-grow: 2;
+  margin-bottom: 0px;
+  margin-left: 5px;
+}
+
+.newThreadButton {
+  display: flex;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  margin-right: 5px;
+}
+
 .textFieldExpanded {
   display: flex;
   max-height: 100%;

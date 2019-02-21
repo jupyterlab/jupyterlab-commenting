@@ -153,6 +153,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.checkReplyActiveCard = this.checkReplyActiveCard.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
     this.shouldQuery = this.shouldQuery.bind(this);
+    this.getNewThreadButton = this.getNewThreadButton.bind(this);
   }
 
   /**
@@ -236,7 +237,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           cardExpanded={this.state.expandedCard !== ' '}
           threadOpen={this.state.newThreadActive}
           setExpandedCard={this.setExpandedCard}
-          setNewThreadActive={this.setNewThreadActive}
           headerOptions={
             <AppHeaderOptions
               setSortState={this.setSortState}
@@ -275,7 +275,6 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   getAllCommentCards(allData: any): React.ReactNode[] {
     let cards: React.ReactNode[] = [];
-
     for (let key in allData) {
       if (
         this.shouldRenderCard(
@@ -300,7 +299,24 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         );
       }
     }
+    cards.push(this.getNewThreadButton());
     return cards.reverse();
+  }
+
+  getNewThreadButton(): React.ReactNode {
+    return (
+      <div
+        className="newThreadCard"
+        onClick={() => this.setNewThreadActive(true)}
+      >
+        <span className="newThreadLabel">New Thread</span>
+        <span
+          className={
+            'newThreadButton jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
+          }
+        />
+      </div>
+    );
   }
 
   /**
