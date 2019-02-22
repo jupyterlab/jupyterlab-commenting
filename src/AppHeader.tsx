@@ -60,7 +60,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <div className="headerCard">
         <div style={this.styles.headercard}>
-          <div style={{ width: '12px' }}>{this.getCornerButton()}</div>
+          <div style={{ width: '12px', minWidth: '12px' }}>
+            {this.getCornerButton()}
+          </div>
           {this.renderAppHeader(this.props.header)}
           <div style={this.styles.placeholder} />
         </div>
@@ -90,15 +92,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       );
     } else {
       return (
-        <span style={this.styles.header}>
+        <div style={this.styles.header}>
           {this.getFileIcon(this.props.header)}
-          <span
-            style={this.styles.headerLabel}
-            className={'--jp-ui-font-size1'}
-          >
+          <div style={this.styles.headerLabel} className={'--jp-ui-font-size1'}>
             {header}
-          </span>
-        </span>
+          </div>
+        </div>
       );
     }
   }
@@ -271,16 +270,15 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       display: 'flex',
       flexDirection: 'row' as 'row',
       paddingTop: '4px',
+      minWidth: '75px',
       paddingBottom: '30px'
     },
     headerLabel: {
       paddingLeft: '5px',
       textAlign: 'left' as 'left',
       whiteSpace: 'nowrap' as 'nowrap',
-      width: '100%',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      flexGrow: 1,
       flexShrink: 1
     },
     headerIcon: {
@@ -295,6 +293,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       height: '12px',
       marginTop: '11px'
     },
-    placeholder: { width: '12px' }
+    placeholder: { width: '12px', minWidth: '12px' }
   };
 }
