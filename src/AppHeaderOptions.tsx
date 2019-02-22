@@ -196,13 +196,12 @@ export class AppHeaderOptions extends React.Component<
       table.push(
         <a
           key={key}
-          className="dropdown-item"
-          href="#"
-          style={
+          className={
             this.props.sortState === this.sortItems[key].state
-              ? this.styles.dropdownItemChecked
-              : this.styles.dropdownItem
+              ? 'dropdownItem jp-mod-selected'
+              : 'dropdownItem'
           }
+          href="#"
           onClick={() => this.setSortState(this.sortItems[key].state)}
         >
           {this.sortItems[key].name}
@@ -291,8 +290,6 @@ export class AppHeaderOptions extends React.Component<
       width: '40px',
       minWidth: '40px'
     },
-    dropdownItemChecked: { background: '#2196f3' },
-    dropdownItem: {},
     checkboxArea: {
       height: '28px',
       display: 'flex',

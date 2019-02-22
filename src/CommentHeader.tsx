@@ -221,7 +221,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       width: '36px',
       marginLeft: '5px',
       marginTop: '5px',
-      borderRadius: '5px'
+      borderRadius: '2px'
     },
     name: {
       fontSize: '13px',

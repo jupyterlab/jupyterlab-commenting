@@ -33,6 +33,31 @@
   min-width: 18px;
 }
 
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.dropdownItem.jp-mod-selected {
+  background: var(--jp-brand-color1);
+  color: white;
+  text-decoration-line: none;
+}
+
+.dropdownItem:hover:not(.jp-mod-selected) {
+  background: var(--jp-layout-color2);
+  color: black;
+  text-decoration-line: none;
+}
+
 .commentFooterLeftButton {
   background: #e0e0e0;
   color: black;
@@ -168,7 +193,7 @@
 .threadCard {
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 1px;
   border: 1px solid #e0e0e0;
   box-sizing: border-box;
@@ -178,7 +203,7 @@
 .threadCardDisabled {
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 1px;
   border: 1px solid #e0e0e0;
   box-sizing: border-box;
@@ -194,7 +219,7 @@
   display: flex;
   justify-content: space-between;
   flex-direction: row;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 1px;
   border: 1px solid #e0e0e0;
   box-sizing: border-box;

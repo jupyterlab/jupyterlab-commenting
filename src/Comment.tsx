@@ -122,7 +122,7 @@ export class Comment extends React.Component<ICommentProps> {
       width: '2em',
       marginLeft: '6px',
       marginTop: '5px',
-      borderRadius: '5px'
+      borderRadius: '2px'
     },
     name: {
       fontSize: '12px',
