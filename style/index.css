@@ -109,7 +109,7 @@
 }
 
 .commentReopenButton {
-  background: 'white';
+  background: #e6e6e6;
   color: #2196f3;
   outline: 0px;
 }
@@ -204,6 +204,10 @@
 .newThreadLabel {
   display: flex;
   flex-grow: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
   margin-bottom: 0px;
   margin-left: 5px;
 }

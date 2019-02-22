@@ -144,7 +144,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setExpandedCard = this.setExpandedCard.bind(this);
     this.checkExpandedCard = this.checkExpandedCard.bind(this);
     this.setSortState = this.setSortState.bind(this);
-    this.showResolvedState = this.showResolvedState.bind(this);
+    this.showResolved = this.showResolved.bind(this);
     this.putComment = this.putComment.bind(this);
     this.putThread = this.putThread.bind(this);
     this.setCardValue = this.setCardValue.bind(this);
@@ -211,7 +211,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                 this.setState({
                   myThreads: [],
                   shouldQuery: false,
-                  curThreadHasCards: false
+                  curThreadHasCards: false,
+                  newThreadActive: false
                 });
             }
           });
@@ -223,7 +224,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         this.setState({
           myThreads: [],
           shouldQuery: false,
-          curThreadHasCards: false
+          curThreadHasCards: false,
+          newThreadActive: false
         });
     }
   }
@@ -242,10 +244,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           headerOptions={
             <AppHeaderOptions
               setSortState={this.setSortState}
-              showResolvedState={this.showResolvedState}
+              showResolvedState={this.showResolved}
               cardExpanded={this.state.expandedCard !== ' '}
               header={this.props.targetName}
               hasThreads={this.state.curThreadHasCards}
+              showResolved={this.state.showResolved}
             />
           }
         />
@@ -468,8 +471,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Sets this.state.showResolved to the state of the checkbox
    * "Show resolved"
    */
-  showResolvedState() {
-    this.setState({ showResolved: !this.state.showResolved });
+  showResolved(state: boolean) {
+    this.setState({ showResolved: state });
     this.shouldQuery();
   }
 

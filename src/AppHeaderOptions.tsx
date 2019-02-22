@@ -17,7 +17,7 @@ interface IAppHeaderOptionsProps {
    *
    * @type void function
    */
-  showResolvedState: () => void;
+  showResolvedState: (state: boolean) => void;
   /**
    * State of if a card is currently expanded
    *
@@ -26,6 +26,7 @@ interface IAppHeaderOptionsProps {
   cardExpanded: boolean;
   header: string;
   hasThreads: boolean;
+  showResolved: boolean;
 }
 
 /**
@@ -38,6 +39,7 @@ interface IAppHeaderOptionsState {
    * @type boolean
    */
   isOpen: boolean;
+  showResolved: boolean;
 }
 
 /**
@@ -55,7 +57,16 @@ export class AppHeaderOptions extends React.Component<
   constructor(props: IAppHeaderOptionsProps) {
     super(props);
 
-    this.state = { isOpen: false };
+    this.state = { isOpen: false, showResolved: false };
+
+    this.setResolvedState = this.setResolvedState.bind(this);
+    this.matchCheckBoxState = this.matchCheckBoxState.bind(this);
+  }
+
+  componentDidMount(): void {
+    if (document.getElementById('controls') !== null) {
+      this.matchCheckBoxState();
+    }
   }
 
   /**
@@ -91,7 +102,6 @@ export class AppHeaderOptions extends React.Component<
     return (
       <div style={this.styles.checkboxArea}>
         <label
-          htmlFor="controls"
           className={
             this.props.cardExpanded ||
             this.props.header === undefined ||
@@ -105,7 +115,11 @@ export class AppHeaderOptions extends React.Component<
         <input
           type="checkbox"
           id="controls"
-          onClick={this.toggleResolved}
+          onClick={() =>
+            this.setResolvedState(document.getElementById(
+              'controls'
+            ) as HTMLInputElement)
+          }
           className={'headerCheckbox'}
           disabled={
             this.props.cardExpanded ||
@@ -161,9 +175,17 @@ export class AppHeaderOptions extends React.Component<
   /**
    * Sets "showResolved" state in "App.tsx"
    */
-  toggleResolved = () => {
-    this.props.showResolvedState();
-  };
+  setResolvedState(e: HTMLInputElement) {
+    this.props.showResolvedState(e.checked);
+  }
+
+  matchCheckBoxState(): void {
+    let checkBox: HTMLInputElement = document.getElementById(
+      'controls'
+    ) as HTMLInputElement;
+
+    checkBox.checked = this.props.showResolved;
+  }
 
   /**
    * Gets values for the dropdown menu
@@ -174,7 +196,7 @@ export class AppHeaderOptions extends React.Component<
    */
   getSortItems(): React.ReactNode {
     let table = [];
-    for (let key = 0; key < this.sortItems.length; key++) {
+    for (let key in this.sortItems) {
       table.push(
         <a
           key={key}
