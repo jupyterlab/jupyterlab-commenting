@@ -77,7 +77,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * @return Type: React.ReactNode - App Header with correct string
    */
   renderAppHeader(header: string): React.ReactNode {
-    if (this.props.header === undefined) {
+    if (header === undefined) {
       return (
         <div>
           <h5
@@ -96,7 +96,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
             style={this.styles.headerLabel}
             className={'--jp-ui-font-size1'}
           >
-            {this.props.header}
+            {header}
           </span>
         </span>
       );

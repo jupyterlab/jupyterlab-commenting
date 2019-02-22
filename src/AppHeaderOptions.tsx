@@ -87,7 +87,6 @@ export class AppHeaderOptions extends React.Component<
         <div style={this.styles.optionBar}>
           {this.renderCheckbox()}
           {this.renderDropdownLabel()}
-          {this.renderDropdownButton()}
         </div>
       </div>
     );
@@ -133,7 +132,7 @@ export class AppHeaderOptions extends React.Component<
 
   renderDropdownLabel() {
     return (
-      <div style={this.styles.dropdownBox}>
+      <div style={this.styles.dropdownBox} onClick={this.toggleOpen}>
         <label
           style={
             this.props.cardExpanded ||
@@ -143,15 +142,16 @@ export class AppHeaderOptions extends React.Component<
               : this.styles.dropdownLabelEnabled
           }
         >
-          Sort By: {this.itemPicked}
+          Sort By: {this.state.isOpen ? this.itemPicked : ''}
         </label>
+        {this.renderDropdownButton()}
       </div>
     );
   }
 
   renderDropdownButton() {
     return (
-      <div style={this.styles.dropdownButton} onClick={this.toggleOpen}>
+      <div style={this.styles.dropdownButton}>
         <input
           type="image"
           style={this.styles.dropdownButton}
@@ -246,17 +246,18 @@ export class AppHeaderOptions extends React.Component<
     optionBar: {
       height: '28px',
       display: 'flex',
-      flexDirection: 'row' as 'row'
+      flexDirection: 'row' as 'row',
+      justifyContent: 'center'
     },
     dropdownBox: {
       height: '28px',
       display: 'flex',
       flexDirection: 'row' as 'row',
-      flexGrow: 3,
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid' as 'solid',
       borderLeftColor: '#a3a1a0',
-      marginLeft: '8px'
+      marginLeft: '8px',
+      flexGrow: 1
     },
     dropdownLabelEnabled: {
       overflow: 'hidden',
@@ -268,7 +269,8 @@ export class AppHeaderOptions extends React.Component<
       paddingTop: '6px',
       paddingLeft: '15px',
       paddingRight: '10px',
-      color: 'black'
+      color: 'black',
+      flexGrow: 1
     },
     dropdownLabelDisabled: {
       overflow: 'hidden',
@@ -280,7 +282,8 @@ export class AppHeaderOptions extends React.Component<
       paddingTop: '6px',
       paddingLeft: '15px',
       paddingRight: '20px',
-      color: '#E0E0E0'
+      color: '#E0E0E0',
+      flexGrow: 1
     },
     dropdownButton: { display: 'flex', height: '28px', width: '40px' },
     checkboxArea: {
