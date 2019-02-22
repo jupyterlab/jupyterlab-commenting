@@ -264,9 +264,10 @@ export class AppHeaderOptions extends React.Component<
       lineHeight: 'normal',
       fontSize: '13px',
       paddingTop: '6px',
-      paddingLeft: '15px',
+      paddingLeft: '4px',
       paddingRight: '10px',
       minWidth: '10px',
+      width: '100%',
       flexShrink: 1
     },
     dropdownLabelDisabled: {
@@ -277,8 +278,10 @@ export class AppHeaderOptions extends React.Component<
       lineHeight: 'normal',
       fontSize: '13px',
       paddingTop: '6px',
-      paddingLeft: '15px',
-      paddingRight: '20px',
+      paddingLeft: '4px',
+      paddingRight: '10px',
+      minWidth: '10px',
+      width: '100%',
       color: '#E0E0E0',
       flexShrink: 1
     },
