@@ -1,15 +1,17 @@
 .headerCheckboxLabelEnabled {
-  display: -webkit-flex;
+  display: flex;
+  padding-top: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 4px;
   padding-left: 4px;
   font-size: 13px;
-  color: black;
   text-align: right;
   margin-bottom: 0px;
-  height: 18px;
+  height: 28px;
+  min-width: 50px;
+  flex-shrink: 1;
 }
 
 .headerCheckboxLabelDisabled {
@@ -23,11 +25,12 @@
   color: #e0e0e0;
   text-align: right;
   margin-bottom: 0px;
-  height: 18px;
+  height: 28px;
 }
 
 .headerCheckbox {
   align-self: center;
+  min-width: 18px;
 }
 
 .commentFooterLeftButton {
