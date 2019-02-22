@@ -252,7 +252,9 @@ export class AppHeaderOptions extends React.Component<
       borderLeftStyle: 'solid' as 'solid',
       borderLeftColor: '#a3a1a0',
       marginLeft: '8px',
-      flexGrow: 1
+      width: '50%',
+      minWidth: '50px',
+      flexShrink: 1
     },
     dropdownLabelEnabled: {
       overflow: 'hidden',
@@ -264,8 +266,8 @@ export class AppHeaderOptions extends React.Component<
       paddingTop: '6px',
       paddingLeft: '15px',
       paddingRight: '10px',
-      color: 'black',
-      flexGrow: 1
+      minWidth: '10px',
+      flexShrink: 1
     },
     dropdownLabelDisabled: {
       overflow: 'hidden',
@@ -278,17 +280,23 @@ export class AppHeaderOptions extends React.Component<
       paddingLeft: '15px',
       paddingRight: '20px',
       color: '#E0E0E0',
-      flexGrow: 1
+      flexShrink: 1
     },
-    dropdownButton: { display: 'flex', height: '28px', width: '40px' },
-    checkboxArea: {
-      marginTop: '5px',
-      height: '18px',
+    dropdownButton: {
       display: 'flex',
-      flexDirection: 'row' as 'row',
-      flexGrow: 1
+      height: '28px',
+      width: '40px',
+      minWidth: '40px'
     },
     dropdownItemChecked: { background: '#2196f3' },
-    dropdownItem: {}
+    dropdownItem: {},
+    checkboxArea: {
+      height: '28px',
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      width: '50%',
+      minWidth: '50px',
+      flexShrink: 1
+    }
   };
 }
