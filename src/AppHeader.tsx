@@ -60,7 +60,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <div className="headerCard">
         <div style={this.styles.headercard}>
-          <div>{this.getCornerButton()}</div>
+          <div style={{ width: '12px' }}>{this.getCornerButton()}</div>
           {this.renderAppHeader(this.props.header)}
           <div style={this.styles.placeholder} />
         </div>
@@ -270,7 +270,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     header: {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      maxWidth: '200px',
       paddingTop: '4px',
       paddingBottom: '30px'
     },
@@ -280,7 +279,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       whiteSpace: 'nowrap' as 'nowrap',
       width: '100%',
       overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      textOverflow: 'ellipsis',
+      flexGrow: 1,
+      flexShrink: 1
     },
     headerIcon: {
       minWidth: '18px',
@@ -294,6 +295,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       height: '12px',
       marginTop: '11px'
     },
-    placeholder: { width: '20px' }
+    placeholder: { width: '12px' }
   };
 }

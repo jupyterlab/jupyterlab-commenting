@@ -249,6 +249,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               header={this.props.targetName}
               hasThreads={this.state.curThreadHasCards}
               showResolved={this.state.showResolved}
+              sortState={this.state.sortState}
             />
           }
         />

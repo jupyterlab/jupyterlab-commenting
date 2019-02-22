@@ -27,6 +27,7 @@ interface IAppHeaderOptionsProps {
   header: string;
   hasThreads: boolean;
   showResolved: boolean;
+  sortState: string;
 }
 
 /**
@@ -92,11 +93,6 @@ export class AppHeaderOptions extends React.Component<
     );
   }
 
-  /**
-   * Stores the Sort by: option string
-   */
-  itemPicked = 'Latest Reply';
-
   renderCheckbox() {
     return (
       <div style={this.styles.checkboxArea}>
@@ -142,7 +138,7 @@ export class AppHeaderOptions extends React.Component<
               : this.styles.dropdownLabelEnabled
           }
         >
-          Sort By: {this.state.isOpen ? this.itemPicked : ''}
+          Sort By:
         </label>
         {this.renderDropdownButton()}
       </div>
@@ -202,12 +198,12 @@ export class AppHeaderOptions extends React.Component<
           key={key}
           className="dropdown-item"
           href="#"
-          onClick={() =>
-            this.setSortState(
-              this.sortItems[key].state,
-              this.sortItems[key].name
-            )
+          style={
+            this.props.sortState === this.sortItems[key].state
+              ? this.styles.dropdownItemChecked
+              : this.styles.dropdownItem
           }
+          onClick={() => this.setSortState(this.sortItems[key].state)}
         >
           {this.sortItems[key].name}
         </a>
@@ -223,9 +219,8 @@ export class AppHeaderOptions extends React.Component<
    * @param state Type: string - Passed as an argument to the SetSortState function in "App.tsx"
    * @param name Type: string - Assigns passed value to show as a Sort by: label
    */
-  setSortState(state: string, name: string) {
+  setSortState(state: string) {
     this.toggleOpen();
-    this.itemPicked = name;
     this.props.setSortState(state);
   }
 
@@ -292,6 +287,8 @@ export class AppHeaderOptions extends React.Component<
       display: 'flex',
       flexDirection: 'row' as 'row',
       flexGrow: 1
-    }
+    },
+    dropdownItemChecked: { background: '#2196f3' },
+    dropdownItem: {}
   };
 }
