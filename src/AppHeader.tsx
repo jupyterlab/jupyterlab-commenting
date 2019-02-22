@@ -271,7 +271,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       flexDirection: 'row' as 'row',
       paddingTop: '4px',
       minWidth: '75px',
-      paddingBottom: '25px'
+      paddingBottom: '26px'
     },
     headerLabel: {
       paddingLeft: '5px',
