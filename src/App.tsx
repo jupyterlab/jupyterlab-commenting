@@ -267,7 +267,9 @@ export default class App extends React.Component<IAppProps, IAppStates> {
           }
           expanded={this.state.expandedCard !== ' '}
           newThreadButton={
-            this.state.newThreadActive ? undefined : this.getNewThreadButton()
+            this.state.newThreadActive || this.props.target === undefined
+              ? undefined
+              : this.getNewThreadButton()
           }
         />
       </div>
