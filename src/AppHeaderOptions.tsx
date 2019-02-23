@@ -249,7 +249,7 @@ export class AppHeaderOptions extends React.Component<
       flexDirection: 'row' as 'row',
       borderLeftWidth: '1px',
       borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: '#a3a1a0',
+      borderLeftColor: 'rgb(224, 224, 224)',
       marginLeft: '8px',
       width: '50%',
       minWidth: '50px',

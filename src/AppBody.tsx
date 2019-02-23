@@ -68,9 +68,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
     overflowY: 'scroll' as 'scroll',
     overflowX: 'hidden' as 'hidden',
     justifyContent: 'center',
-    paddingRight: '5px',
-    paddingLeft: '5px',
-    paddingBottom: '5px'
+    padding: '4px'
   };
 
   bodyStyleExpanded = {
