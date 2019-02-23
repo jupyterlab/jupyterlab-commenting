@@ -341,7 +341,7 @@ export class CommentCard extends React.Component<
     resolvedCard: {
       marginTop: '5px',
       marginBottom: '5px',
-      background: '#e6e6e6',
+      background: 'var(--jp-layout-color2)',
       color: '#4f4f4f'
     },
     cardHeading: {
@@ -365,13 +365,13 @@ export class CommentCard extends React.Component<
     resolvedCardHeading: {
       display: 'flex' as 'flex',
       flexDirection: 'column' as 'column',
-      background: '#e6e6e6',
+      background: 'var(--jp-layout-color2)',
       borderBottom: '0px'
     },
     resolvedCardBody: {
       display: 'flex' as 'flex',
       flexDirection: 'column' as 'column',
-      background: '#e6e6e6',
+      background: 'var(--jp-layout-color2)',
       borderBottom: '0px'
     }
   };
