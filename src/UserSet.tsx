@@ -111,7 +111,10 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
       paddinTop: '8px',
       paddingBottom: '4px',
       paddingLeft: '12px',
-      paddingRight: '12px'
+      paddingRight: '12px',
+      fontSize: 'var(--jp-ui-font-size1)',
+      fontFamily: 'helvetica',
+      border: 'unset'
     },
     field: {
       marginBottom: '5px',
