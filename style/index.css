@@ -112,6 +112,9 @@
   background: white;
   color: #2196f3;
   outline: 0px;
+  font-size: var(--jp-content-font-size1);
+  font-family: var(--jp-content-font-family);
+  line-height: var(--jp-content-line-height);
 }
 
 .commentCommentButton:disabled {
@@ -162,6 +165,9 @@
   background: white;
   color: #e57373;
   outline: 0px;
+  font-size: var(--jp-content-font-size1);
+  font-family: var(--jp-content-font-family);
+  line-height: var(--jp-content-line-height);
 }
 
 .commentCancelButton:hover {

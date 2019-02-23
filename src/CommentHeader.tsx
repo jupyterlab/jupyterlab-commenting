@@ -207,7 +207,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   styles = {
     upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    resolveButton: { marginRight: '5px', marginTop: '5px' },
+    resolveButton: {
+      marginRight: '5px',
+      marginTop: '5px',
+      fontSize: 'var(--jp-content-font-size0)',
+      fontFamily: 'var(--jp-content-font-family)'
+    },
     nameArea: {
       paddingLeft: '5px',
       display: 'flex',
