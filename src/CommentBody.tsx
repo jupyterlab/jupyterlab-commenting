@@ -37,11 +37,7 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    * React render function
    */
   render() {
-    return (
-      <div style={this.styles.commentBodyStyle} className={this.bsc}>
-        {this.getComments()}
-      </div>
-    );
+    return <div style={this.styles.commentBodyStyle}>{this.getComments()}</div>;
   }
 
   /**
@@ -76,11 +72,6 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
     }
     return items;
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc: string = 'col-lg-12 col-md-12 col-sm-12';
 
   /**
    * CSS styles

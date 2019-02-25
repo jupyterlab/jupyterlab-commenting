@@ -231,6 +231,16 @@
   box-sizing: border-box;
 }
 
+.threadCreateCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 2px;
+  padding: 1px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
 .newThreadCard:hover {
   box-shadow: var(--jp-elevation-z6);
 }

@@ -81,7 +81,12 @@ interface IAppStates {
    * @type boolean
    */
   shouldQuery: boolean;
-  curThreadHasCards: boolean;
+  /**
+   * Tracks if the current target has threads or not
+   *
+   * @type boolean
+   */
+  curTargetHasThreads: boolean;
 }
 
 /**
@@ -112,6 +117,9 @@ interface IAppProps {
   targetName: string;
 }
 
+/**
+ * The interval function that is used to pull in threads / comments every set interval
+ */
 let periodicUpdate: number;
 
 /**
@@ -134,10 +142,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       newThreadActive: false,
       userSet: false,
       shouldQuery: true,
+      curTargetHasThreads: false,
       creator: {},
       myThreads: [],
-      response: { data: { annotationsByTarget: { length: 0 } } },
-      curThreadHasCards: false
+      response: { data: { annotationsByTarget: { length: 0 } } }
     };
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
@@ -176,6 +184,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Called each time the component updates
    */
   componentDidUpdate(): void {
+    // Queries new data if there is a new target
     if (this.state.response.data.annotationsByTarget !== undefined) {
       if (this.state.response.data.annotationsByTarget.length !== 0) {
         if (
@@ -192,6 +201,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       }
     }
 
+    // Handles querying new data
     if (this.state.shouldQuery) {
       if (this.props.target !== undefined) {
         this.props.commentsService
@@ -204,14 +214,14 @@ export default class App extends React.Component<IAppProps, IAppStates> {
                 ),
                 response: response,
                 shouldQuery: false,
-                curThreadHasCards: true
+                curTargetHasThreads: true
               });
             } else {
               this.state.myThreads.length !== 0 &&
                 this.setState({
                   myThreads: [],
                   shouldQuery: false,
-                  curThreadHasCards: false,
+                  curTargetHasThreads: false,
                   newThreadActive: false
                 });
             }
@@ -219,12 +229,13 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       }
     }
 
+    // Handles when there is no target
     if (this.props.target === undefined) {
       this.state.myThreads.length !== 0 &&
         this.setState({
           myThreads: [],
           shouldQuery: false,
-          curThreadHasCards: false,
+          curTargetHasThreads: false,
           newThreadActive: false
         });
     }
@@ -247,7 +258,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               showResolvedState={this.showResolved}
               cardExpanded={this.state.expandedCard !== ' '}
               header={this.props.targetName}
-              hasThreads={this.state.curThreadHasCards}
+              hasThreads={this.state.curTargetHasThreads}
               showResolved={this.state.showResolved}
               sortState={this.state.sortState}
             />
@@ -313,6 +324,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     return cards.reverse();
   }
 
+  /**
+   * JSX of new thread button
+   *
+   * @return Type: React.ReactNode - New thread button
+   */
   getNewThreadButton(): React.ReactNode {
     return (
       <div

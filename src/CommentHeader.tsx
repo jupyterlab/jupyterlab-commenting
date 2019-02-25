@@ -198,11 +198,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   }
 
   /**
-   * Bootstrap classNames
-   */
-  bsc = { tag: 'badge badge-secondary row-offset-1', tagArea: 'col' };
-
-  /**
    * CSS styles
    */
   styles = {

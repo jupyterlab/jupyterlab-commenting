@@ -92,12 +92,11 @@ export class CommentFooter extends React.Component<
    */
   render() {
     return (
-      <div className={this.bsc.buttonArea} style={this.styles.footerArea}>
+      <div style={this.styles.footerArea}>
         <div>
           {(this.props.expanded &&
             this.props.replyActive && (
               <textarea
-                className={this.bsc.input}
                 style={this.styles.replyBoxActive}
                 id={'commentBox'}
                 value={
@@ -113,7 +112,6 @@ export class CommentFooter extends React.Component<
             (this.props.expanded &&
               !this.props.replyActive && (
                 <textarea
-                  className={this.bsc.input}
                   style={this.styles.replyBoxDisabled}
                   id={'commentBox'}
                   value={this.state.commentBox.trim()}
@@ -221,14 +219,6 @@ export class CommentFooter extends React.Component<
     this.setState({ commentBox: '' });
     this.props.handleReplyClose();
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    buttonArea: 'col',
-    input: 'form-control form-control-sm'
-  };
 
   /**
    * CSS styles

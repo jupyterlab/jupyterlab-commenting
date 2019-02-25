@@ -44,11 +44,10 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   render() {
     return (
-      <div className="card" style={this.styles.card}>
+      <div className="threadCreateCard" style={this.styles.card}>
         <label style={this.styles.label}>Enter GitHub Username</label>
         <input
           type="text"
-          className="form-control form-control-sm"
           style={this.styles.field}
           placeholder="Name"
           onChange={this.handleInputChange}
@@ -95,13 +94,6 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
   handleSubmit(): void {
     this.props.setUserInfo(this.state.inputBox);
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    input: 'form-control form-control-sm'
-  };
 
   /**
    * CSS styles

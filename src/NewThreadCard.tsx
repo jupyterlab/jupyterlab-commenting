@@ -54,10 +54,9 @@ export class NewThreadCard extends React.Component<
    */
   render() {
     return (
-      <div className="card" style={this.styles.card}>
+      <div className="threadCreateCard" style={this.styles.card}>
         <label style={this.styles.name}>{this.props.creator.name}</label>
         <textarea
-          className={this.bsc.input}
           style={this.styles.inputBox}
           id={'commentBox'}
           value={
@@ -135,13 +134,6 @@ export class NewThreadCard extends React.Component<
       this.createNewThread();
     }
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    input: 'form-control form-control-sm'
-  };
 
   /**
    * CSS styles
