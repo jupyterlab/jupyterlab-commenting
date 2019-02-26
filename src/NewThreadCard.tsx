@@ -58,6 +58,7 @@ export class NewThreadCard extends React.Component<
         <label style={this.styles.name}>{this.props.creator.name}</label>
         <textarea
           style={this.styles.inputBox}
+          className="textArea"
           id={'commentBox'}
           value={
             this.state.inputBox.trim() === ''
@@ -82,7 +83,7 @@ export class NewThreadCard extends React.Component<
   getCommentButton(): React.ReactNode {
     return (
       <button
-        className={'commentCommentButton commentFooterRightButton float-right'}
+        className="--jp-commenting-button-blue"
         type="button"
         onClick={this.createNewThread}
         disabled={this.state.inputBox.trim() === ''}
@@ -95,7 +96,7 @@ export class NewThreadCard extends React.Component<
   getCancelButton(): React.ReactNode {
     return (
       <button
-        className="commentCancelButton commentFooterLeftButton float-right"
+        className="--jp-commenting-button-red"
         type="button"
         onClick={this.cancelThread}
       >

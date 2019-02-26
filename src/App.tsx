@@ -246,7 +246,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return this.state.userSet ? (
-      <div className={'Commenting'}>
+      <div className="--jp-commenting-window">
         <AppHeader
           header={this.props.targetName}
           cardExpanded={this.state.expandedCard !== ' '}
@@ -285,7 +285,9 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         />
       </div>
     ) : (
-      <UserSet setUserInfo={this.setUserInfo} />
+      <div className="--jp-commenting-window">
+        <UserSet setUserInfo={this.setUserInfo} />
+      </div>
     );
   }
 

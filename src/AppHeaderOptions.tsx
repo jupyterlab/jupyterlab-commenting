@@ -74,9 +74,11 @@ export class AppHeaderOptions extends React.Component<
    * React render function
    */
   render() {
-    const menuClass = `dropDownMenu${this.state.isOpen ? ' show' : ''}`;
+    const menuClass = `--jp-commenting-header-options-dropdown-menu${
+      this.state.isOpen ? ' show' : ''
+    }`;
     return (
-      <div className="headerOptionsCard">
+      <div className="--jp-commenting-header-options-area">
         <div className={menuClass} style={{ marginTop: '30px' }}>
           {this.getSortItems()}
         </div>
@@ -96,8 +98,8 @@ export class AppHeaderOptions extends React.Component<
             this.props.cardExpanded ||
             this.props.header === undefined ||
             !this.props.hasThreads
-              ? 'headerCheckboxLabelDisabled'
-              : 'headerCheckboxLabelEnabled'
+              ? '--jp-commenting-header-options-checkbox-label-disable'
+              : '--jp-commenting-header-options-checkbox-label-enable'
           }
         >
           Show Resolved
@@ -110,7 +112,7 @@ export class AppHeaderOptions extends React.Component<
               'controls'
             ) as HTMLInputElement)
           }
-          className={'headerCheckbox'}
+          className={'bp3-checkbox --jp-commenting-header-options-checkbox'}
           disabled={
             this.props.cardExpanded ||
             this.props.header === undefined ||
@@ -193,8 +195,8 @@ export class AppHeaderOptions extends React.Component<
           key={key}
           className={
             this.props.sortState === this.sortItems[key].state
-              ? 'dropdownItem jp-mod-selected'
-              : 'dropdownItem'
+              ? '--jp-commenting-header-options-dropdown-item jp-mod-selected'
+              : '--jp-commenting-header-options-dropdown-item'
           }
           href="#"
           onClick={() => this.setSortState(this.sortItems[key].state)}

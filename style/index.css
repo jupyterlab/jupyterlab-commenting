@@ -1,44 +1,44 @@
-.Commenting {
-  background: white;
+.--jp-commenting-window {
+  background: var(--jp-layout-color0);
   height: 100%;
 }
 
-.headerCheckboxLabelEnabled {
+.--jp-commenting-header-options-checkbox-label-enable {
   display: flex;
-  padding-top: 5px;
+  padding-top: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 4px;
   padding-left: 4px;
-  font-size: 13px;
+  font-size: var(--jp-ui-font-size1);
   text-align: right;
   margin-bottom: 0px;
   height: 28px;
-  min-width: 50px;
+  min-width: 52px;
   flex-shrink: 1;
 }
 
-.headerCheckboxLabelDisabled {
+.--jp-commenting-header-options-checkbox-label-disable {
   display: flex;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding-right: 4px;
   padding-left: 4px;
-  font-size: 13px;
+  font-size: var(--jp-ui-font-size1);
   color: #e0e0e0;
   text-align: right;
   margin-bottom: 0px;
   height: 28px;
 }
 
-.headerCheckbox {
+.--jp-commenting-header-options-checkbox {
   align-self: center;
   min-width: 18px;
 }
 
-.dropdownItem {
+.--jp-commenting-header-options-dropdown-item {
   display: block;
   width: 100%;
   padding: 0.25rem 1.5rem;
@@ -51,19 +51,19 @@
   border: 0;
 }
 
-.dropdownItem.jp-mod-selected {
+.--jp-commenting-header-options-dropdown-item.jp-mod-selected {
   background: var(--jp-brand-color1);
-  color: white;
+  color: var(--jp-ui-inverse-font-color0);
   text-decoration-line: none;
 }
 
-.dropdownItem:hover:not(.jp-mod-selected) {
+.--jp-commenting-header-options-dropdown-item:hover:not(.jp-mod-selected) {
   background: var(--jp-layout-color2);
-  color: black;
+  color: var(--jp-ui-font-color0);
   text-decoration-line: none;
 }
 
-.dropDownMenu {
+.--jp-commenting-header-options-dropdown-menu {
   position: absolute;
   top: inherit;
   right: 0;
@@ -73,138 +73,85 @@
   float: left;
   text-align: left;
   list-style: none;
-  background-color: #fff;
+  background-color: var(--jp-ui-inverse-font-color0);
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 0.25rem;
+  border: 1px solid var(--jp-input-border-color);
+  border-radius: var(--jp-border-radius);
 }
-.dropDownMenu.show {
+
+.--jp-commenting-header-options-dropdown-menu.show {
   display: block;
 }
 
-.commentFooterLeftButton {
-  background: #e0e0e0;
-  color: black;
-  border-radius: 2px;
-  box-shadow: none;
-  border: none;
-  outline: 0px;
-  margin-left: 0px;
-  margin-right: 4px;
-}
-
-.commentFooterLeftButton:active {
-  background-color: #bdbdbd;
-  outline: 0px;
-}
-
-.commentFooterLeftButton:hover {
-  background-color: #bdbdbd;
-  outline: 0px;
-}
-
-.commentFooterLeftButton:focus {
-  outline: 0px;
-}
-
-.commentFooterRightButton {
-  background: #e0e0e0;
-  color: black;
-  border-radius: 2px;
-  border: none;
-  box-shadow: none;
-  outline: 0px;
-  margin-left: 4px;
-  margin-right: -5px;
-}
-
-.commentFooterRightButton:active {
-  background-color: #bdbdbd;
-  outline: 0px;
-}
-
-.commentFooterRightButton:hover {
-  background-color: #bdbdbd;
-  outline: 0px;
-}
-
-.commentFooterRightButton:focus {
-  outline: 0px;
-}
-
-.commentCommentButton {
-  background: white;
-  color: #2196f3;
-  outline: 0px;
-  font-size: var(--jp-content-font-size1);
-  font-family: var(--jp-content-font-family);
-  line-height: var(--jp-content-line-height);
-}
-
-.commentCommentButton:disabled {
-  background: white;
-  color: #e0e0e0;
-  outline: 0px;
-}
-
-.commentCommentButton:disabled:hover {
-  background: white;
-  color: #e0e0e0;
-  outline: 0px;
-}
-
-.commentCommentButton:hover {
-  background: #e0e0e0;
-  outline: 0px;
-}
-
-.commentCommentButton:active {
-  background: #bdbdbd;
-  outline: 0px;
-}
-
-.commentReopenButton {
-  background: #e6e6e6;
-  color: #2196f3;
-  outline: 0px;
-}
-
-.commentReopenButton:hover {
-  background: #e0e0e0;
-  outline: 0px;
-}
-
-.commentResolveButton {
-  background: white;
-  color: #2196f3;
-  outline: 0px;
-}
-
-.commentResolveButton:hover {
-  background: #e0e0e0;
-  outline: 0px;
-}
-
-.commentCancelButton {
+.--jp-commenting-button-red {
   background: white;
   color: #e57373;
-  outline: 0px;
-  font-size: var(--jp-content-font-size1);
+  font-size: var(--jp-content-font-size0);
   font-family: var(--jp-content-font-family);
   line-height: var(--jp-content-line-height);
+  border-radius: var(--jp-border-radius);
+  box-shadow: none;
+  border: none;
+  outline: 0px;
 }
 
-.commentCancelButton:hover {
+.--jp-commenting-button-red:hover {
   background: #e0e0e0;
   outline: 0px;
 }
 
-.commentCancelButton:active {
+.--jp-commenting-button-red:active {
   background: #bdbdbd;
   outline: 0px;
 }
 
-.headerOptionsCard {
+.--jp-commenting-button-red:focus {
+  outline: 0px;
+}
+
+.--jp-commenting-button-blue {
+  background: white;
+  color: #2196f3;
+  outline: 0px;
+  font-size: var(--jp-content-font-size0);
+  font-family: var(--jp-content-font-family);
+  line-height: var(--jp-content-line-height);
+  border-radius: var(--jp-border-radius);
+  border: none;
+  box-shadow: none;
+}
+
+.--jp-commenting-button-blue:disabled {
+  background: white;
+  color: #e0e0e0;
+  outline: 0px;
+}
+
+.--jp-commenting-button-blue:disabled:hover {
+  background: white;
+  color: #e0e0e0;
+  outline: 0px;
+}
+
+.--jp-commenting-button-blue:hover {
+  background: #e0e0e0;
+  outline: 0px;
+}
+
+.--jp-commenting-button-blue:active {
+  background: #bdbdbd;
+  outline: 0px;
+}
+
+.--jp-commenting-button-blue:focus {
+  outline: 0px;
+}
+
+.--jp-commenting-button-resolved {
+  background: var(--jp-layout-color2);
+}
+
+.--jp-commenting-header-options-area {
   display: flex;
   flex-direction: column;
   padding: 1px;
@@ -212,7 +159,7 @@
   box-sizing: border-box;
 }
 
-.headerCard {
+.--jp-commenting-header-area {
   display: flex;
   flex-direction: column;
   padding: 1px;
@@ -220,28 +167,28 @@
   box-sizing: border-box;
 }
 
-.threadCard {
+.--jp-commenting-thread-area {
   display: flex;
   flex-direction: column;
-  border-radius: 2px;
+  border-radius: var(--jp-border-radius);
   padding: 1px;
   border: 1px solid #e0e0e0;
   box-sizing: border-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
-.threadCardDisabled {
-  display: flex;
-  flex-direction: column;
-  border-radius: 2px;
-  padding: 1px;
-  border: 1px solid #e0e0e0;
-  box-sizing: border-box;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-.threadCard:hover {
+.--jp-commenting-thread-area:hover {
   box-shadow: var(--jp-elevation-z6);
+}
+
+.--jp-commenting-thread-area-disabled {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--jp-border-radius);
+  padding: 1px;
+  border: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .newThreadCard {
@@ -314,4 +261,21 @@
   margin-right: 10px;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.textArea {
+  border-color: var(--jp-input-border-color);
+  border-radius: var(--jp-border-radius);
+  border-width: var(--jp-border-width);
+  background-color: var(--jp-input-background);
+}
+
+.textArea:hover {
+  background-color: var(--jp-input-hover-background);
+}
+
+.textArea:focus {
+  background-color: var(--jp-input-active-background);
+  border-color: var(--jp-input-active-border-color);
+  box-shadow: var(--jp-input-box-shadow);
 }

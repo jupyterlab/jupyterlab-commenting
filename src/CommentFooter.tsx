@@ -97,6 +97,7 @@ export class CommentFooter extends React.Component<
           {(this.props.expanded &&
             this.props.replyActive && (
               <textarea
+                className="textArea"
                 style={this.styles.replyBoxActive}
                 id={'commentBox'}
                 value={
@@ -113,6 +114,7 @@ export class CommentFooter extends React.Component<
               !this.props.replyActive && (
                 <textarea
                   style={this.styles.replyBoxDisabled}
+                  className="textArea"
                   id={'commentBox'}
                   value={this.state.commentBox.trim()}
                   onChange={this.handleChangeCommentBox}
@@ -154,7 +156,7 @@ export class CommentFooter extends React.Component<
     return (
       <button
         onClick={this.handleCommentButton}
-        className="commentCommentButton commentFooterRightButton float-right"
+        className="--jp-commenting-button-blue"
         type="button"
         disabled={this.state.commentBox.trim() === ''}
       >
@@ -172,7 +174,7 @@ export class CommentFooter extends React.Component<
     return (
       <button
         onClick={this.handleCancelButton}
-        className="commentCancelButton commentFooterLeftButton float-right"
+        className="--jp-commenting-button-red"
         type="button"
       >
         Cancel

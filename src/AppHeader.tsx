@@ -58,7 +58,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   render() {
     return (
-      <div className="headerCard">
+      <div className="--jp-commenting-header-area">
         <div style={this.styles.headercard}>
           <div style={{ width: '17px', marginLeft: '4px' }}>
             {this.getCornerButton()}

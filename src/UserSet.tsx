@@ -49,13 +49,14 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
         <input
           type="text"
           style={this.styles.field}
+          className="bp3-input bp3-small"
           placeholder="Name"
           onChange={this.handleInputChange}
           onKeyPress={this.handleKeyPress}
         />
         <div style={{ float: 'right' }}>
           <button
-            className={'commentCommentButton commentFooterRightButton'}
+            className="--jp-commenting-button-blue"
             style={{ marginLeft: '0px' }}
             type="button"
             onClick={this.handleSubmit}
