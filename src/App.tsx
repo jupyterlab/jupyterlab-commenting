@@ -246,7 +246,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return this.state.userSet ? (
-      <div>
+      <div className={'Commenting'}>
         <AppHeader
           header={this.props.targetName}
           cardExpanded={this.state.expandedCard !== ' '}

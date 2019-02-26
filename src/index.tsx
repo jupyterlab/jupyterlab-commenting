@@ -14,16 +14,11 @@ import { UseSignal } from '@jupyterlab/apputils';
 
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
-import {
-  IActiveDataset,
-  IConverterRegistry,
-} from '@jupyterlab/databus';
+import { IActiveDataset, IConverterRegistry } from '@jupyterlab/databus';
 
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 import App from './App';
-
-import 'bootstrap/dist/css/bootstrap.css';
 
 /**
  * Activate the extension

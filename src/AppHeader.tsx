@@ -284,8 +284,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     headerIcon: {
       minWidth: '18px',
       minHeight: '18px',
-      backgroundSize: '18px',
-      padding: '8px'
+      backgroundSize: '18px'
     },
     backButton: {
       display: 'flex',
