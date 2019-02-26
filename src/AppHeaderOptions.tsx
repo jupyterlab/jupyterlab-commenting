@@ -74,15 +74,10 @@ export class AppHeaderOptions extends React.Component<
    * React render function
    */
   render() {
-    const menuClass = `dropdown-menu dropdown-menu-right${
-      this.state.isOpen ? ' show' : ''
-    }`;
+    const menuClass = `dropDownMenu${this.state.isOpen ? ' show' : ''}`;
     return (
       <div className="headerOptionsCard">
-        <div
-          className={menuClass}
-          style={{ top: 'inherit', marginTop: '28px' }}
-        >
+        <div className={menuClass} style={{ marginTop: '30px' }}>
           {this.getSortItems()}
         </div>
         <div style={this.styles.optionBar}>

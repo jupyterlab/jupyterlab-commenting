@@ -64,7 +64,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
             {this.getCornerButton()}
           </div>
           {this.renderAppHeader(this.props.header)}
-          <div style={this.styles.placeholder} />
         </div>
         {this.shouldRenderOptions()}
       </div>
@@ -293,7 +292,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       width: '12px',
       height: '12px',
       marginTop: '4px'
-    },
-    placeholder: { width: '12px', minWidth: '12px' }
+    }
   };
 }

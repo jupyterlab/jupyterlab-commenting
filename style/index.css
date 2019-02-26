@@ -38,7 +38,7 @@
   width: 100%;
   padding: 0.25rem 1.5rem;
   clear: both;
-  font-weight: 400;
+  font-size: var(--jp-content-font-size1);
   color: #212529;
   text-align: inherit;
   white-space: nowrap;
@@ -56,6 +56,25 @@
   background: var(--jp-layout-color2);
   color: black;
   text-decoration-line: none;
+}
+
+.dropDownMenu {
+  position: absolute;
+  top: inherit;
+  right: 0;
+  left: auto;
+  z-index: 1000;
+  display: none;
+  float: left;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+.dropDownMenu.show {
+  display: block;
 }
 
 .commentFooterLeftButton {
