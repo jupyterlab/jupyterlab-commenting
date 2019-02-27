@@ -53,22 +53,30 @@ export class Comment extends React.Component<ICommentProps> {
     return (
       <div style={this.styles.commentHeader}>
         <div style={this.styles.upperComment}>
-          <div>
+          <div style={{ paddingTop: '5px', paddingLeft: '6px' }}>
             <img style={this.styles.photo} src={this.props.photo} />
           </div>
-          <div style={this.styles.nameArea}>
-            <h1 style={this.styles.name}>{this.props.name}</h1>
+          <div style={this.styles.commentInfo}>
+            <div style={this.styles.nameArea}>
+              <h1 style={this.styles.name}>{this.props.name}</h1>
+            </div>
             <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
           </div>
         </div>
         <div
-          style={
-            this.props.expanded
-              ? this.styles.contextExpanded
-              : this.styles.contextNotExpanded
-          }
+          style={{
+            paddingLeft: '6px',
+            paddingRight: '10px',
+            paddingTop: '2px'
+          }}
         >
-          <p style={this.styles.commentStyle}>{this.props.context}</p>
+          <p
+            className={
+              this.props.expanded ? 'textFieldExpanded' : 'textFieldNotExpanded'
+            }
+          >
+            {this.props.context}
+          </p>
         </div>
       </div>
     );
@@ -111,47 +119,24 @@ export class Comment extends React.Component<ICommentProps> {
   styles = {
     upperComment: { display: 'flex', flexDirection: 'row' as 'row' },
     commentHeader: { marginBottom: '10px' },
-    nameArea: {
+    commentInfo: {
       paddingLeft: '5px',
       display: 'flex',
       flexDirection: 'column' as 'column'
     },
-    commentStyle: { marginBottom: '0px' },
     photo: {
       height: '2em',
       width: '2em',
-      marginLeft: '6px',
-      marginTop: '5px',
       borderRadius: '2px'
+    },
+    nameArea: {
+      paddingTop: '8px'
     },
     name: {
       fontSize: '12px',
       fontWeight: 'bold' as 'bold',
-      marginBottom: '4px',
-      marginTop: '8px'
+      margin: '0px'
     },
-    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '-4px' },
-    contextNotExpanded: {
-      maxHeight: '30px',
-      maxWidth: '350px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      fontSize: '.8em',
-      lineHeight: 'normal',
-      paddingLeft: '5px',
-      paddingRight: '10px',
-      marginBottom: '0px'
-    },
-    contextExpanded: {
-      height: '100%',
-      maxWidth: '350px',
-      overflow: '',
-      textOverflow: 'ellipsis',
-      fontSize: '.8em',
-      lineHeight: 'normal',
-      paddingLeft: '5px',
-      paddingRight: '10px',
-      marginBottom: '0px'
-    }
+    timestamp: { fontSize: '.7em' }
   };
 }

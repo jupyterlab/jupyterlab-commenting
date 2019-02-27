@@ -94,6 +94,11 @@ export class AppHeaderOptions extends React.Component<
     return (
       <div style={this.styles.checkboxArea}>
         <label
+          style={{
+            paddingTop: '5px',
+            paddingRight: '4px',
+            paddingLeft: '4px'
+          }}
           className={
             this.props.cardExpanded ||
             this.props.header === undefined ||
