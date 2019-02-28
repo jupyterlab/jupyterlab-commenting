@@ -44,7 +44,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   render() {
     return (
-      <div className="--jp-commenting-user-set-area" style={this.styles.card}>
+      <div className="jp-commenting-user-set-area" style={this.styles.card}>
         <label style={this.styles.label}>Enter GitHub Username</label>
         <input
           type="text"
@@ -56,7 +56,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
         />
         <div style={{ float: 'right' }}>
           <button
-            className="--jp-commenting-button-blue"
+            className="jp-commenting-button-blue"
             style={{ marginLeft: '0px' }}
             type="button"
             onClick={this.handleSubmit}

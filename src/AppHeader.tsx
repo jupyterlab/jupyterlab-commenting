@@ -257,7 +257,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     'jp-commenting-header-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
-      padding: '1px',
       borderBottom: '1px solid #e0e0e0',
       boxSizing: 'border-box' as 'border-box'
     },
@@ -269,7 +268,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       fontSize: 'var(--jp-ui-font-size1)'
     },
     'jp-commenting-back-arrow-area': {
-      width: '18px',
+      width: '20px',
       marginLeft: '4px'
     },
     'jp-commenting-header-text-empty': {
@@ -302,9 +301,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       flexShrink: 1
     },
     'jp-commenting-header-icon': {
-      minWidth: '18px',
-      minHeight: '18px',
-      backgroundSize: '18px'
+      minWidth: '20px',
+      minHeight: '20px',
+      backgroundSize: '20px'
     },
     'jp-commenting-header-button-back': {
       display: 'flex',

@@ -102,7 +102,7 @@ export class CommentFooter extends React.Component<
         >
           {this.props.expanded && (
             <textarea
-              className="--jp-commenting-text-area"
+              className="jp-commenting-text-area"
               id={'commentBox'}
               value={
                 this.state.commentBox.trim() === ''
@@ -146,7 +146,7 @@ export class CommentFooter extends React.Component<
     return (
       <button
         onClick={this.handleCommentButton}
-        className="--jp-commenting-button-blue"
+        className="jp-commenting-button-blue"
         type="button"
         disabled={this.state.commentBox.trim() === ''}
       >
@@ -164,7 +164,7 @@ export class CommentFooter extends React.Component<
     return (
       <button
         onClick={this.handleCancelButton}
-        className="--jp-commenting-button-red"
+        className="jp-commenting-button-red"
         type="button"
       >
         Cancel

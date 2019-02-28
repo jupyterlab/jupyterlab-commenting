@@ -73,8 +73,8 @@ export class Comment extends React.Component<ICommentProps> {
           <p
             className={
               this.props.expanded
-                ? '--jp-commenting-annotation-expanded'
-                : '--jp-commenting-annotation-not-expanded'
+                ? 'jp-commenting-annotation-expanded'
+                : 'jp-commenting-annotation-not-expanded'
             }
           >
             {this.props.context.length >= 125 && !this.props.expanded

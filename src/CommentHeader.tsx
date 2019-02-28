@@ -109,8 +109,8 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
           <p
             className={
               this.props.expanded
-                ? '--jp-commenting-annotation-expanded'
-                : '--jp-commenting-annotation-not-expanded'
+                ? 'jp-commenting-annotation-expanded'
+                : 'jp-commenting-annotation-not-expanded'
             }
           >
             {this.props.context.length >= 125 && !this.props.expanded
@@ -130,7 +130,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getResolveButton(): React.ReactNode {
     return (
       <button
-        className="--jp-commenting-button-blue"
+        className="jp-commenting-button-blue"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -145,7 +145,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getReopenButton(): React.ReactNode {
     return (
       <button
-        className="--jp-commenting-button-blue --jp-commenting-button-resolved"
+        className="jp-commenting-button-blue jp-commenting-button-resolved"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}

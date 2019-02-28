@@ -246,7 +246,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    */
   render() {
     return this.state.userSet ? (
-      <div className="--jp-commenting-window">
+      <div className="jp-commenting-window">
         <AppHeader
           header={this.props.targetName}
           cardExpanded={this.state.expandedCard !== ' '}
@@ -285,7 +285,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
         />
       </div>
     ) : (
-      <div className="--jp-commenting-window">
+      <div className="jp-commenting-window">
         <UserSet setUserInfo={this.setUserInfo} />
       </div>
     );
@@ -334,10 +334,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   getNewThreadButton(): React.ReactNode {
     return (
       <div
-        className="--jp-commenting-new-thread-button"
+        className="jp-commenting-new-thread-button"
         onClick={() => this.setNewThreadActive(true)}
       >
-        <span className="--jp-commenting-new-thread-label">
+        <span className="jp-commenting-new-thread-label">
           New Comment Thread
         </span>
         <span className="jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16" />

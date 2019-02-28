@@ -129,8 +129,8 @@ export class CommentCard extends React.Component<
       <div
         className={
           this.props.checkExpandedCard(this.props.threadId)
-            ? '--jp-commenting-thread-area-disabled'
-            : '--jp-commenting-thread-area'
+            ? 'jp-commenting-thread-area-disabled'
+            : 'jp-commenting-thread-area'
         }
         style={
           this.props.resolved ? this.styles.resolvedCard : this.styles.card
