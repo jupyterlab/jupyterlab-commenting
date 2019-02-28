@@ -109,7 +109,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         >
           <p
             className={
-              this.props.expanded ? 'textFieldExpanded' : 'textFieldNotExpanded'
+              this.props.expanded
+                ? '--jp-commenting-annotation-expanded'
+                : '--jp-commenting-annotation-not-expanded'
             }
           >
             {this.props.context}

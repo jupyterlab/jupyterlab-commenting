@@ -334,15 +334,13 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   getNewThreadButton(): React.ReactNode {
     return (
       <div
-        className="newThreadCard"
+        className="--jp-commenting-new-thread-button"
         onClick={() => this.setNewThreadActive(true)}
       >
-        <span className="newThreadLabel">New Comment Thread</span>
-        <span
-          className={
-            'newThreadButton jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16'
-          }
-        />
+        <span className="--jp-commenting-new-thread-label">
+          New Comment Thread
+        </span>
+        <span className="jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16" />
       </div>
     );
   }

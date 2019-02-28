@@ -93,40 +93,30 @@ export class CommentFooter extends React.Component<
   render() {
     return (
       <div style={this.styles.footerArea}>
-        <div>
-          {(this.props.expanded &&
-            this.props.replyActive && (
-              <textarea
-                className="textArea"
-                style={this.styles.replyBoxActive}
-                id={'commentBox'}
-                value={
-                  this.state.commentBox.trim() === ''
-                    ? this.state.commentBox.trim()
-                    : this.state.commentBox
-                }
-                onChange={this.handleChangeCommentBox}
-                onKeyPress={this.handleKeyPress}
-                placeholder="Reply..."
-              />
-            )) ||
-            (this.props.expanded &&
-              !this.props.replyActive && (
-                <textarea
-                  style={this.styles.replyBoxDisabled}
-                  className="textArea"
-                  id={'commentBox'}
-                  value={this.state.commentBox.trim()}
-                  onChange={this.handleChangeCommentBox}
-                  onKeyPress={this.handleKeyPress}
-                  onFocusCapture={this.props.handleReplyOpen}
-                  placeholder="Reply..."
-                />
-              ))}
+        <div
+          style={
+            this.props.replyActive
+              ? this.styles.inputBoxAreaActive
+              : this.styles.inputBoxAreaNotActive
+          }
+        >
+          {this.props.expanded && (
+            <textarea
+              className="--jp-commenting-text-area"
+              id={'commentBox'}
+              value={
+                this.state.commentBox.trim() === ''
+                  ? this.state.commentBox.trim()
+                  : this.state.commentBox
+              }
+              onChange={this.handleChangeCommentBox}
+              onKeyPress={this.handleKeyPress}
+              onFocusCapture={this.props.handleReplyOpen}
+              placeholder="Reply..."
+            />
+          )}
         </div>
-        <div>
-          <div style={this.styles.buttonArea}>{this.getButtons()}</div>
-        </div>
+        <div style={this.styles.buttonArea}>{this.getButtons()}</div>
       </div>
     );
   }
@@ -227,26 +217,22 @@ export class CommentFooter extends React.Component<
    */
   styles = {
     footerArea: {
-      marginBottom: '5px',
-      paddingLeft: '5px',
-      paddingRight: '5px',
-      paddingTop: '0px',
-      paddingBottom: '0px',
-      background: 'white'
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      maxHeight: '94px',
+      padding: '4px'
     },
     buttonArea: {
-      marginRight: '5px',
-      marginTop: '8px'
+      display: 'flex',
+      marginTop: '16px'
     },
-    replyBoxActive: {
-      width: '100%',
-      height: '80px',
-      lineHeight: 'normal'
+    inputBoxAreaActive: {
+      display: 'flex',
+      height: '60px'
     },
-    replyBoxDisabled: {
-      width: '100%',
-      height: '25px',
-      lineHeight: 'normal'
+    inputBoxAreaNotActive: {
+      display: 'flex',
+      height: '14px'
     }
   };
 }

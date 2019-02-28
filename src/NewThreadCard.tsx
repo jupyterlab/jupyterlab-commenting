@@ -54,20 +54,21 @@ export class NewThreadCard extends React.Component<
    */
   render() {
     return (
-      <div className="threadCreateCard" style={this.styles.card}>
+      <div className="--jp-commenting-new-thread-area">
         <label style={this.styles.name}>{this.props.creator.name}</label>
-        <textarea
-          style={this.styles.inputBox}
-          className="textArea"
-          id={'commentBox'}
-          value={
-            this.state.inputBox.trim() === ''
-              ? this.state.inputBox.trim()
-              : this.state.inputBox
-          }
-          onChange={this.handleChangeCommentBox}
-          onKeyPress={this.handleKeyPress}
-        />
+        <div style={this.styles.inputBoxArea}>
+          <textarea
+            className="--jp-commenting-text-area"
+            id={'commentBox'}
+            value={
+              this.state.inputBox.trim() === ''
+                ? this.state.inputBox.trim()
+                : this.state.inputBox
+            }
+            onChange={this.handleChangeCommentBox}
+            onKeyPress={this.handleKeyPress}
+          />
+        </div>
         <div style={this.styles.buttons}>
           {this.getCommentButton()}
           {this.getCancelButton()}
@@ -140,28 +141,26 @@ export class NewThreadCard extends React.Component<
    * CSS styles
    */
   styles = {
-    card: {
-      padding: '5px',
-      marginTop: '5px'
-    },
-    field: {
-      marginBottom: '5px'
-    },
-    inputBox: {
-      width: '100%',
-      height: '80px',
+    inputBoxArea: {
+      display: 'flex',
+      padding: '4px',
+      maxWidth: '95%',
+      minHeight: '80px',
       lineHeight: 'normal'
     },
     name: {
+      display: 'flex',
       fontSize: '16px',
       fontWeight: 'bold' as 'bold',
-      marginTop: '6px',
-      marginBottom: '6px',
-      marginLeft: '3px'
+      marginTop: '4px',
+      marginBottom: '4px',
+      marginLeft: '4px'
     },
     buttons: {
-      marginTop: '5px',
-      marginRight: '10px'
+      display: 'flex',
+      marginTop: '12px',
+      marginBottom: '4px',
+      marginLeft: '4px'
     }
   };
 }
