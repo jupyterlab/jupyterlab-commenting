@@ -168,7 +168,7 @@
   box-shadow: var(--jp-elevation-z6);
 }
 
-.jp-commenting-thread-area-disabled {
+.jp-commenting-thread-area-no-hover {
   display: flex;
   flex-direction: column;
   border-radius: var(--jp-border-radius);
@@ -186,7 +186,6 @@
   border: 1px solid #e0e0e0;
   box-sizing: border-box;
 }
-
 
 .jp-commenting-new-thread-button {
   display: flex;
@@ -245,23 +244,4 @@
   background-color: var(--jp-input-active-background);
   border-color: var(--jp-input-active-border-color);
   box-shadow: var(--jp-input-box-shadow);
-}
-
-.jp-commenting-annotation-not-expanded {
-  display: flex;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 350px;
-  max-height: 30px;
-  font-size: var(--jp-content-font-size0);
-  line-height: normal;
-}
-
-.jp-commenting-annotation-expanded {
-  display: flex;
-  font-size: var(--jp-content-font-size0);
-  line-height: normal;
-  max-height: 100%;
-  max-width: 350px;
-  overflow-wrap: anywhere;
 }

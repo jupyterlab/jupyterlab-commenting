@@ -87,32 +87,33 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   render() {
     return (
       <div>
-        <div style={this.styles.upperHeader}>
-          <div style={{ paddingLeft: '5px', paddingTop: '5px' }}>
-            <img style={this.styles.photo} src={this.props.photo} />
+        <div style={this.styles['jp-commenting-thread-header-upper-area']}>
+          <div style={this.styles['jp-commenting-thread-header-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-thread-header-photo']}
+              src={this.props.photo}
+            />
           </div>
-          <div style={this.styles.commentInfo}>
-            <div style={this.styles.nameArea}>
-              <h1 style={this.styles.name}>{this.props.name}</h1>
+          <div style={this.styles['jp-commenting-thread-header-info-area']}>
+            <div style={this.styles['jp-commenting-thread-header-name-area']}>
+              <h1 style={this.styles['jp-commenting-thread-header-name']}>
+                {this.props.name}
+              </h1>
             </div>
-            <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
+            <div
+              style={this.styles['jp-commenting-thread-header-timestamp-area']}
+            >
+              <p style={this.styles['jp-commenting-thread-header-timestamp']}>
+                {this.timeStampStyle()}
+              </p>
+            </div>
           </div>
-          {this.shouldRenderCornerButtons()}
+          <div style={this.styles['jp-commenting-thread-header-button-area']}>
+            {this.getCornerButton()}
+          </div>
         </div>
-        <div
-          style={{
-            paddingLeft: '4px',
-            paddingRight: '8px',
-            paddingTop: '4px'
-          }}
-        >
-          <p
-            className={
-              this.props.expanded
-                ? 'jp-commenting-annotation-expanded'
-                : 'jp-commenting-annotation-not-expanded'
-            }
-          >
+        <div style={this.styles['jp-commenting-annotation-area']}>
+          <p style={this.styles['jp-commenting-annotation']}>
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -131,7 +132,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     return (
       <button
         className="jp-commenting-button-blue"
-        style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
@@ -146,7 +146,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     return (
       <button
         className="jp-commenting-button-blue jp-commenting-button-resolved"
-        style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
@@ -157,7 +156,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
-  shouldRenderCornerButtons(): React.ReactNode {
+  getCornerButton(): React.ReactNode {
     if (this.props.hover && !this.props.expanded) {
       return (
         <div>
@@ -215,32 +214,77 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * CSS styles
    */
   styles = {
-    upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    resolveButton: {
-      marginRight: '5px',
-      marginTop: '5px',
-      fontSize: 'var(--jp-content-font-size0)',
-      fontFamily: 'var(--jp-content-font-family)'
-    },
-    commentInfo: {
-      paddingLeft: '5px',
+    'jp-commenting-thread-header-upper-area': {
       display: 'flex',
-      flexGrow: 2,
-      flexDirection: 'column' as 'column'
+      flexDirection: 'row' as 'row',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color0)'
     },
-    photo: {
+    'jp-commenting-thread-header-info-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+      minWidth: '52px',
+      width: '100%',
+      paddingLeft: '4px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-photo-area': {
+      display: 'flex'
+    },
+    'jp-commenting-thread-header-photo': {
       height: '36px',
       width: '36px',
-      borderRadius: '2px'
+      borderRadius: 'var(--jp-border-radius)'
     },
-    nameArea: {
-      paddingTop: '11px'
+    'jp-commenting-thread-header-name-area': {
+      display: 'flex',
+      flexShrink: 1,
+      minWidth: '52px',
+      boxSizing: 'border-box' as 'border-box'
     },
-    name: {
+    'jp-commenting-thread-header-name': {
       fontSize: '13px',
+      color: 'var(--jp-ui-font-color0)',
       fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
       margin: '0px'
     },
-    timestamp: { fontSize: '.7em' }
+    'jp-commenting-thread-header-timestamp-area': {
+      display: 'flex',
+      minWidth: '52px',
+      flexShrink: 1,
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-timestamp': {
+      fontSize: 'var(--jp-ui-font-size0)',
+      color: 'var(--jp-ui-font-color0)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-annotation-area': {
+      display: 'flex',
+      maxHeight: '100%',
+      maxWidth: '350px',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color0)'
+    },
+    'jp-commenting-annotation': {
+      fontSize: 'var(--jp-content-font-size0)',
+      color: 'var(--jp-ui-font-color0)',
+      lineHeight: 'normal'
+    },
+    'jp-commenting-thread-header-button-area': {
+      display: 'flex',
+      minWidth: '72px',
+      paddingRight: '4px',
+      paddingLeft: '8px',
+      boxSizing: 'border-box' as 'border-box'
+    }
   };
 }

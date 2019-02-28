@@ -129,7 +129,7 @@ export class CommentCard extends React.Component<
       <div
         className={
           this.props.checkExpandedCard(this.props.threadId)
-            ? 'jp-commenting-thread-area-disabled'
+            ? 'jp-commenting-thread-area-no-hover'
             : 'jp-commenting-thread-area'
         }
         style={
