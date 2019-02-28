@@ -54,20 +54,21 @@ export class NewThreadCard extends React.Component<
    */
   render() {
     return (
-      <div className="card" style={this.styles.card}>
+      <div className="jp-commenting-new-thread-area">
         <label style={this.styles.name}>{this.props.creator.name}</label>
-        <textarea
-          className={this.bsc.input}
-          style={this.styles.inputBox}
-          id={'commentBox'}
-          value={
-            this.state.inputBox.trim() === ''
-              ? this.state.inputBox.trim()
-              : this.state.inputBox
-          }
-          onChange={this.handleChangeCommentBox}
-          onKeyPress={this.handleKeyPress}
-        />
+        <div style={this.styles.inputBoxArea}>
+          <textarea
+            className="jp-commenting-text-area"
+            id={'commentBox'}
+            value={
+              this.state.inputBox.trim() === ''
+                ? this.state.inputBox.trim()
+                : this.state.inputBox
+            }
+            onChange={this.handleChangeCommentBox}
+            onKeyPress={this.handleKeyPress}
+          />
+        </div>
         <div style={this.styles.buttons}>
           {this.getCommentButton()}
           {this.getCancelButton()}
@@ -83,7 +84,7 @@ export class NewThreadCard extends React.Component<
   getCommentButton(): React.ReactNode {
     return (
       <button
-        className={'commentCommentButton commentFooterRightButton float-right'}
+        className="jp-commenting-button-blue"
         type="button"
         onClick={this.createNewThread}
         disabled={this.state.inputBox.trim() === ''}
@@ -96,7 +97,7 @@ export class NewThreadCard extends React.Component<
   getCancelButton(): React.ReactNode {
     return (
       <button
-        className="commentCancelButton commentFooterLeftButton float-right"
+        className="jp-commenting-button-red"
         type="button"
         onClick={this.cancelThread}
       >
@@ -137,38 +138,29 @@ export class NewThreadCard extends React.Component<
   }
 
   /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    input: 'form-control form-control-sm'
-  };
-
-  /**
    * CSS styles
    */
   styles = {
-    card: {
-      padding: '5px',
-      marginTop: '5px'
-    },
-    field: {
-      marginBottom: '5px'
-    },
-    inputBox: {
-      width: '100%',
-      height: '80px',
+    inputBoxArea: {
+      display: 'flex',
+      padding: '4px',
+      maxWidth: '95%',
+      minHeight: '80px',
       lineHeight: 'normal'
     },
     name: {
+      display: 'flex',
       fontSize: '16px',
       fontWeight: 'bold' as 'bold',
-      marginTop: '6px',
-      marginBottom: '6px',
-      marginLeft: '3px'
+      marginTop: '4px',
+      marginBottom: '4px',
+      marginLeft: '4px'
     },
     buttons: {
-      marginTop: '5px',
-      marginRight: '10px'
+      display: 'flex',
+      marginTop: '12px',
+      marginBottom: '4px',
+      marginLeft: '4px'
     }
   };
 }

@@ -58,13 +58,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   render() {
     return (
-      <div className="headerCard">
-        <div style={this.styles.headercard}>
-          <div style={{ width: '17px', marginLeft: '4px' }}>
+      <div style={this.styles['jp-commenting-header-area']}>
+        <div style={this.styles['jp-commenting-header-target-area']}>
+          <div style={this.styles['jp-commenting-back-arrow-area']}>
             {this.getCornerButton()}
           </div>
           {this.renderAppHeader(this.props.header)}
-          <div style={this.styles.placeholder} />
         </div>
         {this.shouldRenderOptions()}
       </div>
@@ -82,21 +81,16 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     if (header === undefined) {
       return (
         <div>
-          <h5
-            className={'jp-DirListing-itemText'}
-            style={this.styles.emptyHeader}
-          >
+          <h5 style={this.styles['jp-commenting-header-text-empty']}>
             Select a file to view comments
           </h5>
         </div>
       );
     } else {
       return (
-        <div style={this.styles.header}>
+        <div style={this.styles['jp-commenting-header-target-icon-container']}>
           {this.getFileIcon(this.props.header)}
-          <div style={this.styles.headerLabel} className={'--jp-ui-font-size1'}>
-            {header}
-          </div>
+          <div style={this.styles['jp-commenting-header-label']}>{header}</div>
         </div>
       );
     }
@@ -117,13 +111,18 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
             return (
               <span
                 className={this.fileTypes[key].iconClass}
-                style={this.styles.headerIcon}
+                style={this.styles['jp-commenting-header-icon']}
               />
             );
           }
         }
       }
-      return <span className={'jp-FileIcon'} style={this.styles.headerIcon} />;
+      return (
+        <span
+          className="jp-FileIcon"
+          style={this.styles['jp-commenting-header-icon']}
+        />
+      );
     } catch {
       return <span />;
     }
@@ -165,7 +164,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <input
         type="image"
-        style={this.styles.backButton}
+        style={this.styles['jp-commenting-header-button-back']}
         src={'https://i.ibb.co/xg3hwy8/Vector.png'}
         onClick={this.setShrink}
       />
@@ -255,45 +254,62 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * App header styles
    */
   styles = {
-    headercard: {
+    'jp-commenting-header-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      borderBottom: '1px solid #e0e0e0',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-header-target-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      paddingTop: 4,
-      paddingBottom: 4,
+      paddingTop: '4px',
+      paddingBottom: '4px',
       fontSize: 'var(--jp-ui-font-size1)'
     },
-    emptyHeader: {
+    'jp-commenting-back-arrow-area': {
+      width: '20px',
+      marginLeft: '4px'
+    },
+    'jp-commenting-header-text-empty': {
       background: 'white',
-      color: '#4F4F4F',
-      marginTop: '15px',
-      marginBottom: '15px'
-    },
-    header: {
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      minWidth: '75px',
-      paddingLeft: '8'
-    },
-    headerLabel: {
-      paddingLeft: '5px',
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var( --jp-ui-font-color2)',
+      fontWeight: 400,
+      margin: '0px',
+      paddingLeft: '4px',
       textAlign: 'left' as 'left',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       flexShrink: 1
     },
-    headerIcon: {
-      minWidth: '18px',
-      minHeight: '18px',
-      backgroundSize: '18px',
-      padding: '8px'
+    'jp-commenting-header-target-icon-container': {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      minWidth: '75px',
+      paddingLeft: '8px'
     },
-    backButton: {
+    'jp-commenting-header-label': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--jp-font-color0)',
+      paddingLeft: '4px',
+      textAlign: 'left' as 'left',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      flexShrink: 1
+    },
+    'jp-commenting-header-icon': {
+      minWidth: '20px',
+      minHeight: '20px',
+      backgroundSize: '20px'
+    },
+    'jp-commenting-header-button-back': {
       display: 'flex',
       width: '12px',
       height: '12px',
       marginTop: '4px'
-    },
-    placeholder: { width: '12px', minWidth: '12px' }
+    }
   };
 }

@@ -44,19 +44,19 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   render() {
     return (
-      <div className="card" style={this.styles.card}>
+      <div className="jp-commenting-user-set-area" style={this.styles.card}>
         <label style={this.styles.label}>Enter GitHub Username</label>
         <input
           type="text"
-          className="form-control form-control-sm"
           style={this.styles.field}
+          className="bp3-input bp3-small"
           placeholder="Name"
           onChange={this.handleInputChange}
           onKeyPress={this.handleKeyPress}
         />
         <div style={{ float: 'right' }}>
           <button
-            className={'commentCommentButton commentFooterRightButton'}
+            className="jp-commenting-button-blue"
             style={{ marginLeft: '0px' }}
             type="button"
             onClick={this.handleSubmit}
@@ -95,13 +95,6 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
   handleSubmit(): void {
     this.props.setUserInfo(this.state.inputBox);
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bsc = {
-    input: 'form-control form-control-sm'
-  };
 
   /**
    * CSS styles

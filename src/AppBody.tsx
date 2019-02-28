@@ -39,25 +39,17 @@ export class AppBody extends React.Component<IAppBodyProps> {
    * React render function
    */
   render() {
-    // const reverseCards = this.props.cards.reverse();
-
     const items = this.props.cards.map((card, i) => <div key={i}>{card}</div>);
 
     return (
       <div
         style={this.props.expanded ? this.bodyStyleExpanded : this.bodyStyle}
-        className={this.bootstrapGrid}
       >
         {!this.props.expanded && this.props.newThreadButton}
         {items}
       </div>
     );
   }
-
-  /**
-   * Bootstrap classNames
-   */
-  bootstrapGrid: string = 'col-lg-12 col-md-12 col-sm-12';
 
   /**
    * CSS styles

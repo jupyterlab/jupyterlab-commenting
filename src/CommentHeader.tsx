@@ -88,22 +88,36 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     return (
       <div>
         <div style={this.styles.upperHeader}>
-          <div>
+          <div style={{ paddingLeft: '5px', paddingTop: '5px' }}>
             <img style={this.styles.photo} src={this.props.photo} />
           </div>
-          <div style={this.styles.nameArea}>
-            <h1 style={this.styles.name}>{this.props.name}</h1>
+          <div style={this.styles.commentInfo}>
+            <div style={this.styles.nameArea}>
+              <h1 style={this.styles.name}>{this.props.name}</h1>
+            </div>
             <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
           </div>
           {this.shouldRenderCornerButtons()}
         </div>
-        <p
-          className={
-            this.props.expanded ? 'textFieldExpanded' : 'textFieldNotExpanded'
-          }
+        <div
+          style={{
+            paddingLeft: '4px',
+            paddingRight: '8px',
+            paddingTop: '4px'
+          }}
         >
-          {this.props.context}
-        </p>
+          <p
+            className={
+              this.props.expanded
+                ? 'jp-commenting-annotation-expanded'
+                : 'jp-commenting-annotation-not-expanded'
+            }
+          >
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
+          </p>
+        </div>
       </div>
     );
   }
@@ -116,7 +130,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getResolveButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton commentResolveButton"
+        className="jp-commenting-button-blue"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -131,7 +145,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getReopenButton(): React.ReactNode {
     return (
       <button
-        className="commentFooterLeftButton commentReopenButton"
+        className="jp-commenting-button-blue jp-commenting-button-resolved"
         style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
@@ -198,11 +212,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   }
 
   /**
-   * Bootstrap classNames
-   */
-  bsc = { tag: 'badge badge-secondary row-offset-1', tagArea: 'col' };
-
-  /**
    * CSS styles
    */
   styles = {
@@ -213,82 +222,25 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       fontSize: 'var(--jp-content-font-size0)',
       fontFamily: 'var(--jp-content-font-family)'
     },
-    nameArea: {
+    commentInfo: {
       paddingLeft: '5px',
       display: 'flex',
       flexGrow: 2,
       flexDirection: 'column' as 'column'
     },
     photo: {
-      display: 'flex',
-      flexGrow: 1,
       height: '36px',
       width: '36px',
-      marginLeft: '5px',
-      marginTop: '5px',
       borderRadius: '2px'
+    },
+    nameArea: {
+      paddingTop: '11px'
     },
     name: {
       fontSize: '13px',
       fontWeight: 'bold' as 'bold',
-      marginTop: '11px',
-      marginBottom: '0px'
+      margin: '0px'
     },
-    timestamp: { fontSize: '.7em', marginBottom: '0px', marginTop: '0px' },
-    contextNotExpanded: {
-      display: 'flex',
-      maxHeight: '30px',
-      maxWidth: '350px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      fontSize: '.8em',
-      marginLeft: '5px',
-      marginRight: '10px',
-      marginTop: '5px',
-      marginBottom: '5px',
-      lineHeight: 'normal'
-    },
-    contextExpanded: {
-      display: 'flex',
-      maxHeight: '100%',
-      maxWidth: '350px',
-      overflow: '',
-      textOverflow: 'ellipsis',
-      fontSize: '.8em',
-      lineHeight: 'normal',
-      marginLeft: '5px',
-      marginRight: '10px',
-      marginTop: '5px',
-      marginBottom: '5px'
-    },
-    cornerButton: {
-      display: 'flex',
-      flexGrow: 1,
-      marginTop: '9px',
-      marginRight: '9px',
-      width: '24px',
-      height: '24px'
-    },
-    tag: {
-      background: '#E0E0E0',
-      fontSize: '.7em',
-      fontWeight: 'normal' as 'normal',
-      color: 'black',
-      borderRadius: '2px',
-      marginBottom: '0px',
-      marginTop: '-4px'
-    },
-    resolvedTag: {
-      background: '#E0E0E0',
-      fontSize: '.7em',
-      fontWeight: 'normal' as 'normal',
-      color: 'black',
-      borderRadius: '2px',
-      marginBottom: '0px',
-      marginTop: '-4px',
-      marginLeft: '5px'
-    },
-    tagArea: { marginTop: '-5px', paddingLeft: '0px', paddingRight: '0px' }
+    timestamp: { fontSize: '.7em' }
   };
-  // justifyContent: 'space-between'
 }
