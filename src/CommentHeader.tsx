@@ -101,10 +101,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         </div>
         <div
           style={{
-            paddingLeft: '5px',
-            paddingRight: '10px',
-            paddingTop: '5px',
-            paddingBottom: '5px'
+            paddingLeft: '4px',
+            paddingRight: '8px',
+            paddingTop: '4px'
           }}
         >
           <p
@@ -114,7 +113,9 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
                 : '--jp-commenting-annotation-not-expanded'
             }
           >
-            {this.props.context}
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
           </p>
         </div>
       </div>

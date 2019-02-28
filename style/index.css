@@ -154,14 +154,6 @@
   box-sizing: border-box;
 }
 
-.--jp-commenting-header-area {
-  display: flex;
-  flex-direction: column;
-  padding: 1px;
-  border-bottom: 1px solid #e0e0e0;
-  box-sizing: border-box;
-}
-
 .--jp-commenting-thread-area {
   display: flex;
   flex-direction: column;

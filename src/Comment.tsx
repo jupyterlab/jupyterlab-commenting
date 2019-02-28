@@ -77,7 +77,9 @@ export class Comment extends React.Component<ICommentProps> {
                 : '--jp-commenting-annotation-not-expanded'
             }
           >
-            {this.props.context}
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
           </p>
         </div>
       </div>

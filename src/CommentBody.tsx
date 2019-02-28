@@ -84,7 +84,6 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
       minWidth: '28px',
       minHeight: '28px',
       backgroundSize: '28px',
-      padding: '8px',
       transform: 'rotate(90deg)'
     }
   };
