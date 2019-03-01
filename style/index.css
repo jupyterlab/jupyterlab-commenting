@@ -1,36 +1,6 @@
 .jp-commenting-window {
-  background: var(--jp-layout-color0);
+  background: var(--jp-layout-color1);
   height: 100%;
-}
-
-.jp-commenting-header-options-checkbox-label-enable {
-  display: flex;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--jp-ui-font-size1);
-  text-align: right;
-  margin-bottom: 0px;
-  height: 28px;
-  min-width: 52px;
-  flex-shrink: 1;
-}
-
-.jp-commenting-header-options-checkbox-label-disable {
-  display: flex;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: var(--jp-ui-font-size1);
-  color: #e0e0e0;
-  text-align: right;
-  margin-bottom: 0px;
-  height: 28px;
-}
-
-.jp-commenting-header-options-checkbox {
-  align-self: center;
-  min-width: 18px;
 }
 
 .jp-commenting-header-options-dropdown-item {
@@ -39,10 +9,10 @@
   padding: 0.25rem 1.5rem;
   clear: both;
   font-size: var(--jp-content-font-size1);
-  color: #212529;
+  color: var(--jp-ui-font-color1);
   text-align: inherit;
   white-space: nowrap;
-  background-color: transparent;
+  background: var(--jp-layout-color1);
   border: 0;
 }
 
@@ -150,7 +120,7 @@
   display: flex;
   flex-direction: column;
   padding: 1px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--jp-border-color1);
   box-sizing: border-box;
 }
 
@@ -206,6 +176,7 @@
   white-space: nowrap;
   overflow: hidden;
   font-size: 13px;
+  color: var(--jp-ui-font-color1);
   text-overflow: ellipsis;
   margin-bottom: 0px;
   margin-left: 5px;

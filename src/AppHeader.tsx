@@ -257,15 +257,14 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     'jp-commenting-header-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
-      borderBottom: '1px solid #e0e0e0',
+      borderBottom: '1px solid var(--jp-border-color1)',
       boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-header-target-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
       paddingTop: '4px',
-      paddingBottom: '4px',
-      fontSize: 'var(--jp-ui-font-size1)'
+      paddingBottom: '4px'
     },
     'jp-commenting-back-arrow-area': {
       width: '20px',
@@ -292,7 +291,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     },
     'jp-commenting-header-label': {
       fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var(--jp-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       paddingLeft: '4px',
       textAlign: 'left' as 'left',
       whiteSpace: 'nowrap' as 'nowrap',

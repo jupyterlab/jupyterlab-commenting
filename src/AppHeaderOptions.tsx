@@ -84,7 +84,7 @@ export class AppHeaderOptions extends React.Component<
         </div>
         <div style={this.styles.optionBar}>
           {this.renderCheckbox()}
-          {this.renderDropdownLabel()}
+          {this.renderDropdown()}
         </div>
       </div>
     );
@@ -92,73 +92,93 @@ export class AppHeaderOptions extends React.Component<
 
   renderCheckbox() {
     return (
-      <div style={this.styles.checkboxArea}>
-        <label
-          style={{
-            paddingTop: '5px',
-            paddingRight: '4px',
-            paddingLeft: '4px'
-          }}
-          className={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-              ? 'jp-commenting-header-options-checkbox-label-disable'
-              : 'jp-commenting-header-options-checkbox-label-enable'
-          }
-        >
-          Show Resolved
-        </label>
-        <input
-          type="checkbox"
-          id="controls"
-          onClick={() =>
-            this.setResolvedState(document.getElementById(
-              'controls'
-            ) as HTMLInputElement)
-          }
-          className={'bp3-checkbox jp-commenting-header-options-checkbox'}
-          disabled={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-          }
-        />
-      </div>
-    );
-  }
-
-  renderDropdownLabel() {
-    return (
-      <div style={this.styles.dropdownBox} onClick={this.toggleOpen}>
-        <label
+      <div
+        style={this.styles['jp-commenting-header-options-showResolved-area']}
+      >
+        <div
           style={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-              ? this.styles.dropdownLabelDisabled
-              : this.styles.dropdownLabelEnabled
+            this.styles['jp-commenting-header-options-showResolved-label-area']
           }
         >
-          Sort By:
-        </label>
-        {this.renderDropdownButton()}
+          <label
+            style={
+              this.props.cardExpanded ||
+              this.props.header === undefined ||
+              !this.props.hasThreads
+                ? this.styles[
+                    'jp-commenting-header-options-showResolved-label-disable'
+                  ]
+                : this.styles[
+                    'jp-commenting-header-options-showResolved-label-enable'
+                  ]
+            }
+          >
+            Show Resolved
+          </label>
+        </div>
+        <div
+          style={
+            this.styles[
+              'jp-commenting-header-options-showResolved-checkbox-area'
+            ]
+          }
+        >
+          <input
+            type="checkbox"
+            id="controls"
+            onClick={() =>
+              this.setResolvedState(document.getElementById(
+                'controls'
+              ) as HTMLInputElement)
+            }
+            className={'bp3-checkbox'}
+            disabled={
+              this.props.cardExpanded ||
+              this.props.header === undefined ||
+              !this.props.hasThreads
+            }
+          />
+        </div>
       </div>
     );
   }
 
-  renderDropdownButton() {
+  renderDropdown() {
     return (
-      <div style={this.styles.dropdownButton}>
-        <input
-          type="image"
-          style={this.styles.dropdownButton}
-          src={
-            'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
+      <div
+        style={this.styles['jp-commenting-header-options-dropdown-area']}
+        onClick={this.toggleOpen}
+      >
+        <div
+          style={
+            this.styles['jp-commenting-header-options-dropdown-label-area']
           }
-          data-toggle="dropdown"
-          disabled={this.props.header === undefined || !this.props.hasThreads}
-        />
+        >
+          <label
+            style={
+              this.props.cardExpanded ||
+              this.props.header === undefined ||
+              !this.props.hasThreads
+                ? this.styles[
+                    'jp-commenting-header-options-dropdown-label-disabled'
+                  ]
+                : this.styles[
+                    'jp-commenting-header-options-dropdown-label-enabled'
+                  ]
+            }
+          >
+            Sort By:
+          </label>
+        </div>
+        <div
+          style={
+            this.styles['jp-commenting-header-options-dropdown-button-area']
+          }
+        >
+          <span
+            style={this.styles['jp-commenting-header-options-dropdown-button']}
+          />
+        </div>
       </div>
     );
   }
@@ -245,60 +265,88 @@ export class AppHeaderOptions extends React.Component<
       flexDirection: 'row' as 'row',
       justifyContent: 'center'
     },
-    dropdownBox: {
+    'jp-commenting-header-options-showResolved-area': {
       height: '28px',
       display: 'flex',
       flexDirection: 'row' as 'row',
-      borderLeftWidth: '1px',
-      borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: 'rgb(224, 224, 224)',
+      width: '50%',
+      minWidth: '50px',
+      flexShrink: 1
+    },
+    'jp-commenting-header-options-showResolved-label-area': {
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+
+      height: '28px',
+      minWidth: '52px',
+
+      textAlign: 'right' as 'right',
+      paddingLeft: '4px'
+    },
+    'jp-commenting-header-options-showResolved-label-enable': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--jp-ui-font-color1)'
+    },
+    'jp-commenting-header-options-showResolved-label-disable': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: '#e0e0e0'
+    },
+    'jp-commenting-header-options-showResolved-checkbox-area': {
+      alignSelf: 'center',
+      minWidth: '20px'
+    },
+    'jp-commenting-header-options-dropdown-area': {
+      height: '28px',
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      borderLeft: '1px solid var(--jp-border-color1)',
       marginLeft: '8px',
       width: '50%',
       minWidth: '50px',
       flexShrink: 1
     },
-    dropdownLabelEnabled: {
+    'jp-commenting-header-options-dropdown-label-area': {
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+
       overflow: 'hidden',
-      textOverflow: 'ellipsis',
       whiteSpace: 'nowrap' as 'nowrap',
+
       height: '28px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      minWidth: '10px',
+      width: '100%'
+    },
+    'jp-commenting-header-options-dropdown-label-enabled': {
       lineHeight: 'normal',
       fontSize: '13px',
-      paddingTop: '6px',
-      paddingLeft: '4px',
-      paddingRight: '10px',
-      minWidth: '10px',
-      width: '100%',
-      flexShrink: 1
+      color: 'var(--jp-ui-font-color1)'
     },
-    dropdownLabelDisabled: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' as 'nowrap',
-      height: '28px',
+    'jp-commenting-header-options-dropdown-label-disabled': {
       lineHeight: 'normal',
       fontSize: '13px',
-      paddingTop: '6px',
-      paddingLeft: '4px',
-      paddingRight: '10px',
-      minWidth: '10px',
-      width: '100%',
-      color: '#E0E0E0',
-      flexShrink: 1
+      color: '#e0e0e0'
     },
-    dropdownButton: {
+    'jp-commenting-header-options-dropdown-button-area': {
       display: 'flex',
       height: '28px',
       width: '40px',
       minWidth: '40px'
     },
-    checkboxArea: {
-      height: '28px',
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      width: '50%',
-      minWidth: '50px',
-      flexShrink: 1
+    'jp-commenting-header-options-dropdown-button': {
+      minWidth: '40px',
+      minHeight: '28px',
+      backgroundImage: 'var(--jp-icon-caretdown)',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center'
     }
   };
 }
