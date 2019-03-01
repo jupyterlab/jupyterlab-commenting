@@ -219,7 +219,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       flexDirection: 'row' as 'row',
       boxSizing: 'border-box' as 'border-box',
       padding: '4px',
-      background: 'var(--jp-layout-color0)'
+      background: 'var(--jp-layout-color1)'
     },
     'jp-commenting-thread-header-info-area': {
       display: 'flex',
@@ -271,8 +271,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       maxHeight: '100%',
       maxWidth: '350px',
       boxSizing: 'border-box' as 'border-box',
-      padding: '4px',
-      background: 'var(--jp-layout-color0)'
+      paddingBottom: '4px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      background: 'var(--jp-layout-color1)'
     },
     'jp-commenting-annotation': {
       fontSize: 'var(--jp-content-font-size0)',

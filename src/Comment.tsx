@@ -51,32 +51,29 @@ export class Comment extends React.Component<ICommentProps> {
    */
   render() {
     return (
-      <div style={this.styles.commentHeader}>
-        <div style={this.styles.upperComment}>
-          <div style={{ paddingTop: '5px', paddingLeft: '6px' }}>
-            <img style={this.styles.photo} src={this.props.photo} />
+      <div>
+        <div style={this.styles['jp-commenting-annotation-upper-area']}>
+          <div style={this.styles['jp-commenting-annotation-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-annotation-photo']}
+              src={this.props.photo}
+            />
           </div>
-          <div style={this.styles.commentInfo}>
-            <div style={this.styles.nameArea}>
-              <h1 style={this.styles.name}>{this.props.name}</h1>
+          <div style={this.styles['jp-commenting-annotation-info-area']}>
+            <div style={this.styles['jp-commenting-annotation-name-area']}>
+              <h1 style={this.styles['jp-commenting-annotation-name']}>
+                {this.props.name}
+              </h1>
             </div>
-            <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
+            <div style={this.styles['jp-commenting-annotation-timestamp-area']}>
+              <p style={this.styles['jp-commenting-annotation-timestamp']}>
+                {this.timeStampStyle()}
+              </p>
+            </div>
           </div>
         </div>
-        <div
-          style={{
-            paddingLeft: '6px',
-            paddingRight: '10px',
-            paddingTop: '2px'
-          }}
-        >
-          <p
-            className={
-              this.props.expanded
-                ? 'jp-commenting-annotation-expanded'
-                : 'jp-commenting-annotation-not-expanded'
-            }
-          >
+        <div style={this.styles['jp-commenting-annotation-area']}>
+          <p style={this.styles['jp-commenting-annotation']}>
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -121,26 +118,72 @@ export class Comment extends React.Component<ICommentProps> {
    * CSS Styles
    */
   styles = {
-    upperComment: { display: 'flex', flexDirection: 'row' as 'row' },
-    commentHeader: { marginBottom: '10px' },
-    commentInfo: {
-      paddingLeft: '5px',
+    'jp-commenting-annotation-upper-area': {
       display: 'flex',
-      flexDirection: 'column' as 'column'
+      flexDirection: 'row' as 'row',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color1)'
     },
-    photo: {
+    'jp-commenting-annotation-info-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+      minWidth: '52px',
+      width: '100%',
+      paddingLeft: '4px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-photo-area': {
+      display: 'flex'
+    },
+    'jp-commenting-annotation-photo': {
       height: '2em',
       width: '2em',
-      borderRadius: '2px'
+      borderRadius: 'var(--jp-border-radius)'
     },
-    nameArea: {
-      paddingTop: '8px'
+    'jp-commenting-annotation-name-area': {
+      display: 'flex',
+      flexShrink: 1,
+      minWidth: '52px',
+      boxSizing: 'border-box' as 'border-box'
     },
-    name: {
-      fontSize: '12px',
+    'jp-commenting-annotation-name': {
+      fontSize: '13px',
+      color: 'var(--jp-ui-font-color0)',
       fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
       margin: '0px'
     },
-    timestamp: { fontSize: '.7em' }
+    'jp-commenting-annotation-timestamp-area': {
+      display: 'flex',
+      minWidth: '52px',
+      flexShrink: 1,
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-timestamp': {
+      fontSize: '.7em',
+      color: 'var(--jp-ui-font-color0)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-annotation-area': {
+      display: 'flex',
+      maxHeight: '100%',
+      maxWidth: '350px',
+      boxSizing: 'border-box' as 'border-box',
+      paddingBottom: '4px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-annotation': {
+      fontSize: '12px',
+      color: 'var(--jp-ui-font-color0)',
+      lineHeight: 'normal'
+    }
   };
 }
