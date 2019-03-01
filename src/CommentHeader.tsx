@@ -87,7 +87,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   render() {
     return (
       <div>
-        <div style={this.styles['jp-commenting-thread-header-upper-area']}>
+        <div
+          style={
+            this.props.resolved
+              ? this.styles['jp-commenting-thread-header-upper-area-resolved']
+              : this.styles['jp-commenting-thread-header-upper-area']
+          }
+        >
           <div style={this.styles['jp-commenting-thread-header-photo-area']}>
             <img
               style={this.styles['jp-commenting-thread-header-photo']}
@@ -112,8 +118,20 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             {this.getCornerButton()}
           </div>
         </div>
-        <div style={this.styles['jp-commenting-annotation-area']}>
-          <p style={this.styles['jp-commenting-annotation']}>
+        <div
+          style={
+            this.props.resolved
+              ? this.styles['jp-commenting-annotation-area-resolved']
+              : this.styles['jp-commenting-annotation-area']
+          }
+        >
+          <p
+            style={
+              this.props.resolved
+                ? this.styles['jp-commenting-annotation-resolved']
+                : this.styles['jp-commenting-annotation']
+            }
+          >
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -221,6 +239,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       padding: '4px',
       background: 'var(--jp-layout-color1)'
     },
+    'jp-commenting-thread-header-upper-area-resolved': {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color2)'
+    },
     'jp-commenting-thread-header-info-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
@@ -279,6 +304,21 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     'jp-commenting-annotation': {
       fontSize: 'var(--jp-content-font-size0)',
       color: 'var(--jp-ui-font-color0)',
+      lineHeight: 'normal'
+    },
+    'jp-commenting-annotation-area-resolved': {
+      display: 'flex',
+      maxHeight: '100%',
+      maxWidth: '350px',
+      boxSizing: 'border-box' as 'border-box',
+      paddingBottom: '4px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      background: 'var(--jp-layout-color2)'
+    },
+    'jp-commenting-annotation-resolved': {
+      fontSize: 'var(--jp-content-font-size0)',
+      color: 'var(--jp-ui-font-color2)',
       lineHeight: 'normal'
     },
     'jp-commenting-thread-header-button-area': {
