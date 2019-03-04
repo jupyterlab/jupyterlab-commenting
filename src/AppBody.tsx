@@ -43,7 +43,11 @@ export class AppBody extends React.Component<IAppBodyProps> {
 
     return (
       <div
-        style={this.props.expanded ? this.bodyStyleExpanded : this.bodyStyle}
+        style={
+          this.props.expanded
+            ? this.styles['jp-commenting-body-area-expanded']
+            : this.styles['jp-commenting-body-area']
+        }
       >
         {!this.props.expanded && this.props.newThreadButton}
         {items}
@@ -54,22 +58,24 @@ export class AppBody extends React.Component<IAppBodyProps> {
   /**
    * CSS styles
    */
-  bodyStyle = {
-    width: '100%',
-    maxHeight: '81vh',
-    overflowY: 'scroll' as 'scroll',
-    overflowX: 'hidden' as 'hidden',
-    justifyContent: 'center',
-    padding: '4px'
-  };
-
-  bodyStyleExpanded = {
-    width: '100%',
-    maxHeight: '85vh',
-    overflowY: 'scroll' as 'scroll',
-    overflowX: 'hidden' as 'hidden',
-    justifyContent: 'center',
-    paddingRight: '5px',
-    paddingLeft: '5px'
+  styles = {
+    'jp-commenting-body-area': {
+      width: '100%',
+      maxHeight: '88vh',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      boxSizing: 'border-box' as 'border-box',
+      justifyContent: 'center',
+      padding: '4px'
+    },
+    'jp-commenting-body-area-expanded': {
+      width: '100%',
+      maxHeight: '91vh',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      boxSizing: 'border-box' as 'border-box',
+      justifyContent: 'center',
+      padding: '4px'
+    }
   };
 }

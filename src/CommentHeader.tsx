@@ -86,7 +86,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   render() {
     return (
-      <div>
+      <div
+        style={
+          this.props.resolved
+            ? this.styles['jp-commenting-thread-header-resolved']
+            : this.styles['jp-commenting-thread-header']
+        }
+      >
         <div
           style={
             this.props.resolved
@@ -96,20 +102,38 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
         >
           <div style={this.styles['jp-commenting-thread-header-photo-area']}>
             <img
-              style={this.styles['jp-commenting-thread-header-photo']}
+              style={
+                this.props.resolved
+                  ? this.styles['jp-commenting-thread-header-photo-resolved']
+                  : this.styles['jp-commenting-thread-header-photo']
+              }
               src={this.props.photo}
             />
           </div>
           <div style={this.styles['jp-commenting-thread-header-info-area']}>
             <div style={this.styles['jp-commenting-thread-header-name-area']}>
-              <h1 style={this.styles['jp-commenting-thread-header-name']}>
+              <h1
+                style={
+                  this.props.resolved
+                    ? this.styles['jp-commenting-thread-header-name-resolved']
+                    : this.styles['jp-commenting-thread-header-name']
+                }
+              >
                 {this.props.name}
               </h1>
             </div>
             <div
               style={this.styles['jp-commenting-thread-header-timestamp-area']}
             >
-              <p style={this.styles['jp-commenting-thread-header-timestamp']}>
+              <p
+                style={
+                  this.props.resolved
+                    ? this.styles[
+                        'jp-commenting-thread-header-timestamp-resolved'
+                      ]
+                    : this.styles['jp-commenting-thread-header-timestamp']
+                }
+              >
                 {this.timeStampStyle()}
               </p>
             </div>
@@ -232,6 +256,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * CSS styles
    */
   styles = {
+    'jp-commenting-thread-header': {
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-thread-header-resolved': {
+      background: 'var(--jp-layout-color2)'
+    },
     'jp-commenting-thread-header-upper-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
@@ -263,6 +293,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       width: '36px',
       borderRadius: 'var(--jp-border-radius)'
     },
+    'jp-commenting-thread-header-photo-resolved': {
+      height: '36px',
+      width: '36px',
+      opacity: '0.5',
+      borderRadius: 'var(--jp-border-radius)'
+    },
     'jp-commenting-thread-header-name-area': {
       display: 'flex',
       flexShrink: 1,
@@ -278,6 +314,15 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       textOverflow: 'ellipsis',
       margin: '0px'
     },
+    'jp-commenting-thread-header-name-resolved': {
+      fontSize: '13px',
+      color: 'var(--jp-ui-font-color2)',
+      fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      margin: '0px'
+    },
     'jp-commenting-thread-header-timestamp-area': {
       display: 'flex',
       minWidth: '52px',
@@ -287,6 +332,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     'jp-commenting-thread-header-timestamp': {
       fontSize: 'var(--jp-ui-font-size0)',
       color: 'var(--jp-ui-font-color0)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-thread-header-timestamp-resolved': {
+      fontSize: 'var(--jp-ui-font-size0)',
+      color: 'var(--jp-ui-font-color2)',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis'

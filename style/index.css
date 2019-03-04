@@ -1,5 +1,6 @@
 .jp-commenting-window {
   background: var(--jp-layout-color1);
+  font-family: var(--jp-content-font-family);
   height: 100%;
 }
 
@@ -77,7 +78,7 @@
 .jp-commenting-button-blue {
   background: white;
   color: #2196f3;
-  outline: 0px;
+  outline: 0;
   font-size: var(--jp-content-font-size0);
   font-family: var(--jp-content-font-family);
   line-height: var(--jp-content-line-height);
@@ -89,27 +90,27 @@
 .jp-commenting-button-blue:disabled {
   background: white;
   color: #e0e0e0;
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-blue:disabled:hover {
   background: white;
   color: #e0e0e0;
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-blue:hover {
   background: #e0e0e0;
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-blue:active {
   background: #bdbdbd;
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-blue:focus {
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-resolved {
@@ -129,9 +130,10 @@
   flex-direction: column;
   border-radius: var(--jp-border-radius);
   padding: 1px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--jp-border-color1);
   box-sizing: border-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+  margin-top: 4px;
 }
 
 .jp-commenting-thread-area:hover {
@@ -143,7 +145,7 @@
   flex-direction: column;
   border-radius: var(--jp-border-radius);
   padding: 1px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--jp-border-color1);
   box-sizing: border-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
@@ -153,7 +155,7 @@
   justify-content: space-between;
   flex-direction: column;
   border-radius: var(--jp-border-radius);
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--jp-border-color1);
   box-sizing: border-box;
 }
 

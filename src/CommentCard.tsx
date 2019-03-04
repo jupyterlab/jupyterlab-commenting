@@ -132,9 +132,6 @@ export class CommentCard extends React.Component<
             ? 'jp-commenting-thread-area-no-hover'
             : 'jp-commenting-thread-area'
         }
-        style={
-          this.props.resolved ? this.styles.resolvedCard : this.styles.card
-        }
         onClick={
           !this.props.checkExpandedCard(this.props.threadId)
             ? this.state.shouldExpand
@@ -145,37 +142,23 @@ export class CommentCard extends React.Component<
         onMouseMoveCapture={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <div
-          style={
-            this.props.resolved
-              ? this.styles.resolvedCardHeading
-              : this.styles.cardHeading
-          }
-        >
-          {this.getCommentHeader()}
-        </div>
-        <div
-          style={
-            this.props.resolved
-              ? this.styles.resolvedCardBody
-              : this.styles.cardBody
-          }
-        >
+        <div>{this.getCommentHeader()}</div>
+        <div>
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
           />
         </div>
-        <div style={this.styles.cardFooter}>{this.getCommentFooter()}</div>
+        <div>{this.getCommentFooter()}</div>
       </div>
     );
   }
 
-  handleMouseEnter(e: any): void {
+  handleMouseEnter(): void {
     this.setState({ hover: true });
   }
 
-  handleMouseLeave(e: any): void {
+  handleMouseLeave(): void {
     this.setState({ hover: false });
   }
 
@@ -333,47 +316,4 @@ export class CommentCard extends React.Component<
       );
     }
   }
-
-  /**
-   * CSS styles
-   */
-  styles = {
-    card: { marginTop: '5px', marginBottom: '5px', background: 'white' },
-    resolvedCard: {
-      marginTop: '5px',
-      marginBottom: '5px',
-      background: 'var(--jp-layout-color2)',
-      color: '#4f4f4f'
-    },
-    cardHeading: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    cardBody: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    cardFooter: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    resolvedCardHeading: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'var(--jp-layout-color2)',
-      borderBottom: '0px'
-    },
-    resolvedCardBody: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'var(--jp-layout-color2)',
-      borderBottom: '0px'
-    }
-  };
 }

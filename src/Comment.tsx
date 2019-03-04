@@ -57,7 +57,13 @@ export class Comment extends React.Component<ICommentProps> {
    */
   render() {
     return (
-      <div>
+      <div
+        style={
+          this.props.resolved
+            ? this.styles['jp-commenting-annotation-thread-resolved']
+            : this.styles['jp-commenting-annotation-thread']
+        }
+      >
         <div
           style={
             this.props.resolved
@@ -67,18 +73,34 @@ export class Comment extends React.Component<ICommentProps> {
         >
           <div style={this.styles['jp-commenting-annotation-photo-area']}>
             <img
-              style={this.styles['jp-commenting-annotation-photo']}
+              style={
+                this.props.resolved
+                  ? this.styles['jp-commenting-annotation-photo-resolved']
+                  : this.styles['jp-commenting-annotation-photo']
+              }
               src={this.props.photo}
             />
           </div>
           <div style={this.styles['jp-commenting-annotation-info-area']}>
             <div style={this.styles['jp-commenting-annotation-name-area']}>
-              <h1 style={this.styles['jp-commenting-annotation-name']}>
+              <h1
+                style={
+                  this.props.resolved
+                    ? this.styles['jp-commenting-annotation-name-resolved']
+                    : this.styles['jp-commenting-annotation-name']
+                }
+              >
                 {this.props.name}
               </h1>
             </div>
             <div style={this.styles['jp-commenting-annotation-timestamp-area']}>
-              <p style={this.styles['jp-commenting-annotation-timestamp']}>
+              <p
+                style={
+                  this.props.resolved
+                    ? this.styles['jp-commenting-annotation-timestamp-resolved']
+                    : this.styles['jp-commenting-annotation-timestamp']
+                }
+              >
                 {this.timeStampStyle()}
               </p>
             </div>
@@ -142,6 +164,12 @@ export class Comment extends React.Component<ICommentProps> {
    * CSS Styles
    */
   styles = {
+    'jp-commenting-annotation-thread': {
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-annotation-thread-resolved': {
+      background: 'var(--jp-layout-color2)'
+    },
     'jp-commenting-annotation-upper-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
@@ -173,6 +201,12 @@ export class Comment extends React.Component<ICommentProps> {
       width: '2em',
       borderRadius: 'var(--jp-border-radius)'
     },
+    'jp-commenting-annotation-photo-resolved': {
+      height: '2em',
+      width: '2em',
+      opacity: '0.5',
+      borderRadius: 'var(--jp-border-radius)'
+    },
     'jp-commenting-annotation-name-area': {
       display: 'flex',
       flexShrink: 1,
@@ -188,6 +222,15 @@ export class Comment extends React.Component<ICommentProps> {
       textOverflow: 'ellipsis',
       margin: '0px'
     },
+    'jp-commenting-annotation-name-resolved': {
+      fontSize: '13px',
+      color: 'var(--jp-ui-font-color2)',
+      fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      margin: '0px'
+    },
     'jp-commenting-annotation-timestamp-area': {
       display: 'flex',
       minWidth: '52px',
@@ -197,6 +240,13 @@ export class Comment extends React.Component<ICommentProps> {
     'jp-commenting-annotation-timestamp': {
       fontSize: '.7em',
       color: 'var(--jp-ui-font-color0)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-annotation-timestamp-resolved': {
+      fontSize: '.7em',
+      color: 'var(--jp-ui-font-color2)',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
