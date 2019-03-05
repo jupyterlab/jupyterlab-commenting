@@ -37,7 +37,11 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    * React render function
    */
   render() {
-    return <div style={this.styles.commentBodyStyle}>{this.getComments()}</div>;
+    return (
+      <div style={this.styles['jp-commenting-annotation-body-area']}>
+        {this.getComments()}
+      </div>
+    );
   }
 
   /**
@@ -58,10 +62,10 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
         ));
       } else if (!this.props.expanded) {
         items = (
-          <div>
+          <div style={this.styles['jp-commenting-more-annotations-icon-area']}>
             <span
               className={'jp-Icon jp-MoreHorizIcon'}
-              style={this.styles.circles}
+              style={this.styles['jp-commenting-more-annotations-icon']}
             />
             <div>{this.props.comments[this.props.comments.length - 1]}</div>
           </div>
@@ -77,14 +81,17 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    * CSS styles
    */
   styles = {
-    commentBodyStyle: {
+    'jp-commenting-annotation-body-area': {
       padding: '0px'
     },
-    circles: {
+    'jp-commenting-more-annotations-icon': {
       minWidth: '28px',
       minHeight: '28px',
       backgroundSize: '28px',
       transform: 'rotate(90deg)'
+    },
+    'jp-commenting-more-annotations-icon-area': {
+      background: 'var(--jp-layout-color2)'
     }
   };
 }
