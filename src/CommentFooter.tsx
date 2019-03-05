@@ -92,12 +92,12 @@ export class CommentFooter extends React.Component<
    */
   render() {
     return (
-      <div style={this.styles.footerArea}>
+      <div style={this.styles['jp-commenting-thread-footer-area']}>
         <div
           style={
             this.props.replyActive
-              ? this.styles.inputBoxAreaActive
-              : this.styles.inputBoxAreaNotActive
+              ? this.styles['jp-commenting-thread-footer-input-active']
+              : this.styles['jp-commenting-thread-footer-input-not-active']
           }
         >
           {this.props.expanded && (
@@ -116,7 +116,9 @@ export class CommentFooter extends React.Component<
             />
           )}
         </div>
-        <div style={this.styles.buttonArea}>{this.getButtons()}</div>
+        <div style={this.styles['jp-commenting-thread-footer-button-area']}>
+          {this.getButtons()}
+        </div>
       </div>
     );
   }
@@ -216,23 +218,22 @@ export class CommentFooter extends React.Component<
    * CSS styles
    */
   styles = {
-    footerArea: {
+    'jp-commenting-thread-footer-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
-      maxHeight: '94px',
       padding: '4px'
     },
-    buttonArea: {
+    'jp-commenting-thread-footer-button-area': {
       display: 'flex',
-      marginTop: '16px'
+      paddingTop: '4px'
     },
-    inputBoxAreaActive: {
+    'jp-commenting-thread-footer-input-active': {
       display: 'flex',
-      height: '60px'
+      height: '72px'
     },
-    inputBoxAreaNotActive: {
+    'jp-commenting-thread-footer-input-not-active': {
       display: 'flex',
-      height: '14px'
+      height: '24px'
     }
   };
 }
