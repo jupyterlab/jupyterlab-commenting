@@ -54,9 +54,13 @@ export class NewThreadCard extends React.Component<
    */
   render() {
     return (
-      <div className="jp-commenting-new-thread-area">
-        <label style={this.styles.name}>{this.props.creator.name}</label>
-        <div style={this.styles.inputBoxArea}>
+      <div style={this.styles['jp-commenting-new-thread-area']}>
+        <div style={this.styles['jp-commenting-new-thread-name-area']}>
+          <span style={this.styles['jp-commenting-new-thread-name']}>
+            {this.props.creator.name}
+          </span>
+        </div>
+        <div style={this.styles['jp-commenting-text-input-area']}>
           <textarea
             className="jp-commenting-text-area"
             id={'commentBox'}
@@ -69,7 +73,7 @@ export class NewThreadCard extends React.Component<
             onKeyPress={this.handleKeyPress}
           />
         </div>
-        <div style={this.styles.buttons}>
+        <div style={this.styles['jp-commenting-new-thread-button-area']}>
           {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
@@ -141,26 +145,32 @@ export class NewThreadCard extends React.Component<
    * CSS styles
    */
   styles = {
-    inputBoxArea: {
+    'jp-commenting-new-thread-area': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexDirection: 'column' as 'column',
+      borderRadius: 'var(--jp-border-radius)',
+      border: '1px solid var(--jp-border-color2)',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-text-input-area': {
       display: 'flex',
       padding: '4px',
       maxWidth: '95%',
-      minHeight: '80px',
-      lineHeight: 'normal'
+      minHeight: '80px'
     },
-    name: {
-      display: 'flex',
-      fontSize: '16px',
+    'jp-commenting-new-thread-name': {
+      fontSize: 'var(--jp-ui-font-size1)',
       fontWeight: 'bold' as 'bold',
-      marginTop: '4px',
-      marginBottom: '4px',
-      marginLeft: '4px'
+      color: 'var(--jp-ui-font-color1)'
     },
-    buttons: {
+    'jp-commenting-new-thread-name-area': {
       display: 'flex',
-      marginTop: '12px',
-      marginBottom: '4px',
-      marginLeft: '4px'
+      padding: '4px'
+    },
+    'jp-commenting-new-thread-button-area': {
+      display: 'flex',
+      padding: '4px'
     }
   };
 }
