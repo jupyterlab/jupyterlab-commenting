@@ -307,7 +307,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     'jp-commenting-thread-header-name': {
       fontSize: '13px',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       fontWeight: 'bold' as 'bold',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
@@ -331,7 +331,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     'jp-commenting-thread-header-timestamp': {
       fontSize: 'var(--jp-ui-font-size0)',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
@@ -355,7 +355,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     'jp-commenting-annotation': {
       fontSize: 'var(--jp-content-font-size0)',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       lineHeight: 'normal'
     },
     'jp-commenting-annotation-area-resolved': {

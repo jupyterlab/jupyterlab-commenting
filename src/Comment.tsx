@@ -215,7 +215,7 @@ export class Comment extends React.Component<ICommentProps> {
     },
     'jp-commenting-annotation-name': {
       fontSize: '13px',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       fontWeight: 'bold' as 'bold',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
@@ -239,7 +239,7 @@ export class Comment extends React.Component<ICommentProps> {
     },
     'jp-commenting-annotation-timestamp': {
       fontSize: '.7em',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
@@ -263,7 +263,7 @@ export class Comment extends React.Component<ICommentProps> {
     },
     'jp-commenting-annotation': {
       fontSize: '12px',
-      color: 'var(--jp-ui-font-color0)',
+      color: 'var(--jp-ui-font-color1)',
       lineHeight: 'normal'
     },
     'jp-commenting-annotation-area-resolved': {

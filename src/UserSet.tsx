@@ -44,17 +44,23 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   render() {
     return (
-      <div className="jp-commenting-user-set-area" style={this.styles.card}>
-        <label style={this.styles.label}>Enter GitHub Username</label>
-        <input
-          type="text"
-          style={this.styles.field}
-          className="bp3-input bp3-small"
-          placeholder="Name"
-          onChange={this.handleInputChange}
-          onKeyPress={this.handleKeyPress}
-        />
-        <div style={{ float: 'right' }}>
+      <div style={this.styles['jp-commenting-user-set-area']}>
+        <div style={this.styles['jp-commenting-user-set-title-area']}>
+          <span style={this.styles['jp-commenting-user-set-title']}>
+            Enter GitHub Username
+          </span>
+        </div>
+        <div style={this.styles['jp-commenting-user-set-input-area']}>
+          <input
+            type="text"
+            style={this.styles['jp-commenting-user-set-input']}
+            className="bp3-input bp3-small"
+            placeholder="Username"
+            onChange={this.handleInputChange}
+            onKeyPress={this.handleKeyPress}
+          />
+        </div>
+        <div style={this.styles['jp-commenting-user-set-button-area']}>
           <button
             className="jp-commenting-button-blue"
             style={{ marginLeft: '0px' }}
@@ -100,23 +106,35 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    * CSS styles
    */
   styles = {
-    card: {
-      paddinTop: '8px',
-      paddingBottom: '4px',
-      paddingLeft: '12px',
-      paddingRight: '12px',
+    'jp-commenting-user-set-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      borderRadius: 'var(--jp-border-radius)',
+      borderBottom: '1px solid var(--jp-border-color1)',
+      boxSizing: 'border-box' as 'border-box',
+      boxShadow: '0 1px 1px rgba(0, 0, 0, 0.075)'
+    },
+    'jp-commenting-user-set-title-area': {
+      display: 'flex',
+      padding: '4px'
+    },
+    'jp-commenting-user-set-title': {
       fontSize: 'var(--jp-ui-font-size1)',
-      fontFamily: 'helvetica',
-      border: 'unset'
+      color: 'var(--jp-ui-font-color1)',
+      fontWeight: 'bold' as 'bold'
     },
-    field: {
-      marginBottom: '5px',
-      paddingLeft: '12px',
-      paddingRight: '12px'
+    'jp-commenting-user-set-input-area': {
+      display: 'flex',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px'
     },
-    label: {
-      paddingTop: '5px',
-      marginBottom: '5px'
+    'jp-commenting-user-set-input': {
+      boxSizing: 'border-box' as 'border-box',
+      width: '100%'
+    },
+    'jp-commenting-user-set-button-area': {
+      display: 'flex',
+      padding: '4px'
     }
   };
 }
