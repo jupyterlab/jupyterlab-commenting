@@ -260,13 +260,13 @@ export class AppHeaderOptions extends React.Component<
    */
   styles = {
     optionBar: {
-      height: '28px',
+      height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
       justifyContent: 'center'
     },
     'jp-commenting-header-options-showResolved-area': {
-      height: '28px',
+      height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
       width: '50%',
@@ -282,7 +282,7 @@ export class AppHeaderOptions extends React.Component<
       whiteSpace: 'nowrap' as 'nowrap',
       overflow: 'hidden',
 
-      height: '28px',
+      height: '24px',
       minWidth: '52px',
 
       textAlign: 'right' as 'right',
@@ -301,7 +301,7 @@ export class AppHeaderOptions extends React.Component<
       minWidth: '20px'
     },
     'jp-commenting-header-options-dropdown-area': {
-      height: '28px',
+      height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
       borderLeft: '1px solid var(--jp-border-color1)',
@@ -319,7 +319,7 @@ export class AppHeaderOptions extends React.Component<
       overflow: 'hidden',
       whiteSpace: 'nowrap' as 'nowrap',
 
-      height: '28px',
+      height: '24px',
       paddingLeft: '4px',
       paddingRight: '4px',
       minWidth: '10px',
@@ -337,13 +337,13 @@ export class AppHeaderOptions extends React.Component<
     },
     'jp-commenting-header-options-dropdown-button-area': {
       display: 'flex',
-      height: '28px',
+      height: '24px',
       width: '40px',
       minWidth: '40px'
     },
     'jp-commenting-header-options-dropdown-button': {
       minWidth: '40px',
-      minHeight: '28px',
+      minHeight: '24px',
       backgroundImage: 'var(--jp-icon-caretdown)',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center'

@@ -147,7 +147,7 @@
 }
 
 .jp-commenting-thread-area:hover {
-  box-shadow: var(--jp-elevation-z6);
+  box-shadow: var(--jp-elevation-z4);
 }
 
 .jp-commenting-thread-area-no-hover {

@@ -80,10 +80,10 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   renderAppHeader(header: string): React.ReactNode {
     if (header === undefined) {
       return (
-        <div>
-          <h5 style={this.styles['jp-commenting-header-text-empty']}>
+        <div style={this.styles['jp-commenting-header-target-icon-container']}>
+          <div style={this.styles['jp-commenting-header-label']}>
             Select a file to view comments
-          </h5>
+          </div>
         </div>
       );
     } else {
@@ -269,19 +269,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     'jp-commenting-back-arrow-area': {
       width: '20px',
       marginLeft: '4px'
-    },
-    'jp-commenting-header-text-empty': {
-      background: 'white',
-      fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var( --jp-ui-font-color2)',
-      fontWeight: 400,
-      margin: '0px',
-      paddingLeft: '4px',
-      textAlign: 'left' as 'left',
-      whiteSpace: 'nowrap' as 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      flexShrink: 1
     },
     'jp-commenting-header-target-icon-container': {
       display: 'flex',
