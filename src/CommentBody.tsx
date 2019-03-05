@@ -16,6 +16,12 @@ interface ICommentBodyProps {
    * @type boolean
    */
   expanded: boolean;
+  /**
+   * Tracks if a thread is resolved
+   *
+   * @type boolean
+   */
+  resolved: boolean;
 }
 
 const _maxCommentsPerShrinkCard = 3;
@@ -62,7 +68,15 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
         ));
       } else if (!this.props.expanded) {
         items = (
-          <div style={this.styles['jp-commenting-more-annotations-icon-area']}>
+          <div
+            style={
+              this.props.resolved
+                ? this.styles[
+                    'jp-commenting-more-annotations-icon-area-resolved'
+                  ]
+                : this.styles['jp-commenting-more-annotations-icon-area']
+            }
+          >
             <span
               className={'jp-Icon jp-MoreHorizIcon'}
               style={this.styles['jp-commenting-more-annotations-icon']}
@@ -91,6 +105,9 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
       transform: 'rotate(90deg)'
     },
     'jp-commenting-more-annotations-icon-area': {
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-more-annotations-icon-area-resolved': {
       background: 'var(--jp-layout-color2)'
     }
   };

@@ -147,6 +147,7 @@ export class CommentCard extends React.Component<
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
+            resolved={this.props.resolved}
           />
         </div>
         <div>{this.getCommentFooter()}</div>
