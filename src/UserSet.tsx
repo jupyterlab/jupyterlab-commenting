@@ -110,7 +110,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
       display: 'flex',
       flexDirection: 'column' as 'column',
       borderRadius: 'var(--jp-border-radius)',
-      borderBottom: '1px solid var(--jp-border-color1)',
+      borderBottom: '1px solid var(--jp-border-color2)',
       boxSizing: 'border-box' as 'border-box',
       boxShadow: '0 1px 1px rgba(0, 0, 0, 0.075)'
     },

@@ -60,7 +60,7 @@
 
 /* Buttons */
 .jp-commenting-button-red {
-  background: white;
+  background: var(--jp-layout-color1);
   color: #e57373;
   font-size: var(--jp-content-font-size0);
   font-family: var(--jp-content-font-family);
@@ -68,25 +68,25 @@
   border-radius: var(--jp-border-radius);
   box-shadow: none;
   border: none;
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-red:hover {
-  background: #e0e0e0;
-  outline: 0px;
+  background: var(--jp-layout-color2);
+  outline: 0;
 }
 
 .jp-commenting-button-red:active {
-  background: #bdbdbd;
-  outline: 0px;
+  background: var(--jp-layout-color3);
+  outline: 0;
 }
 
 .jp-commenting-button-red:focus {
-  outline: 0px;
+  outline: 0;
 }
 
 .jp-commenting-button-blue {
-  background: white;
+  background: var(--jp-layout-color1);
   color: #2196f3;
   outline: 0;
   font-size: var(--jp-content-font-size0);
@@ -98,24 +98,24 @@
 }
 
 .jp-commenting-button-blue:disabled {
-  background: white;
-  color: #e0e0e0;
+  background: var(--jp-layout-color1);
+  color: var(--jp-layout-color2);
   outline: 0;
 }
 
 .jp-commenting-button-blue:disabled:hover {
-  background: white;
-  color: #e0e0e0;
+  background: var(--jp-layout-color1);
+  color: var(--jp-layout-color2);
   outline: 0;
 }
 
 .jp-commenting-button-blue:hover {
-  background: #e0e0e0;
+  background: var(--jp-layout-color2);
   outline: 0;
 }
 
 .jp-commenting-button-blue:active {
-  background: #bdbdbd;
+  background: var(--jp-layout-color3);
   outline: 0;
 }
 
@@ -127,13 +127,20 @@
   background: var(--jp-layout-color2);
 }
 
+.jp-commenting-button-resolved:hover {
+  background: var(--jp-layout-color3);
+}
+
+.jp-commenting-button-resolved:active {
+  background: var(--md-grey-500);
+}
+
 /* Threads */
 .jp-commenting-thread-area {
   display: flex;
   flex-direction: column;
   border-radius: var(--jp-border-radius);
-  padding: 1px;
-  border: 1px solid var(--jp-border-color1);
+  border: 1px solid var(--jp-border-color2);
   box-sizing: border-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
   margin-top: 4px;
@@ -148,7 +155,7 @@
   flex-direction: column;
   border-radius: var(--jp-border-radius);
   padding: 1px;
-  border: 1px solid var(--jp-border-color1);
+  border: 1px solid var(--jp-border-color2);
   box-sizing: border-box;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
@@ -159,7 +166,7 @@
   justify-content: space-between;
   flex-direction: column;
   border-radius: var(--jp-border-radius);
-  border: 1px solid var(--jp-border-color1);
+  border: 1px solid var(--jp-border-color2);
   box-sizing: border-box;
 }
 
@@ -168,7 +175,7 @@
   justify-content: space-between;
   flex-direction: row;
   border-radius: var(--jp-border-radius);
-  border: 1px solid var(--jp-border-color1);
+  border: 1px solid var(--jp-border-color2);
   box-sizing: border-box;
 }
 
