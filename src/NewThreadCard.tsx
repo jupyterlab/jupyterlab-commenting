@@ -18,6 +18,11 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
+  /**
+   * Creator object
+   *
+   * @type any
+   */
   creator: any;
 }
 
@@ -52,7 +57,7 @@ export class NewThreadCard extends React.Component<
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div style={this.styles['jp-commenting-new-thread-area']}>
         <div style={this.styles['jp-commenting-new-thread-name-area']}>
@@ -81,10 +86,18 @@ export class NewThreadCard extends React.Component<
     );
   }
 
-  componentDidMount() {
+  /**
+   * Called when a component is mounted
+   */
+  componentDidMount(): void {
     document.getElementById('commentBox').focus();
   }
 
+  /**
+   * Creates and returns the comment button
+   *
+   * @return Type: React.ReactNode - JSX button
+   */
   getCommentButton(): React.ReactNode {
     return (
       <button
@@ -98,6 +111,11 @@ export class NewThreadCard extends React.Component<
     );
   }
 
+  /**
+   * Creates and returns the cancel button
+   *
+   * @return Type: React.ReactNode - JSX button
+   */
   getCancelButton(): React.ReactNode {
     return (
       <button
@@ -110,13 +128,12 @@ export class NewThreadCard extends React.Component<
     );
   }
 
-  // TODO: Get correct type
   /**
    * Handles when the comment box changes
    *
-   * @param e Type: any - input box event
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
    */
-  handleChangeCommentBox(e: any): void {
+  handleChangeCommentBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
     this.setState({ inputBox: e.target.value });
   }
 
@@ -133,9 +150,9 @@ export class NewThreadCard extends React.Component<
   /**
    * Handles key events
    *
-   * @param e Type: ? - keyboard event
+   * @param e Type: React.KeyboardEvent - keyboard event
    */
-  handleKeyPress(e: any): void {
+  handleKeyPress(e: React.KeyboardEvent): void {
     if (this.state.inputBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
       this.createNewThread();
     }

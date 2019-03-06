@@ -9,19 +9,19 @@ interface IAppHeaderProps {
    *
    * @type string
    */
-  header?: string;
+  target: string;
   /**
    * Tracks if card is expanded
    *
    * @type boolean
    */
-  cardExpanded?: boolean;
+  cardExpanded: boolean;
   /**
    * Tracks if the new thread window is active
    *
    * @type boolean
    */
-  threadOpen?: boolean;
+  threadOpen: boolean;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
    *
@@ -29,7 +29,7 @@ interface IAppHeaderProps {
    */
   setExpandedCard: (cardId: string) => void;
   /**
-   * Recieves the AppHeaderOption componenet for render purposes
+   * Receives the AppHeaderOption component for render purposes
    *
    * @type React.ReactNode
    */
@@ -56,14 +56,14 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div style={this.styles['jp-commenting-header-area']}>
         <div style={this.styles['jp-commenting-header-target-area']}>
           <div style={this.styles['jp-commenting-back-arrow-area']}>
             {this.getCornerButton()}
           </div>
-          {this.renderAppHeader(this.props.header)}
+          {this.renderAppHeader(this.props.target)}
         </div>
         {this.shouldRenderOptions()}
       </div>
@@ -89,7 +89,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     } else {
       return (
         <div style={this.styles['jp-commenting-header-target-icon-container']}>
-          {this.getFileIcon(this.props.header)}
+          {this.getFileIcon(this.props.target)}
           <div style={this.styles['jp-commenting-header-label']}>{header}</div>
         </div>
       );
@@ -147,7 +147,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * @return Type: React.ReactNode
    */
   getCornerButton(): React.ReactNode {
-    if (this.props.cardExpanded && this.props.header !== undefined) {
+    if (this.props.cardExpanded && this.props.target !== undefined) {
       return this.getBackButton();
     } else {
       return;

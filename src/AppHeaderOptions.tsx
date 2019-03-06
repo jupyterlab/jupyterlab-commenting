@@ -24,9 +24,29 @@ interface IAppHeaderOptionsProps {
    * @type boolean
    */
   cardExpanded: boolean;
-  header: string;
+  /**
+   * Current target name
+   *
+   * @type string
+   */
+  target: string;
+  /**
+   * Tracks if the current open thread had cards
+   *
+   * @type boolean
+   */
   hasThreads: boolean;
+  /**
+   * Tracks when to show resolved threads
+   *
+   * @type boolean
+   */
   showResolved: boolean;
+  /**
+   * String that tracks what to sort by
+   *
+   * @type string
+   */
   sortState: string;
 }
 
@@ -40,7 +60,6 @@ interface IAppHeaderOptionsState {
    * @type boolean
    */
   isOpen: boolean;
-  showResolved: boolean;
 }
 
 /**
@@ -58,7 +77,7 @@ export class AppHeaderOptions extends React.Component<
   constructor(props: IAppHeaderOptionsProps) {
     super(props);
 
-    this.state = { isOpen: false, showResolved: false };
+    this.state = { isOpen: false };
 
     this.setResolvedState = this.setResolvedState.bind(this);
     this.matchCheckBoxState = this.matchCheckBoxState.bind(this);
@@ -90,7 +109,12 @@ export class AppHeaderOptions extends React.Component<
     );
   }
 
-  renderCheckbox() {
+  /**
+   * Renders the checkbox and label
+   *
+   * @return React.ReactNode
+   */
+  renderCheckbox(): React.ReactNode {
     return (
       <div
         style={this.styles['jp-commenting-header-options-showResolved-area']}
@@ -103,7 +127,7 @@ export class AppHeaderOptions extends React.Component<
           <label
             style={
               this.props.cardExpanded ||
-              this.props.header === undefined ||
+              this.props.target === undefined ||
               !this.props.hasThreads
                 ? this.styles[
                     'jp-commenting-header-options-showResolved-label-disable'
@@ -134,7 +158,7 @@ export class AppHeaderOptions extends React.Component<
             className={'bp3-checkbox'}
             disabled={
               this.props.cardExpanded ||
-              this.props.header === undefined ||
+              this.props.target === undefined ||
               !this.props.hasThreads
             }
           />
@@ -143,7 +167,12 @@ export class AppHeaderOptions extends React.Component<
     );
   }
 
-  renderDropdown() {
+  /**
+   * Renders the dropdown menu and label
+   *
+   * @return React.ReactNode
+   */
+  renderDropdown(): React.ReactNode {
     return (
       <div
         style={this.styles['jp-commenting-header-options-dropdown-area']}
@@ -157,7 +186,7 @@ export class AppHeaderOptions extends React.Component<
           <label
             style={
               this.props.cardExpanded ||
-              this.props.header === undefined ||
+              this.props.target === undefined ||
               !this.props.hasThreads
                 ? this.styles[
                     'jp-commenting-header-options-dropdown-label-disabled'
@@ -190,6 +219,7 @@ export class AppHeaderOptions extends React.Component<
     this.setState({
       isOpen: !this.state.isOpen
     });
+
   /**
    * Sets "showResolved" state in "App.tsx"
    */
@@ -197,6 +227,9 @@ export class AppHeaderOptions extends React.Component<
     this.props.showResolvedState(e.checked);
   }
 
+  /**
+   * Sets the resolve state based on the state of the checkbox
+   */
   matchCheckBoxState(): void {
     let checkBox: HTMLInputElement = document.getElementById(
       'controls'
@@ -207,8 +240,6 @@ export class AppHeaderOptions extends React.Component<
 
   /**
    * Gets values for the dropdown menu
-   *
-   * @callback to setSortState function
    *
    * @returns React.ReactNode with dropdown menu items
    */

@@ -42,7 +42,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div style={this.styles['jp-commenting-user-set-area']}>
         <div style={this.styles['jp-commenting-user-set-title-area']}>
@@ -74,22 +74,21 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
     );
   }
 
-  // TODO: Get correct type
   /**
    * Handles when the comment box changes
    *
-   * @param e Type: any - input box event
+   * @param e Type: React.ChangeEvent<HTMLInputElement> - input box event
    */
-  handleInputChange(e: any): void {
+  handleInputChange(e: React.ChangeEvent<HTMLInputElement>): void {
     this.setState({ inputBox: e.target.value });
   }
 
   /**
    * Handles key events
    *
-   * @param e Type: ? - keyboard event
+   * @param e Type: React.KeyboardEvent - keyboard event
    */
-  handleKeyPress(e: any): void {
+  handleKeyPress(e: React.KeyboardEvent): void {
     if (e.key === 'Enter' && !e.shiftKey) {
       this.handleSubmit();
     }

@@ -9,7 +9,7 @@ interface IAppBodyProps {
    *
    * @type React.ReactNode
    */
-  cards?: React.ReactNode[];
+  cards: React.ReactNode[];
   /**
    * Tracks if card is expanded
    *
@@ -38,7 +38,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     const items = this.props.cards.map((card, i) => <div key={i}>{card}</div>);
 
     return (

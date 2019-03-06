@@ -55,7 +55,7 @@ export class Comment extends React.Component<ICommentProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div
         style={
@@ -129,6 +129,11 @@ export class Comment extends React.Component<ICommentProps> {
     );
   }
 
+  /**
+   * Styles the time stamp
+   *
+   * @return - String: time stamp string
+   */
   timeStampStyle(): string {
     let serverTimeStamp = new Date(this.props.timestamp);
     let localTimeStamp = serverTimeStamp.toLocaleString();

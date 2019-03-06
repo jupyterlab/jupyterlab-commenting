@@ -9,7 +9,7 @@ interface ICommentBodyProps {
    *
    * @type ReactNode[]
    */
-  comments?: React.ReactNode[];
+  comments: React.ReactNode[];
   /**
    * Tracks if card is expanded
    *
@@ -24,7 +24,7 @@ interface ICommentBodyProps {
   resolved: boolean;
 }
 
-const _maxCommentsPerShrinkCard = 3;
+const _maxCommentsPerShrinkThread: number = 3;
 
 /**
  * CommentBody React Component
@@ -42,7 +42,7 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div style={this.styles['jp-commenting-annotation-body-area']}>
         {this.getComments()}
@@ -59,7 +59,7 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
     let items: React.ReactNode;
     if (this.props.comments != null) {
       if (
-        this.props.comments.length <= _maxCommentsPerShrinkCard ||
+        this.props.comments.length <= _maxCommentsPerShrinkThread ||
         this.props.expanded
       ) {
         // Maps each Comment component into an individual div tag

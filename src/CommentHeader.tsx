@@ -27,13 +27,7 @@ interface ICommentHeaderProps {
    *
    * @type string
    */
-  context?: string;
-  /**
-   * Tag to display in the header
-   *
-   * @type string
-   */
-  tag?: string;
+  context: string;
   /**
    * Tracks the state if the card is expanded
    *
@@ -47,24 +41,34 @@ interface ICommentHeaderProps {
    */
   resolved: boolean;
   /**
+   * Tracks if cursor is hovering over card
+   *
+   * @type boolean
+   */
+  hover: boolean;
+  /**
    * Function to handle the CommentCard expanding
    *
-   * @type VoidFunction
+   * @type void
    */
-  handleExpand: VoidFunction;
+  handleExpand: () => void;
   /**
    * Function to handle the CommentCard shrinking
    *
-   * @type VoidFunction
+   * @type void
    */
-  handleShrink: VoidFunction;
+  handleShrink: () => void;
   /**
    * Reverses resolve state
    *
-   * @type: void function
+   * @type: void
    */
-  handleResolve: VoidFunction;
-  hover: boolean;
+  handleResolve: () => void;
+  /**
+   * Handles expanding
+   *
+   * @type void
+   */
   handleShouldExpand: (state: boolean) => void;
 }
 
@@ -84,7 +88,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div
         style={
@@ -184,6 +188,11 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  /**
+   * Creates and returns re-open button
+   *
+   * @type Type: React.ReactNode
+   */
   getReopenButton(): React.ReactNode {
     return (
       <button
@@ -198,6 +207,11 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  /**
+   * Creates and returns the corner button based on states
+   *
+   * @type React.ReactNode
+   */
   getCornerButton(): React.ReactNode {
     if (this.props.hover && !this.props.expanded) {
       return (
@@ -220,6 +234,11 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     }
   }
 
+  /**
+   * Styles and returns timestamp
+   *
+   * @type string
+   */
   timeStampStyle(): string {
     let serverTimeStamp = new Date(this.props.timestamp);
     let localTimeStamp = serverTimeStamp.toLocaleString();

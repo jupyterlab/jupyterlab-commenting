@@ -98,11 +98,11 @@ interface IAppProps {
    *
    * @type IMetadataCommentsService
    */
-  commentsService?: IMetadataCommentsService;
+  commentsService: IMetadataCommentsService;
   /**
    * People Service that communicates with graphql server
    */
-  peopleService?: IMetadataPeopleService;
+  peopleService: IMetadataPeopleService;
   /**
    * Path of open file, used as unique id to fetch comments and annotations
    *
@@ -136,7 +136,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.state = {
       expandedCard: ' ',
       replyActiveCard: ' ',
-      newThreadFile: '',
+      newThreadFile: ' ',
       sortState: 'latest',
       showResolved: false,
       newThreadActive: false,
@@ -244,11 +244,11 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return this.state.userSet ? (
       <div className="jp-commenting-window">
         <AppHeader
-          header={this.props.targetName}
+          target={this.props.targetName}
           cardExpanded={this.state.expandedCard !== ' '}
           threadOpen={this.state.newThreadActive}
           setExpandedCard={this.setExpandedCard}
@@ -257,7 +257,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
               setSortState={this.setSortState}
               showResolvedState={this.showResolved}
               cardExpanded={this.state.expandedCard !== ' '}
-              header={this.props.targetName}
+              target={this.props.targetName}
               hasThreads={this.state.curTargetHasThreads}
               showResolved={this.state.showResolved}
               sortState={this.state.sortState}

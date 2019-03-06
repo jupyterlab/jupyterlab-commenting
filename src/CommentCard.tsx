@@ -15,7 +15,7 @@ interface ICommentCardProps {
    *
    * @type any
    */
-  data?: any;
+  data: any;
   /**
    * Unique string to identify a card
    *
@@ -81,14 +81,24 @@ interface ICommentCardProps {
   /**
    * Path of file used to itemize comment thread to file
    */
-  target?: string;
+  target: string;
 }
 
 /**
  * React States interface
  */
 interface ICommentCardStates {
+  /**
+   * Tracks if mouse is hovering over thread
+   *
+   * @type boolean
+   */
   hover: boolean;
+  /**
+   * Tracks when to expand
+   *
+   * @type boolean
+   */
   shouldExpand: boolean;
 }
 
@@ -124,7 +134,7 @@ export class CommentCard extends React.Component<
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div
         className={
@@ -155,14 +165,25 @@ export class CommentCard extends React.Component<
     );
   }
 
+  /**
+   * Handles state when mouse enters thread area
+   */
   handleMouseEnter(): void {
     this.setState({ hover: true });
   }
 
+  /**
+   * Handles state when mouse leaves thread area
+   */
   handleMouseLeave(): void {
     this.setState({ hover: false });
   }
 
+  /**
+   * Sets the state for should expand
+   *
+   * @param state Type: boolean - sets the state of should expand
+   */
   handleShouldExpand(state: boolean) {
     this.setState({ shouldExpand: state });
   }
@@ -280,7 +301,6 @@ export class CommentCard extends React.Component<
         context={this.props.data.body[0].value}
         timestamp={this.props.data.body[0].created}
         photo={this.props.data.body[0].creator.image}
-        tag={this.props.data.label}
         expanded={this.props.checkExpandedCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
