@@ -2,6 +2,12 @@ import * as React from 'react';
 
 interface INewThreadCardProps {
   /**
+   * Creator object
+   *
+   * @type any
+   */
+  creator: any;
+  /**
    * Function to put comment back to server
    *
    * @param comment Type: string -  the comment to be added
@@ -18,12 +24,6 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
-  /**
-   * Creator object
-   *
-   * @type any
-   */
-  creator: any;
 }
 
 interface INewThreadCardStates {
@@ -50,8 +50,15 @@ export class NewThreadCard extends React.Component<
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.createNewThread = this.createNewThread.bind(this);
-    this.cancelThread = this.cancelThread.bind(this);
+    this.handleCreateNewThread = this.handleCreateNewThread.bind(this);
+    this.handleCancelThread = this.handleCancelThread.bind(this);
+  }
+
+  /**
+   * Called when a component is mounted
+   */
+  componentDidMount(): void {
+    document.getElementById('commentBox').focus();
   }
 
   /**
@@ -87,13 +94,6 @@ export class NewThreadCard extends React.Component<
   }
 
   /**
-   * Called when a component is mounted
-   */
-  componentDidMount(): void {
-    document.getElementById('commentBox').focus();
-  }
-
-  /**
    * Creates and returns the comment button
    *
    * @return Type: React.ReactNode - JSX button
@@ -103,27 +103,10 @@ export class NewThreadCard extends React.Component<
       <button
         className="jp-commenting-button-blue"
         type="button"
-        onClick={this.createNewThread}
+        onClick={this.handleCreateNewThread}
         disabled={this.state.inputBox.trim() === ''}
       >
         Comment
-      </button>
-    );
-  }
-
-  /**
-   * Creates and returns the cancel button
-   *
-   * @return Type: React.ReactNode - JSX button
-   */
-  getCancelButton(): React.ReactNode {
-    return (
-      <button
-        className="jp-commenting-button-red"
-        type="button"
-        onClick={this.cancelThread}
-      >
-        Cancel
       </button>
     );
   }
@@ -137,12 +120,12 @@ export class NewThreadCard extends React.Component<
     this.setState({ inputBox: e.target.value });
   }
 
-  createNewThread(): void {
+  handleCreateNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
   }
 
-  cancelThread(): void {
+  handleCancelThread(): void {
     this.setState({ inputBox: '' });
     this.props.setNewThreadActive(false);
   }
@@ -154,8 +137,25 @@ export class NewThreadCard extends React.Component<
    */
   handleKeyPress(e: React.KeyboardEvent): void {
     if (this.state.inputBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
-      this.createNewThread();
+      this.handleCreateNewThread();
     }
+  }
+
+  /**
+   * Creates and returns the cancel button
+   *
+   * @return Type: React.ReactNode - JSX button
+   */
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        className="jp-commenting-button-red"
+        type="button"
+        onClick={this.handleCancelThread}
+      >
+        Cancel
+      </button>
+    );
   }
 
   /**

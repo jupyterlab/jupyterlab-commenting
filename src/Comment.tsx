@@ -2,29 +2,11 @@ import * as React from 'react';
 
 interface ICommentProps {
   /**
-   * Name of person commenting
-   *
-   * @type string
-   */
-  name: string;
-  /**
    * Actual comment from the user
    *
    * @type string
    */
   context?: string;
-  /**
-   * Time comment was made
-   *
-   * @type string
-   */
-  timestamp: string;
-  /**
-   * Source of the profile picture
-   *
-   * @type string
-   */
-  photo: string;
   /**
    * State if the CommentCard is expanded
    *
@@ -32,11 +14,29 @@ interface ICommentProps {
    */
   expanded: boolean;
   /**
+   * Name of person commenting
+   *
+   * @type string
+   */
+  name: string;
+  /**
+   * Source of the profile picture
+   *
+   * @type string
+   */
+  photo: string;
+  /**
    * State if thread is resolved
    *
    * @type boolean
    */
   resolved: boolean;
+  /**
+   * Time comment was made
+   *
+   * @type string
+   */
+  timestamp: string;
 }
 
 /**
@@ -56,70 +56,66 @@ export class Comment extends React.Component<ICommentProps> {
    * React render function
    */
   render(): React.ReactNode {
-    return (
-      <div
-        style={
-          this.props.resolved
-            ? this.styles['jp-commenting-annotation-thread-resolved']
-            : this.styles['jp-commenting-annotation-thread']
-        }
-      >
+    return this.props.resolved ? (
+      <div style={this.styles['jp-commenting-annotation-thread-resolved']}>
         <div
-          style={
-            this.props.resolved
-              ? this.styles['jp-commenting-annotation-upper-area-resolved']
-              : this.styles['jp-commenting-annotation-upper-area']
-          }
+          style={this.styles['jp-commenting-annotation-upper-area-resolved']}
         >
           <div style={this.styles['jp-commenting-annotation-photo-area']}>
             <img
-              style={
-                this.props.resolved
-                  ? this.styles['jp-commenting-annotation-photo-resolved']
-                  : this.styles['jp-commenting-annotation-photo']
-              }
+              style={this.styles['jp-commenting-annotation-photo-resolved']}
               src={this.props.photo}
             />
           </div>
           <div style={this.styles['jp-commenting-annotation-info-area']}>
             <div style={this.styles['jp-commenting-annotation-name-area']}>
-              <h1
-                style={
-                  this.props.resolved
-                    ? this.styles['jp-commenting-annotation-name-resolved']
-                    : this.styles['jp-commenting-annotation-name']
-                }
-              >
+              <h1 style={this.styles['jp-commenting-annotation-name-resolved']}>
                 {this.props.name}
               </h1>
             </div>
             <div style={this.styles['jp-commenting-annotation-timestamp-area']}>
               <p
                 style={
-                  this.props.resolved
-                    ? this.styles['jp-commenting-annotation-timestamp-resolved']
-                    : this.styles['jp-commenting-annotation-timestamp']
+                  this.styles['jp-commenting-annotation-timestamp-resolved']
                 }
               >
-                {this.timeStampStyle()}
+                {this.getStyledTimeStamp()}
               </p>
             </div>
           </div>
         </div>
-        <div
-          style={
-            this.props.resolved
-              ? this.styles['jp-commenting-annotation-area-resolved']
-              : this.styles['jp-commenting-annotation-area']
-          }
-        >
-          <p
-            style={
-              this.props.resolved
-                ? this.styles['jp-commenting-annotation-resolved']
-                : this.styles['jp-commenting-annotation']
-            }
-          >
+        <div style={this.styles['jp-commenting-annotation-area-resolved']}>
+          <p style={this.styles['jp-commenting-annotation-resolved']}>
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div style={this.styles['jp-commenting-annotation-thread']}>
+        <div style={this.styles['jp-commenting-annotation-upper-area']}>
+          <div style={this.styles['jp-commenting-annotation-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-annotation-photo']}
+              src={this.props.photo}
+            />
+          </div>
+          <div style={this.styles['jp-commenting-annotation-info-area']}>
+            <div style={this.styles['jp-commenting-annotation-name-area']}>
+              <h1 style={this.styles['jp-commenting-annotation-name']}>
+                {this.props.name}
+              </h1>
+            </div>
+            <div style={this.styles['jp-commenting-annotation-timestamp-area']}>
+              <p style={this.styles['jp-commenting-annotation-timestamp']}>
+                {this.getStyledTimeStamp()}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div style={this.styles['jp-commenting-annotation-area']}>
+          <p style={this.styles['jp-commenting-annotation']}>
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -134,7 +130,7 @@ export class Comment extends React.Component<ICommentProps> {
    *
    * @return - String: time stamp string
    */
-  timeStampStyle(): string {
+  getStyledTimeStamp(): string {
     let serverTimeStamp = new Date(this.props.timestamp);
     let localTimeStamp = serverTimeStamp.toLocaleString();
     let fullDate = localTimeStamp.split(',')[0].split('/');
@@ -207,9 +203,9 @@ export class Comment extends React.Component<ICommentProps> {
       borderRadius: 'var(--jp-border-radius)'
     },
     'jp-commenting-annotation-photo-resolved': {
-      height: '2em',
-      width: '2em',
-      opacity: '0.5',
+      height: '28px',
+      width: '28px',
+      opacity: 0.5,
       borderRadius: 'var(--jp-border-radius)'
     },
     'jp-commenting-annotation-name-area': {

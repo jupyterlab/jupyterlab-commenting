@@ -5,23 +5,17 @@ import * as React from 'react';
  */
 interface IAppHeaderProps {
   /**
-   * Receives a value for a header
-   *
-   * @type string
-   */
-  target: string;
-  /**
    * Tracks if card is expanded
    *
    * @type boolean
    */
   cardExpanded: boolean;
   /**
-   * Tracks if the new thread window is active
+   * Receives the AppHeaderOption component for render purposes
    *
-   * @type boolean
+   * @type React.ReactNode
    */
-  threadOpen: boolean;
+  headerOptions: React.ReactNode;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
    *
@@ -29,11 +23,17 @@ interface IAppHeaderProps {
    */
   setExpandedCard: (cardId: string) => void;
   /**
-   * Receives the AppHeaderOption component for render purposes
+   * Receives a value for a header
    *
-   * @type React.ReactNode
+   * @type string
    */
-  headerOptions: React.ReactNode;
+  target: string;
+  /**
+   * Tracks if the new thread window is active
+   *
+   * @type boolean
+   */
+  threadOpen: boolean;
 }
 
 /**
@@ -48,7 +48,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   constructor(props: IAppHeaderProps) {
     super(props);
 
-    this.renderAppHeader = this.renderAppHeader.bind(this);
+    this.getAppHeader = this.getAppHeader.bind(this);
     this.getBackButton = this.getBackButton.bind(this);
     this.setShrink = this.setShrink.bind(this);
   }
@@ -63,11 +63,24 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
           <div style={this.styles['jp-commenting-back-arrow-area']}>
             {this.getCornerButton()}
           </div>
-          {this.renderAppHeader(this.props.target)}
+          {this.getAppHeader(this.props.target)}
         </div>
         {this.shouldRenderOptions()}
       </div>
     );
+  }
+
+  /**
+   * Checks the state of New Thread
+   *
+   * @returns Type: React.ReactNode. If the New Thread is not open
+   */
+  shouldRenderOptions(): React.ReactNode {
+    if (!this.props.threadOpen && !this.props.cardExpanded) {
+      return <div>{this.props.headerOptions}</div>;
+    } else {
+      return <div />;
+    }
   }
 
   /**
@@ -77,7 +90,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * @param header Type: string
    * @return Type: React.ReactNode - App Header with correct string
    */
-  renderAppHeader(header: string): React.ReactNode {
+  getAppHeader(header: string): React.ReactNode {
     if (header === undefined) {
       return (
         <div style={this.styles['jp-commenting-header-target-icon-container']}>
@@ -125,19 +138,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       );
     } catch {
       return <span />;
-    }
-  }
-
-  /**
-   * Checks the state of New Thread
-   *
-   * @returns Type: React.ReactNode. If the New Thread is not open
-   */
-  shouldRenderOptions(): React.ReactNode {
-    if (!this.props.threadOpen && !this.props.cardExpanded) {
-      return <div>{this.props.headerOptions}</div>;
-    } else {
-      return <div />;
     }
   }
 

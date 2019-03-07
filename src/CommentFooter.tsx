@@ -11,30 +11,6 @@ interface ICommentFooterProps {
    */
   expanded: boolean;
   /**
-   * Is the card resolved
-   *
-   * @type boolean
-   */
-  resolved: boolean;
-  /**
-   * Tracks if the reply box is active
-   *
-   * @type return function
-   */
-  replyActive: boolean;
-  /**
-   * Function to call to parent component to open the reply box
-   *
-   * @type void
-   */
-  handleReplyOpen: () => void;
-  /**
-   * Function to call to parent component to close the reply box
-   *
-   * @type void
-   */
-  handleReplyClose: () => void;
-  /**
    * Function to call to parent component to handle expanding and opening the reply box
    *
    * @type void
@@ -54,6 +30,30 @@ interface ICommentFooterProps {
    * @type: void
    */
   handleResolve: () => void;
+  /**
+   * Function to call to parent component to close the reply box
+   *
+   * @type void
+   */
+  handleReplyClose: () => void;
+  /**
+   * Function to call to parent component to open the reply box
+   *
+   * @type void
+   */
+  handleReplyOpen: () => void;
+  /**
+   * Tracks if the reply box is active
+   *
+   * @type return function
+   */
+  replyActive: boolean;
+  /**
+   * Is the card resolved
+   *
+   * @type boolean
+   */
+  resolved: boolean;
 }
 
 /**
@@ -129,6 +129,48 @@ export class CommentFooter extends React.Component<
   }
 
   /**
+   * Handles key events
+   *
+   * @param e Type: React.KeyboardEvent - keyboard event
+   */
+  handleKeyPress(e: React.KeyboardEvent): void {
+    if (
+      this.state.commentBox.trim() !== '' &&
+      e.key === 'Enter' &&
+      !e.shiftKey
+    ) {
+      this.handleCommentButton();
+      document.getElementById('commentBox').blur();
+    }
+  }
+
+  /**
+   * Handles when the comment box changes
+   *
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
+   */
+  handleChangeCommentBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.setState({ commentBox: e.target.value });
+  }
+
+  /**
+   * Handles clicking the comment button
+   */
+  handleCommentButton(): void {
+    this.props.getInput(this.state.commentBox);
+    this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
+  }
+
+  /**
+   * Handles states when cancel is pressed
+   */
+  handleCancelButton(): void {
+    this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
+  }
+
+  /**
    * Returns the correct buttons for different state combinations
    *
    * @return Type: React.ReactNode - JSX with buttons
@@ -177,48 +219,6 @@ export class CommentFooter extends React.Component<
         Cancel
       </button>
     );
-  }
-
-  /**
-   * Handles key events
-   *
-   * @param e Type: React.KeyboardEvent - keyboard event
-   */
-  handleKeyPress(e: React.KeyboardEvent): void {
-    if (
-      this.state.commentBox.trim() !== '' &&
-      e.key === 'Enter' &&
-      !e.shiftKey
-    ) {
-      this.handleCommentButton();
-      document.getElementById('commentBox').blur();
-    }
-  }
-
-  /**
-   * Handles when the comment box changes
-   *
-   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
-   */
-  handleChangeCommentBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
-    this.setState({ commentBox: e.target.value });
-  }
-
-  /**
-   * Handles clicking the comment button
-   */
-  handleCommentButton(): void {
-    this.props.getInput(this.state.commentBox);
-    this.setState({ commentBox: '' });
-    this.props.handleReplyClose();
-  }
-
-  /**
-   * Handles states when cancel is pressed
-   */
-  handleCancelButton(): void {
-    this.setState({ commentBox: '' });
-    this.props.handleReplyClose();
   }
 
   /**

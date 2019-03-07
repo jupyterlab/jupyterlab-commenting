@@ -5,24 +5,6 @@ import * as React from 'react';
  */
 interface ICommentHeaderProps {
   /**
-   * Person name of comment
-   *
-   * @type string
-   */
-  name: string;
-  /**
-   * Time stamp of comment
-   *
-   * @type string
-   */
-  timestamp: string;
-  /**
-   * URL to Person photo to display
-   *
-   * @type string
-   */
-  photo: string;
-  /**
    * Text comment to display
    *
    * @type string
@@ -35,29 +17,11 @@ interface ICommentHeaderProps {
    */
   expanded: boolean;
   /**
-   * Is the card resolved
-   *
-   * @type boolean
-   */
-  resolved: boolean;
-  /**
-   * Tracks if cursor is hovering over card
-   *
-   * @type boolean
-   */
-  hover: boolean;
-  /**
    * Function to handle the CommentCard expanding
    *
    * @type void
    */
   handleExpand: () => void;
-  /**
-   * Function to handle the CommentCard shrinking
-   *
-   * @type void
-   */
-  handleShrink: () => void;
   /**
    * Reverses resolve state
    *
@@ -70,6 +34,42 @@ interface ICommentHeaderProps {
    * @type void
    */
   handleShouldExpand: (state: boolean) => void;
+  /**
+   * Function to handle the CommentCard shrinking
+   *
+   * @type void
+   */
+  handleShrink: () => void;
+  /**
+   * Tracks if cursor is hovering over card
+   *
+   * @type boolean
+   */
+  hover: boolean;
+  /**
+   * Person name of comment
+   *
+   * @type string
+   */
+  name: string;
+  /**
+   * URL to Person photo to display
+   *
+   * @type string
+   */
+  photo: string;
+  /**
+   * Is the card resolved
+   *
+   * @type boolean
+   */
+  resolved: boolean;
+  /**
+   * Time stamp of comment
+   *
+   * @type string
+   */
+  timestamp: string;
 }
 
 /**
@@ -89,39 +89,21 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * React render function
    */
   render(): React.ReactNode {
-    return (
-      <div
-        style={
-          this.props.resolved
-            ? this.styles['jp-commenting-thread-header-resolved']
-            : this.styles['jp-commenting-thread-header']
-        }
-      >
+    return this.props.resolved ? (
+      <div style={this.styles['jp-commenting-thread-header-resolved']}>
         <div
-          style={
-            this.props.resolved
-              ? this.styles['jp-commenting-thread-header-upper-area-resolved']
-              : this.styles['jp-commenting-thread-header-upper-area']
-          }
+          style={this.styles['jp-commenting-thread-header-upper-area-resolved']}
         >
           <div style={this.styles['jp-commenting-thread-header-photo-area']}>
             <img
-              style={
-                this.props.resolved
-                  ? this.styles['jp-commenting-thread-header-photo-resolved']
-                  : this.styles['jp-commenting-thread-header-photo']
-              }
+              style={this.styles['jp-commenting-thread-header-photo-resolved']}
               src={this.props.photo}
             />
           </div>
           <div style={this.styles['jp-commenting-thread-header-info-area']}>
             <div style={this.styles['jp-commenting-thread-header-name-area']}>
               <h1
-                style={
-                  this.props.resolved
-                    ? this.styles['jp-commenting-thread-header-name-resolved']
-                    : this.styles['jp-commenting-thread-header-name']
-                }
+                style={this.styles['jp-commenting-thread-header-name-resolved']}
               >
                 {this.props.name}
               </h1>
@@ -131,14 +113,10 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             >
               <p
                 style={
-                  this.props.resolved
-                    ? this.styles[
-                        'jp-commenting-thread-header-timestamp-resolved'
-                      ]
-                    : this.styles['jp-commenting-thread-header-timestamp']
+                  this.styles['jp-commenting-thread-header-timestamp-resolved']
                 }
               >
-                {this.timeStampStyle()}
+                {this.getStyledTimeStamp()}
               </p>
             </div>
           </div>
@@ -146,20 +124,43 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
             {this.getCornerButton()}
           </div>
         </div>
-        <div
-          style={
-            this.props.resolved
-              ? this.styles['jp-commenting-annotation-area-resolved']
-              : this.styles['jp-commenting-annotation-area']
-          }
-        >
-          <p
-            style={
-              this.props.resolved
-                ? this.styles['jp-commenting-annotation-resolved']
-                : this.styles['jp-commenting-annotation']
-            }
-          >
+        <div style={this.styles['jp-commenting-annotation-area-resolved']}>
+          <p style={this.styles['jp-commenting-annotation-resolved']}>
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div style={this.styles['jp-commenting-thread-header']}>
+        <div style={this.styles['jp-commenting-thread-header-upper-area']}>
+          <div style={this.styles['jp-commenting-thread-header-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-thread-header-photo']}
+              src={this.props.photo}
+            />
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-info-area']}>
+            <div style={this.styles['jp-commenting-thread-header-name-area']}>
+              <h1 style={this.styles['jp-commenting-thread-header-name']}>
+                {this.props.name}
+              </h1>
+            </div>
+            <div
+              style={this.styles['jp-commenting-thread-header-timestamp-area']}
+            >
+              <p style={this.styles['jp-commenting-thread-header-timestamp']}>
+                {this.getStyledTimeStamp()}
+              </p>
+            </div>
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-button-area']}>
+            {this.getCornerButton()}
+          </div>
+        </div>
+        <div style={this.styles['jp-commenting-annotation-area']}>
+          <p style={this.styles['jp-commenting-annotation']}>
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -239,7 +240,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    *
    * @type string
    */
-  timeStampStyle(): string {
+  getStyledTimeStamp(): string {
     let serverTimeStamp = new Date(this.props.timestamp);
     let localTimeStamp = serverTimeStamp.toLocaleString();
     let fullDate = localTimeStamp.split(',')[0].split('/');
@@ -315,7 +316,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     'jp-commenting-thread-header-photo-resolved': {
       height: '36px',
       width: '36px',
-      opacity: '0.5',
+      opacity: 0.5,
       borderRadius: 'var(--jp-border-radius)'
     },
     'jp-commenting-thread-header-name-area': {

@@ -102,8 +102,8 @@ export class AppHeaderOptions extends React.Component<
           {this.getSortItems()}
         </div>
         <div style={this.styles.optionBar}>
-          {this.renderCheckbox()}
-          {this.renderDropdown()}
+          {this.getCheckbox()}
+          {this.getDropdown()}
         </div>
       </div>
     );
@@ -114,7 +114,7 @@ export class AppHeaderOptions extends React.Component<
    *
    * @return React.ReactNode
    */
-  renderCheckbox(): React.ReactNode {
+  getCheckbox(): React.ReactNode {
     return (
       <div
         style={this.styles['jp-commenting-header-options-showResolved-area']}
@@ -172,7 +172,7 @@ export class AppHeaderOptions extends React.Component<
    *
    * @return React.ReactNode
    */
-  renderDropdown(): React.ReactNode {
+  getDropdown(): React.ReactNode {
     return (
       <div
         style={this.styles['jp-commenting-header-options-dropdown-area']}
@@ -213,32 +213,6 @@ export class AppHeaderOptions extends React.Component<
   }
 
   /**
-   * Sets the "isOpen" state to control the dropdown menu
-   */
-  toggleOpen = () =>
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-
-  /**
-   * Sets "showResolved" state in "App.tsx"
-   */
-  setResolvedState(e: HTMLInputElement) {
-    this.props.showResolvedState(e.checked);
-  }
-
-  /**
-   * Sets the resolve state based on the state of the checkbox
-   */
-  matchCheckBoxState(): void {
-    let checkBox: HTMLInputElement = document.getElementById(
-      'controls'
-    ) as HTMLInputElement;
-
-    checkBox.checked = this.props.showResolved;
-  }
-
-  /**
    * Gets values for the dropdown menu
    *
    * @returns React.ReactNode with dropdown menu items
@@ -265,6 +239,13 @@ export class AppHeaderOptions extends React.Component<
   }
 
   /**
+   * Sets "showResolved" state in "App.tsx"
+   */
+  setResolvedState(e: HTMLInputElement) {
+    this.props.showResolvedState(e.checked);
+  }
+
+  /**
    * Sets "sortState" state in "App.tsx"
    * Adds a name to the Sort by: label
    *
@@ -274,6 +255,26 @@ export class AppHeaderOptions extends React.Component<
   setSortState(state: string) {
     this.toggleOpen();
     this.props.setSortState(state);
+  }
+
+  /**
+   * Sets the "isOpen" state to control the dropdown menu
+   */
+  toggleOpen(): void {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  /**
+   * Sets the resolve state based on the state of the checkbox
+   */
+  matchCheckBoxState(): void {
+    let checkBox: HTMLInputElement = document.getElementById(
+      'controls'
+    ) as HTMLInputElement;
+
+    checkBox.checked = this.props.showResolved;
   }
 
   /**
