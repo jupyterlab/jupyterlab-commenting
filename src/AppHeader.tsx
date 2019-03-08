@@ -58,10 +58,12 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   render(): React.ReactNode {
     return (
-      <div style={this.styles['jp-commenting-header-area']}>
-        <div style={this.styles['jp-commenting-header-target-area']}>
+      <div style={this.styles['jp-commenting-app-header-area']}>
+        <div style={this.styles['jp-commenting-header-area']}>
           <div style={this.styles['jp-commenting-back-arrow-area']}>
-            {this.getCornerButton()}
+            {this.props.cardExpanded && this.props.target !== undefined
+              ? this.getBackButton()
+              : ''}
           </div>
           {this.getAppHeader(this.props.target)}
         </div>
@@ -93,17 +95,23 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   getAppHeader(header: string): React.ReactNode {
     if (header === undefined) {
       return (
-        <div style={this.styles['jp-commenting-header-target-icon-container']}>
-          <div style={this.styles['jp-commenting-header-label']}>
-            Select a file to view comments
+        <div style={this.styles['jp-commenting-header-target-area']}>
+          <div style={this.styles['jp-commenting-header-label-area']}>
+            <label style={this.styles['jp-commenting-header-label']}>
+              Select a file to view comments
+            </label>
           </div>
         </div>
       );
     } else {
       return (
-        <div style={this.styles['jp-commenting-header-target-icon-container']}>
+        <div style={this.styles['jp-commenting-header-target-area']}>
           {this.getFileIcon(this.props.target)}
-          <div style={this.styles['jp-commenting-header-label']}>{header}</div>
+          <div style={this.styles['jp-commenting-header-label-area']}>
+            <label style={this.styles['jp-commenting-header-label']}>
+              {header}
+            </label>
+          </div>
         </div>
       );
     }
@@ -122,38 +130,28 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
         for (let value in this.fileTypes[key].extensions) {
           if (extensionName === this.fileTypes[key].extensions[value]) {
             return (
-              <span
-                className={this.fileTypes[key].iconClass}
-                style={this.styles['jp-commenting-header-icon']}
-              />
+              <div style={this.styles['jp-commenting-header-target-icon-area']}>
+                <span
+                  className={this.fileTypes[key].iconClass}
+                  style={this.styles['jp-commenting-header-target-icon']}
+                />
+              </div>
             );
           }
         }
       }
       return (
-        <span
-          className="jp-FileIcon"
-          style={this.styles['jp-commenting-header-icon']}
-        />
+        <div style={this.styles['jp-commenting-header-target-icon-area']}>
+          <span
+            className="jp-FileIcon"
+            style={this.styles['jp-commenting-header-target-icon']}
+          />
+        </div>
       );
     } catch {
       return <span />;
     }
   }
-
-  /**
-   * Returns a button from the current state of the comment box
-   *
-   * @return Type: React.ReactNode
-   */
-  getCornerButton(): React.ReactNode {
-    if (this.props.cardExpanded && this.props.target !== undefined) {
-      return this.getBackButton();
-    } else {
-      return;
-    }
-  }
-
   /**
    * Renders a back button inside the header
    *
@@ -164,7 +162,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <input
         type="image"
-        style={this.styles['jp-commenting-header-button-back']}
+        style={this.styles['jp-commenting-header-back-arrow']}
         src={'https://i.ibb.co/xg3hwy8/Vector.png'}
         onClick={this.setShrink}
       />
@@ -254,31 +252,45 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * App header styles
    */
   styles = {
-    'jp-commenting-header-area': {
+    'jp-commenting-app-header-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
       borderBottom: '1px solid var(--jp-border-color1)',
       boxSizing: 'border-box' as 'border-box'
     },
+    'jp-commenting-header-area': {
+      display: 'flex',
+      flexShrink: 1,
+      flexDirection: 'row' as 'row',
+      padding: '4px',
+      minWidth: '52px'
+    },
+    'jp-commenting-back-arrow-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      justifyContent: 'center',
+      width: '20px'
+    },
+    'jp-commenting-header-back-arrow': {
+      width: '12px',
+      height: '12px'
+    },
     'jp-commenting-header-target-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      paddingTop: '4px',
-      paddingBottom: '4px'
+      minWidth: '52px',
+      paddingLeft: '8px',
+      flexShrink: 1
     },
-    'jp-commenting-back-arrow-area': {
-      width: '20px',
-      marginLeft: '4px'
+    'jp-commenting-header-target-icon-area': {
+      display: 'flex'
     },
-    'jp-commenting-header-target-icon-container': {
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      minWidth: '75px',
-      paddingLeft: '8px'
+    'jp-commenting-header-target-icon': {
+      minWidth: '20px',
+      minHeight: '20px',
+      backgroundSize: '20px'
     },
-    'jp-commenting-header-label': {
-      fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var(--jp-ui-font-color1)',
+    'jp-commenting-header-label-area': {
       paddingLeft: '4px',
       textAlign: 'left' as 'left',
       whiteSpace: 'nowrap' as 'nowrap',
@@ -286,16 +298,9 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       textOverflow: 'ellipsis',
       flexShrink: 1
     },
-    'jp-commenting-header-icon': {
-      minWidth: '20px',
-      minHeight: '20px',
-      backgroundSize: '20px'
-    },
-    'jp-commenting-header-button-back': {
-      display: 'flex',
-      width: '12px',
-      height: '12px',
-      marginTop: '4px'
+    'jp-commenting-header-label': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--jp-ui-font-color1)'
     }
   };
 }
