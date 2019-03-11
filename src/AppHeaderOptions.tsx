@@ -81,6 +81,7 @@ export class AppHeaderOptions extends React.Component<
 
     this.setResolvedState = this.setResolvedState.bind(this);
     this.matchCheckBoxState = this.matchCheckBoxState.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
   }
 
   componentDidMount(): void {
@@ -326,7 +327,7 @@ export class AppHeaderOptions extends React.Component<
     },
     'jp-commenting-header-options-showResolved-label-disable': {
       fontSize: 'var(--jp-ui-font-size1)',
-      color: '#e0e0e0'
+      color: 'var(--md-grey-300)'
     },
     'jp-commenting-header-options-showResolved-checkbox-area': {
       alignSelf: 'center',
@@ -365,7 +366,7 @@ export class AppHeaderOptions extends React.Component<
     'jp-commenting-header-options-dropdown-label-disabled': {
       lineHeight: 'normal',
       fontSize: '13px',
-      color: '#e0e0e0'
+      color: 'var(--md-grey-300)'
     },
     'jp-commenting-header-options-dropdown-button-area': {
       display: 'flex',

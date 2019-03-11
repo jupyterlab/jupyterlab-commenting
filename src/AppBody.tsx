@@ -61,7 +61,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
   styles = {
     'jp-commenting-body-area': {
       width: '100%',
-      maxHeight: '85vh',
+      maxHeight: '94%',
       overflowY: 'scroll' as 'scroll',
       overflowX: 'hidden' as 'hidden',
       boxSizing: 'border-box' as 'border-box',
@@ -70,7 +70,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
     },
     'jp-commenting-body-area-expanded': {
       width: '100%',
-      maxHeight: '90vh',
+      maxHeight: '96%',
       overflowY: 'scroll' as 'scroll',
       overflowX: 'hidden' as 'hidden',
       boxSizing: 'border-box' as 'border-box',

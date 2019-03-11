@@ -247,7 +247,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     let fullTime = localTimeStamp.split(',')[1].split(':');
     let timeIdentifier = fullTime[2].slice(3).toLowerCase();
 
-    let month: any = {
+    let month: { [key: string]: String } = {
       '1': 'Jan',
       '2': 'Feb',
       '3': 'Mar',

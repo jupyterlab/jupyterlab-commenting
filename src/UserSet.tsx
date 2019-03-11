@@ -54,7 +54,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
           <input
             type="text"
             style={this.styles['jp-commenting-user-set-input']}
-            className="bp3-input bp3-small"
+            className="jp-commenting-text-area"
             placeholder="Username"
             onChange={this.handleInputChange}
             onKeyPress={this.handleKeyPress}

@@ -1,12 +1,14 @@
 import * as React from 'react';
 
+import { IPerson } from './app';
+
 interface INewThreadCardProps {
   /**
    * Creator object
    *
-   * @type any
+   * @type IPerson
    */
-  creator: any;
+  creator: IPerson;
   /**
    * Function to put comment back to server
    *
@@ -173,8 +175,8 @@ export class NewThreadCard extends React.Component<
     'jp-commenting-text-input-area': {
       display: 'flex',
       padding: '4px',
-      maxWidth: '95%',
-      minHeight: '80px'
+      width: '95%',
+      height: '80px'
     },
     'jp-commenting-new-thread-name': {
       fontSize: 'var(--jp-ui-font-size1)',

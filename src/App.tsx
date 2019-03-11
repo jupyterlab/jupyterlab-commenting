@@ -11,6 +11,8 @@ import { AppHeaderOptions } from './AppHeaderOptions';
 import { NewThreadCard } from './NewThreadCard';
 import { UserSet } from './UserSet';
 
+import { IPerson, IAnnotationResponse } from './app';
+
 /**
  * React States interface
  */
@@ -18,9 +20,9 @@ interface IAppStates {
   /**
    * Hold the users information
    *
-   * @type Person
+   * @type IPerson
    */
-  creator: object;
+  creator: IPerson;
   /**
    * Tracks if the current target has threads or not
    *
@@ -60,9 +62,9 @@ interface IAppStates {
   /**
    * State to hold last response
    *
-   * @type any
+   * @type IAnnotationResponse
    */
-  response: any;
+  response: IAnnotationResponse;
   /**
    * State to track when to query
    *
@@ -134,14 +136,14 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
-      creator: {},
+      creator: {} as IPerson,
       curTargetHasThreads: false,
       expandedCard: ' ',
       myThreads: [],
       newThreadActive: false,
       newThreadFile: ' ',
       replyActiveCard: ' ',
-      response: { data: { annotationsByTarget: { length: 0 } } },
+      response: {} as IAnnotationResponse,
       shouldQuery: true,
       showResolved: false,
       sortState: 'latest',
@@ -184,9 +186,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Called each time the component updates
    */
   componentDidUpdate(): void {
+    console.log('Update');
     // Queries new data if there is a new target
-    if (this.state.response.data.annotationsByTarget !== undefined) {
-      if (this.state.response.data.annotationsByTarget.length !== 0) {
+    if (this.state.response.data !== undefined) {
+      if (this.state.response.data.annotationsByTarget !== undefined) {
         if (
           this.state.response.data.annotationsByTarget[0].target !==
             this.props.target &&
