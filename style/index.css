@@ -7,7 +7,6 @@
 /* Header Options*/
 .jp-commenting-header-options-dropdown-item {
   display: block;
-  width: 100%;
   padding: 0.25rem 1.5rem;
   clear: both;
   font-size: var(--jp-content-font-size1);
@@ -33,11 +32,11 @@
 .jp-commenting-header-options-dropdown-menu {
   position: absolute;
   top: inherit;
+  box-sizing: border-box;
+  z-index: 1;
   right: 0;
-  left: auto;
-  z-index: 1000;
   display: none;
-  float: left;
+  float: right;
   text-align: left;
   list-style: none;
   background-color: var(--jp-ui-inverse-font-color0);

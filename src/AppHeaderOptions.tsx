@@ -84,6 +84,9 @@ export class AppHeaderOptions extends React.Component<
     this.toggleOpen = this.toggleOpen.bind(this);
   }
 
+  /**
+   * Checks the state of the component and controlls Show Resolved
+   */
   componentDidMount(): void {
     if (document.getElementById('controls') !== null) {
       this.matchCheckBoxState();
@@ -99,12 +102,14 @@ export class AppHeaderOptions extends React.Component<
     }`;
     return (
       <div className="jp-commenting-header-options-area">
-        <div className={menuClass} style={{ marginTop: '30px' }}>
-          {this.getSortItems()}
-        </div>
         <div style={this.styles.optionBar}>
           {this.getCheckbox()}
           {this.getDropdown()}
+        </div>
+        <div
+          style={this.styles['jp-commenting-header-options-dropdown-menu-area']}
+        >
+          <div className={menuClass}>{this.getSortItems()}</div>
         </div>
       </div>
     );
@@ -302,6 +307,7 @@ export class AppHeaderOptions extends React.Component<
       height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
+      paddingRight: '8px',
       width: '50%',
       minWidth: '50px',
       flexShrink: 1
@@ -338,7 +344,6 @@ export class AppHeaderOptions extends React.Component<
       display: 'flex',
       flexDirection: 'row' as 'row',
       borderLeft: '1px solid var(--jp-border-color1)',
-      marginLeft: '8px',
       width: '50%',
       minWidth: '50px',
       flexShrink: 1
@@ -374,6 +379,7 @@ export class AppHeaderOptions extends React.Component<
       width: '40px',
       minWidth: '40px'
     },
+    'jp-commenting-header-options-dropdown-menu-area': {},
     'jp-commenting-header-options-dropdown-button': {
       minWidth: '40px',
       minHeight: '24px',
