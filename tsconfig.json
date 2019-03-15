@@ -14,26 +14,38 @@
     "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
+    "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "jsx": "react",
     "types": [],
     "composite": true
   },
   "include": [
-    "src/*"
+    "src/*",
+    "src/comments/*",
+    "src/comments/components/*",
+    "src/annotations/*"
   ],
-  "references": [
-    {
+  "references": [{
       "path": "../application"
     },
     {
       "path": "../apputils"
     },
     {
-      "path": "../databus"
+      "path": "../codeeditor"
+    },
+    {
+      "path": "../codemirror"
+    },
+    {
+      "path": "../dataregistry"
     },
     {
       "path": "../docregistry"
+    },
+    {
+      "path": "../notebook"
     },
     {
       "path": "../frontend"

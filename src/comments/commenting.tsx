@@ -1,22 +1,32 @@
 import * as React from 'react';
 
+import '../../style/index.css';
+
+import { ReactWidget } from '@jupyterlab/apputils';
+
+import { UseSignal } from '@jupyterlab/apputils';
+
+import { IActiveDataset } from '@jupyterlab/dataregistry';
+
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
+
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
-// Components
-import { AppBody } from './AppBody';
-import { CommentCard } from './CommentCard';
-import { AppHeader } from './AppHeader';
-import { AppHeaderOptions } from './AppHeaderOptions';
-import { NewThreadCard } from './NewThreadCard';
-import { UserSet } from './UserSet';
-
 import { IPerson, IAnnotationResponse } from './app';
+
+// Components
+import App from './components/App';
+import { AppBody } from './components/AppBody';
+import { CommentCard } from './components/CommentCard';
+import { AppHeader } from './components/AppHeader';
+import { AppHeaderOptions } from './components/AppHeaderOptions';
+import { NewThreadCard } from './components/NewThreadCard';
+import { UserSet } from './components/UserSet';
 
 /**
  * React States interface
  */
-interface IAppStates {
+interface ICommentingStates {
   /**
    * Hold the users information
    *
@@ -91,51 +101,19 @@ interface IAppStates {
   userSet: boolean;
 }
 
-/**
- * React Props interface
- */
-interface IAppProps {
-  /**
-   * Comments Service that communicates with graphql server
-   *
-   * @type IMetadataCommentsService
-   */
-  commentsService: IMetadataCommentsService;
-  /**
-   * People Service that communicates with graphql server
-   */
-  peopleService: IMetadataPeopleService;
-  /**
-   * Path of open file, used as unique id to fetch comments and annotations
-   *
-   * @type string
-   */
-  target: string;
-  /**
-   * Name of the open file used in the commenting header
-   *
-   * @type: string
-   */
-  targetName: string;
-}
+export class CommentingWidget extends ReactWidget {
+  constructor(
+    activeDataset: IActiveDataset,
+    comments: IMetadataCommentsService,
+    people: IMetadataPeopleService
+  ) {
+    super();
 
-/**
- * The interval function that is used to pull in threads / comments every set interval
- */
-let periodicUpdate: number;
+    this._activeDataset = activeDataset;
+    this._commentsService = comments;
+    this._peopleService = people;
 
-/**
- * Main App React Component
- */
-export default class App extends React.Component<IAppProps, IAppStates> {
-  /**
-   * Constructor
-   *
-   * @param props React props
-   */
-  constructor(props: IAppProps) {
-    super(props);
-    this.state = {
+    this._state = {
       creator: {} as IPerson,
       curTargetHasThreads: false,
       expandedCard: ' ',
@@ -164,141 +142,126 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     this.setUserInfo = this.setUserInfo.bind(this);
     this.query = this.query.bind(this);
     this.getNewThreadButton = this.getNewThreadButton.bind(this);
+    this.update = this.update.bind(this);
   }
 
   /**
-   * Called when the component will mount
+   * Called before the widget is shown
    */
-  componentWillMount() {
+  protected onBeforeShow(): void {
     // Sets the interval of when to periodically query for comments
-    periodicUpdate = setInterval(this.query, 1000);
+    this.periodicUpdate = setInterval(this.query, 1000);
+    this.query();
   }
 
   /**
-   * Called when component will unmount
+   * Called before the widget is hidden
    */
-  componentWillUnmount() {
+  protected onBeforeHide(): void {
     // Stops the periodic query of comments
-    clearInterval(periodicUpdate);
+    clearInterval(this.periodicUpdate);
   }
 
-  /**
-   * Called each time the component updates
-   */
-  componentDidUpdate(): void {
-    console.log('Update');
-    // Queries new data if there is a new target
-    if (this.state.response.data !== undefined) {
-      if (this.state.response.data.annotationsByTarget !== undefined) {
-        if (
-          this.state.response.data.annotationsByTarget[0].target !==
-            this.props.target &&
-          !this.state.shouldQuery
-        ) {
-          this.setState({
-            expandedCard: ' ',
-            newThreadActive: false,
-            shouldQuery: true
-          });
-        }
-      }
-    }
-
-    // Handles querying new data
-    if (this.state.shouldQuery) {
-      if (this.props.target !== undefined) {
-        this.props.commentsService
-          .queryAllByTarget(this.props.target)
-          .then((response: any) => {
-            if (response.data.annotationsByTarget.length !== 0) {
-              this.setState({
-                myThreads: this.getAllCommentCards(
-                  response.data.annotationsByTarget
-                ),
-                response: response,
-                shouldQuery: false,
-                curTargetHasThreads: true
-              });
-            } else {
-              this.state.myThreads.length !== 0 &&
-                this.setState({
-                  myThreads: [],
-                  shouldQuery: false,
-                  curTargetHasThreads: false,
-                  newThreadActive: false
-                });
-            }
-          });
-      }
-    }
-
-    // Handles when there is no target
-    if (this.props.target === undefined) {
-      this.state.myThreads.length !== 0 &&
-        this.setState({
-          myThreads: [],
-          shouldQuery: false,
-          curTargetHasThreads: false,
-          newThreadActive: false
-        });
-    }
-  }
-
-  /**
-   * React render function
-   */
-  render(): React.ReactNode {
-    return this.state.userSet ? (
-      <div className="jp-commenting-window">
-        <AppHeader
-          target={this.props.targetName}
-          cardExpanded={this.state.expandedCard !== ' '}
-          threadOpen={this.state.newThreadActive}
-          setExpandedCard={this.setExpandedCard}
-          headerOptions={
-            <AppHeaderOptions
-              setSortState={this.setSortState}
-              showResolvedState={this.setShowResolved}
-              cardExpanded={this.state.expandedCard !== ' '}
-              target={this.props.targetName}
-              hasThreads={this.state.curTargetHasThreads}
-              showResolved={this.state.showResolved}
-              sortState={this.state.sortState}
-            />
+  protected render(): React.ReactElement<any> | React.ReactElement<any>[] {
+    this.update();
+    return (
+      <UseSignal signal={this._activeDataset.signal}>
+        {(sender, args) => {
+          try {
+            return this.getApp(
+              this._activeDataset.active.pathname.split('/').pop()
+            );
+          } catch {
+            return this.getApp(undefined);
           }
-        />
-        <AppBody
-          cards={
-            this.state.newThreadActive
-              ? [
-                  <NewThreadCard
-                    putThread={this.putThread}
-                    setNewThreadActive={this.setNewThreadActive}
-                    creator={this.state.creator}
-                  />
-                ]
-              : this.state.myThreads
-          }
-          expanded={this.state.expandedCard !== ' '}
-          newThreadButton={
-            this.state.newThreadActive || this.props.target === undefined
-              ? undefined
-              : this.getNewThreadButton()
-          }
-        />
-      </div>
-    ) : (
-      <div className="jp-commenting-window">
-        <UserSet setUserInfo={this.setUserInfo} />
-      </div>
+        }}
+      </UseSignal>
     );
   }
 
-  /**
-   * Sets the state should query to query when component updates
-   */
+  getApp(target: string | undefined): React.ReactNode {
+    return (
+      <App>
+        {this._state.userSet ? (
+          <div className="jp-commenting-window">
+            <AppHeader
+              target={target}
+              cardExpanded={this._state.expandedCard !== ' '}
+              threadOpen={this._state.newThreadActive}
+              setExpandedCard={this.setExpandedCard}
+              headerOptions={
+                <AppHeaderOptions
+                  setSortState={this.setSortState}
+                  showResolvedState={this.setShowResolved}
+                  cardExpanded={this._state.expandedCard !== ' '}
+                  target={target}
+                  hasThreads={this._state.curTargetHasThreads}
+                  showResolved={this._state.showResolved}
+                  sortState={this._state.sortState}
+                />
+              }
+            />
+            <AppBody
+              cards={
+                this._state.newThreadActive
+                  ? [
+                      <NewThreadCard
+                        putThread={this.putThread}
+                        setNewThreadActive={this.setNewThreadActive}
+                        creator={this._state.creator}
+                      />
+                    ]
+                  : this._state.myThreads
+              }
+              expanded={this._state.expandedCard !== ' '}
+              newThreadButton={
+                this._state.newThreadActive || target === undefined
+                  ? undefined
+                  : this.getNewThreadButton()
+              }
+            />
+          </div>
+        ) : (
+          <div className="jp-commenting-window">
+            <UserSet setUserInfo={this.setUserInfo} />
+          </div>
+        )}
+      </App>
+    );
+  }
+
   query(): void {
-    this.setState({ shouldQuery: true });
+    if (this.isVisible) {
+      if (
+        this._state.response.data &&
+        this._state.response.data.annotationsByTarget !== undefined
+      ) {
+        if (
+          this._state.response.data.annotationsByTarget[0].target !==
+          this.getTarget()
+        ) {
+          this._state.expandedCard = ' ';
+          this._state.newThreadActive = false;
+        }
+      }
+
+      this._commentsService
+        .queryAllByTarget(this.getTarget())
+        .then((response: any) => {
+          if (response.data.annotationsByTarget.length !== 0) {
+            this._state.myThreads = this.getAllCommentCards(
+              response.data.annotationsByTarget
+            );
+            this._state.curTargetHasThreads = true;
+            this._state.response = response;
+          } else {
+            this._state.myThreads = [];
+            this._state.curTargetHasThreads = false;
+            this._state.response = response;
+          }
+        });
+    }
+    this.update();
   }
 
   /**
@@ -308,11 +271,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param threadId Type: string - commend card / thread the comment applies to
    */
   putComment(threadId: string, value: string): void {
-    this.props.commentsService.createComment(
-      threadId,
-      value,
-      this.state.creator
-    );
+    this._commentsService.createComment(threadId, value, this._state.creator);
     this.query();
   }
 
@@ -323,10 +282,10 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param label Type: string - label / tag of a thread
    */
   putThread(value: string): void {
-    this.props.commentsService.createThread(
-      this.props.target,
+    this._commentsService.createThread(
+      this.getTarget(),
       value,
-      this.state.creator
+      this._state.creator
     );
     this.query();
   }
@@ -344,7 +303,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
     expandedCard: boolean,
     curCardExpanded: boolean
   ): boolean {
-    if (!this.state.showResolved) {
+    if (!this._state.showResolved) {
       if (!resolved) {
         if (expandedCard) {
           return curCardExpanded;
@@ -362,6 +321,21 @@ export default class App extends React.Component<IAppProps, IAppStates> {
   }
 
   /**
+   * Returns the active file path
+   *
+   * @return Type: string - file path as a string. Has leading '/'
+   *         ex. /clean.py
+   */
+  getTarget(): string {
+    let target = this._activeDataset.active.pathname;
+    if (target === null) {
+      return undefined;
+    } else {
+      return target;
+    }
+  }
+
+  /**
    * Creates and returns all CommentCard components with correct data
    *
    * @param allData Type: any - Comment data from this.props.data
@@ -373,8 +347,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       if (
         this.shouldRenderCard(
           allData[key].resolved,
-          this.state.expandedCard !== ' ',
-          this.state.expandedCard === allData[key].id
+          this._state.expandedCard !== ' ',
+          this._state.expandedCard === allData[key].id
         )
       ) {
         cards.push(
@@ -388,7 +362,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
             resolved={allData[key].resolved}
             putComment={this.putComment}
             setCardValue={this.setCardValue}
-            target={this.props.target}
+            target={this.getTarget()}
           />
         );
       }
@@ -422,7 +396,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
    */
   getExpandedCard(threadId: string): boolean {
-    return threadId === this.state.expandedCard;
+    return threadId === this._state.expandedCard;
   }
 
   /**
@@ -432,7 +406,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @return type: boolean - True if cardId has reply box open, false if not active
    */
   getReplyActiveCard(threadId: string): boolean {
-    return threadId === this.state.replyActiveCard;
+    return threadId === this._state.replyActiveCard;
   }
 
   /**
@@ -444,7 +418,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param value Type: string - value to set
    */
   setCardValue(target: string, threadId: string, value: boolean): void {
-    this.props.commentsService.setResolvedValue(target, threadId, value);
+    this._commentsService.setResolvedValue(target, threadId, value);
   }
 
   /**
@@ -453,7 +427,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param threadId Type: string - CommentCard unique id
    */
   setExpandedCard(threadId: string) {
-    this.setState({ expandedCard: threadId });
+    this._state.expandedCard = threadId;
     this.query();
   }
 
@@ -463,7 +437,7 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param threadId Type: string - CommentCard unique id
    */
   setReplyActiveCard(threadId: string) {
-    this.setState({ replyActiveCard: threadId });
+    this._state.replyActiveCard = threadId;
     this.query();
   }
 
@@ -473,9 +447,9 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param state Type: boolean - State to set if new thread card is active
    * @param target Type: string - target of the file to add new thread to
    */
-  setNewThreadActive(state: boolean) {
-    this.setState({ newThreadActive: state });
-    this.setState({ newThreadFile: this.props.target });
+  setNewThreadActive(value: boolean) {
+    this._state.newThreadActive = value;
+    this._state.newThreadFile = this.getTarget();
     this.query();
   }
 
@@ -484,8 +458,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    *
    * @param state Type: string - Sort by type
    */
-  setSortState(state: string) {
-    this.setState({ sortState: state });
+  setSortState(value: string) {
+    this._state.sortState = value;
     this.query();
   }
 
@@ -493,8 +467,8 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * Sets this.state.showResolved to the state of the checkbox
    * "Show resolved"
    */
-  setShowResolved(state: boolean) {
-    this.setState({ showResolved: state });
+  setShowResolved(value: boolean) {
+    this._state.showResolved = value;
     this.query();
   }
 
@@ -504,40 +478,37 @@ export default class App extends React.Component<IAppProps, IAppStates> {
    * @param user Type: string - users github username
    */
   async setUserInfo(user: string) {
+    console.log(this._peopleService);
     const response = await fetch('https://api.github.com/users/' + user);
     const myJSON = await response.json();
 
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      this.props.peopleService.queryAll().then((response: any) => {
+      this._peopleService.queryAll().then((response: any) => {
         if (response.data.people.length !== 0) {
           for (let index in response.data.people) {
             if (
               response.data.people[index].name === name &&
-              !this.state.userSet
+              !this._state.userSet
             ) {
-              this.setState({
-                creator: {
-                  id: response.data.people[index].id,
-                  name: name,
-                  image: myJSON.avatar_url
-                },
-                userSet: true
-              });
-            }
-          }
-          if (!this.state.userSet) {
-            this.props.peopleService.create(name, '', myJSON.avatar_url);
-            let personCount: number = Number(response.data.people.length + 2);
-            this.setState({
-              creator: {
-                id: 'person/' + personCount,
+              this._state.creator = {
+                id: response.data.people[index].id,
                 name: name,
                 image: myJSON.avatar_url
-              },
-              userSet: true
-            });
+              };
+              this._state.userSet = true;
+            }
+          }
+          if (!this._state.userSet) {
+            this._peopleService.create(name, '', myJSON.avatar_url);
+            let personCount: number = Number(response.data.people.length + 2);
+            this._state.creator = {
+              id: 'person/' + personCount,
+              name: name,
+              image: myJSON.avatar_url
+            };
+            this._state.userSet = true;
           }
         }
       });
@@ -545,4 +516,14 @@ export default class App extends React.Component<IAppProps, IAppStates> {
       window.alert('Username not found');
     }
   }
+
+  private _state: ICommentingStates;
+  private _activeDataset: IActiveDataset;
+  private _commentsService: IMetadataCommentsService;
+  private _peopleService: IMetadataPeopleService;
+
+  /**
+   * The interval function that is used to pull in threads / comments every set interval
+   */
+  private periodicUpdate: number;
 }

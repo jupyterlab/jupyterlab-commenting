@@ -99,6 +99,7 @@ export class UserSet extends React.Component<IUserSetProps, IUserSetStates> {
    */
   handleSubmit(): void {
     this.props.setUserInfo(this.state.inputBox);
+    console.log('here');
   }
 
   /**

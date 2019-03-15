@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { IPerson } from './app';
+import { IPerson } from '../app';
 
 interface INewThreadCardProps {
   /**
