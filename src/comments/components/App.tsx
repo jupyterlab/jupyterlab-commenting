@@ -3,7 +3,7 @@ import * as React from 'react';
 /**
  * Main App React Component
  */
-export default class App extends React.Component {
+export class App extends React.Component {
   /**
    * Constructor
    *

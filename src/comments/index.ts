@@ -29,21 +29,22 @@ export function activate(
   commenting.title.iconClass = 'jp-ChatIcon jp-SideBar-tabIcon';
   commenting.title.caption = 'Commenting';
 
-  app.commands.addCommand('jupyterlab-commenting:bool', {
-    label: 'Test',
+  app.commands.addCommand('jupyterlab-commenting:createComment', {
+    label: 'Comment',
     isEnabled: () => true,
     execute: () => {
       let widget = tracker.currentWidget;
       let editor = widget.content.editor as CodeMirrorEditor;
 
-      commenting.update();
+      labShell.expandRight();
+      commenting.setNewThreadActive(true);
 
       console.log(editor.getSelection());
     }
   });
 
   app.contextMenu.addItem({
-    command: 'jupyterlab-commenting:test',
+    command: 'jupyterlab-commenting:createComment',
     selector: 'body',
     rank: Infinity
   });
