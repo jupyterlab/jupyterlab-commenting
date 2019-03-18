@@ -25,13 +25,6 @@ import { AppHeaderOptions } from './components/AppHeaderOptions';
 import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
 
-/**
- * React States interface
- */
-interface ICommentingStates {
-  [key: string]: any;
-}
-
 export class CommentingWidget extends ReactWidget {
   constructor(
     activeDataset: IActiveDataset,
@@ -53,7 +46,7 @@ export class CommentingWidget extends ReactWidget {
       newThreadFile: ' ',
       replyActiveCard: ' ',
       response: {} as IAnnotationResponse,
-      shouldQuery: false,
+      pastTarget: '',
       showResolved: false,
       sortState: 'latest',
       userSet: false
@@ -82,9 +75,12 @@ export class CommentingWidget extends ReactWidget {
    */
   protected onBeforeShow(): void {
     // Sets the interval of when to periodically query for comments
-    this.periodicUpdate = setInterval(this.query, 1000);
+    this._periodicUpdate = setInterval(this.query, 1000);
   }
 
+  /**
+   * Called after widget is shown
+   */
   protected onAfterShow(): void {
     this.query();
   }
@@ -94,10 +90,8 @@ export class CommentingWidget extends ReactWidget {
    */
   protected onBeforeHide(): void {
     // Stops the periodic query of comments
-    clearInterval(this.periodicUpdate);
+    clearInterval(this._periodicUpdate);
   }
-
-  private pastTarget: string;
 
   protected render(): React.ReactElement<any> | React.ReactElement<any>[] {
     return (
@@ -106,9 +100,9 @@ export class CommentingWidget extends ReactWidget {
           return (
             <UseSignal signal={this._activeDataset.signal}>
               {(sender, args) => {
-                if (this.pastTarget !== this.getTarget()) {
+                if (this._pastTarget !== this.getTarget()) {
                   this.query();
-                  this.pastTarget = this.getTarget();
+                  this._pastTarget = this.getTarget();
                 }
                 try {
                   return this.getApp(args.pathname.split('/').pop());
@@ -123,6 +117,12 @@ export class CommentingWidget extends ReactWidget {
     );
   }
 
+  /**
+   * Returns the Commenting UI.
+   *
+   * @param target Type: string | undefined - target / file path.
+   * undefined used for no target. Anything else is a target.
+   */
   getApp(target: string | undefined): React.ReactNode {
     return (
       <App>
@@ -174,9 +174,12 @@ export class CommentingWidget extends ReactWidget {
     );
   }
 
+  /**
+   * Handles querying new data. Updates after query.
+   */
   query(): void {
-    console.log('query called');
     if (this.isVisible) {
+      // Handles clearing commenting UI when new target
       if (
         this._state.response.data !== undefined &&
         this._state.response.data.annotationsByTarget !== undefined &&
@@ -191,6 +194,7 @@ export class CommentingWidget extends ReactWidget {
         }
       }
 
+      // Fetches comments from server
       this._commentsService
         .queryAllByTarget(this.getTarget())
         .then((response: any) => {
@@ -464,10 +468,22 @@ export class CommentingWidget extends ReactWidget {
     this.query();
   }
 
+  /**
+   * Returns signal used to track when a state updates
+   *
+   * @return Type: ISignal<this, void> - state set / update signal
+   */
   get signal(): ISignal<this, void> {
     return this._stateUpdated;
   }
 
+  /**
+   * Updates the value of state in this._state. Only works with existing states created in the constructor.
+   * Emits signal this._signal.
+   *
+   * @param key Type: string - key of the state object to update
+   * @param value Type: any - value to update
+   */
   setState(key: string, value: any): void {
     if (Object.keys(this._state).indexOf(key) > -1) {
       this._state[key] = value;
@@ -477,14 +493,11 @@ export class CommentingWidget extends ReactWidget {
     }
   }
 
-  private _state: ICommentingStates;
+  private _state: { [key: string]: any };
   private _activeDataset: IActiveDataset;
   private _commentsService: IMetadataCommentsService;
   private _peopleService: IMetadataPeopleService;
   private _stateUpdated = new Signal<this, void>(this);
-
-  /**
-   * The interval function that is used to pull in threads / comments every set interval
-   */
-  private periodicUpdate: number;
+  private _periodicUpdate: number;
+  private _pastTarget: string;
 }

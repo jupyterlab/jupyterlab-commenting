@@ -262,9 +262,10 @@ export class AppHeaderOptions extends React.Component<
    * Sets the "isOpen" state to control the dropdown menu
    */
   toggleOpen(): void {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    (!this.props.target === undefined || this.props.hasThreads) &&
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
   }
 
   /**
