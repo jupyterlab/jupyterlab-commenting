@@ -170,7 +170,8 @@ export class NewThreadCard extends React.Component<
       flexDirection: 'column' as 'column',
       borderRadius: 'var(--jp-border-radius)',
       border: '1px solid var(--jp-border-color2)',
-      boxSizing: 'border-box' as 'border-box'
+      boxSizing: 'border-box' as 'border-box',
+      background: 'var(--jp-layout-color1)'
     },
     'jp-commenting-text-input-area': {
       display: 'flex',

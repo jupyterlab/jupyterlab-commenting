@@ -212,3 +212,8 @@
   border-color: var(--jp-input-active-border-color);
   box-shadow: var(--jp-input-box-shadow);
 }
+
+.jp-commenting-highlight {
+  background-color: yellow;
+  opacity: 0.5;
+}

@@ -10,7 +10,9 @@ import { IActiveDataset, IConverterRegistry } from '@jupyterlab/dataregistry';
 
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
-import { activate } from './comments/index';
+import { activateCommenting } from './comments/index';
+
+import { activateAnnotations } from './annotations/index';
 
 const commentingExtension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting:commentsUI',
@@ -23,9 +25,19 @@ const commentingExtension: JupyterFrontEndPlugin<void> = {
     IConverterRegistry,
     IEditorTracker
   ],
-  activate
+  activate: activateCommenting
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [commentingExtension];
+const annotationExtension: JupyterFrontEndPlugin<void> = {
+  id: 'jupyterlab-commenting:annotationWidget',
+  autoStart: true,
+  requires: [ILabShell, IEditorTracker],
+  activate: activateAnnotations
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  commentingExtension,
+  annotationExtension
+];
 
 export default plugins;
