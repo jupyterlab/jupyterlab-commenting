@@ -10,7 +10,7 @@ import { Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
-import { ReactWidget } from '@jupyterlab/apputils';
+import { ReactWidget, UseSignal } from '@jupyterlab/apputils';
 
 import { commenting } from '../comments/index';
 
@@ -20,6 +20,8 @@ export class Annotation extends Widget {
   app: JupyterFrontEnd;
   labShell: ILabShell;
   tracker: IEditorTracker;
+
+  private _commentOverlay: ReactWidget;
 
   constructor(
     app: JupyterFrontEnd,
@@ -35,6 +37,8 @@ export class Annotation extends Widget {
   protected onActivateRequest(msg: Message): void {
     this.createContextMenu();
   }
+
+  protected onUpdateRequest(): void {}
 
   createContextMenu(): void {
     this.app.commands.addCommand('jupyterlab-commenting:createComment', {
@@ -82,7 +86,6 @@ export class Annotation extends Widget {
             { className: 'jp-commenting-highlight' }
           );
         }
-        console.log(editor.cursorCoords(true, 'window'));
         this.addCommentBoxOverlay();
       }
     });
@@ -100,30 +103,40 @@ export class Annotation extends Widget {
 
     let coords = editor.cursorCoords(true, 'window');
 
-    let commentBox = ReactWidget.create(
-      <div
-        style={{
-          position: 'fixed',
-          zIndex: 100,
-          top: coords.top,
-          left: coords.left + 300,
-          bottom: coords.bottom
+    this._commentOverlay = ReactWidget.create(
+      <UseSignal signal={commenting.newThreadActive}>
+        {(sender, args) => {
+          if (args === undefined) {
+            return (
+              <div
+                style={{
+                  position: 'fixed',
+                  zIndex: 100,
+                  top: coords.top,
+                  left: coords.left + 300,
+                  bottom: coords.bottom
+                }}
+              >
+                <NewThreadCard
+                  creator={{
+                    id: '0',
+                    name: 'Jacob Houssian',
+                    image: 'a'
+                  }}
+                  putThread={commenting.putThread}
+                  setNewThreadActive={commenting.setNewThreadActive}
+                />
+              </div>
+            );
+          } else {
+            return <span />;
+          }
         }}
-      >
-        <NewThreadCard
-          creator={{
-            id: '0',
-            name: 'Jacob Houssian',
-            image: 'a'
-          }}
-          putThread={commenting.putThread}
-          setNewThreadActive={commenting.setNewThreadActive}
-        />
-      </div>
+      </UseSignal>
     );
 
-    commentBox.id = 'jupyterlab-commenting:commentBox';
+    this._commentOverlay.id = 'jupyterlab-commenting:commentBox';
 
-    this.labShell.add(commentBox, 'top');
+    this.labShell.add(this._commentOverlay, 'top');
   }
 }

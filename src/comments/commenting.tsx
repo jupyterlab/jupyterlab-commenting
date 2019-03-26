@@ -95,7 +95,7 @@ export class CommentingWidget extends ReactWidget {
 
   protected render(): React.ReactElement<any> | React.ReactElement<any>[] {
     return (
-      <UseSignal signal={this.signal}>
+      <UseSignal signal={this.stateUpdateSignal}>
         {(sender, args) => {
           return (
             <UseSignal signal={this._activeDataset.signal}>
@@ -401,6 +401,7 @@ export class CommentingWidget extends ReactWidget {
   setNewThreadActive(value: boolean) {
     this.setState('newThreadActive', value);
     this.setState('newThreadFile', this.getTarget());
+    this._newThreadActiveSignal.emit(value);
     this.query();
   }
 
@@ -473,8 +474,17 @@ export class CommentingWidget extends ReactWidget {
    *
    * @return Type: ISignal<this, void> - state set / update signal
    */
-  get signal(): ISignal<this, void> {
+  get stateUpdateSignal(): ISignal<this, void> {
     return this._stateUpdated;
+  }
+
+  /**
+   * Returns boolean signal based on when a new thread is shown
+   *
+   * @return Type: ISignal<this, boolean> - new thread active
+   */
+  get newThreadActive(): ISignal<this, boolean> {
+    return this._newThreadActiveSignal;
   }
 
   /**
@@ -498,6 +508,7 @@ export class CommentingWidget extends ReactWidget {
   private _commentsService: IMetadataCommentsService;
   private _peopleService: IMetadataPeopleService;
   private _stateUpdated = new Signal<this, void>(this);
+  private _newThreadActiveSignal = new Signal<this, boolean>(this);
   private _periodicUpdate: number;
   private _pastTarget: string;
 }
