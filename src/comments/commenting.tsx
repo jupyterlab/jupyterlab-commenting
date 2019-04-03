@@ -6,15 +6,7 @@ import { ReactWidget } from '@jupyterlab/apputils';
 
 import { UseSignal } from '@jupyterlab/apputils';
 
-import { IActiveDataset } from '@jupyterlab/dataregistry';
-
-import { Signal, ISignal } from '@phosphor/signaling';
-
-import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
-
-import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
-
-import { IPerson, IAnnotationResponse } from './app';
+import { IPerson } from '../types';
 
 // Components
 import { App } from './components/App';
@@ -24,48 +16,40 @@ import { AppHeader } from './components/AppHeader';
 import { AppHeaderOptions } from './components/AppHeaderOptions';
 import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
+import { CommentingDataProvider } from './provider';
+import { CommentingDataReceiver } from './receiver';
 
+/**
+ * CommentingUI React Widget
+ */
 export class CommentingWidget extends ReactWidget {
+  // CommentingDataProvider to get data from CommentingStates
+  private _provider: CommentingDataProvider;
+
+  // CommentingDataReceiver to pass data to CommentingStates
+  private _receiver: CommentingDataReceiver;
+
+  // setInterval of when to poll new data
+  private _periodicUpdate: number;
+
   constructor(
-    activeDataset: IActiveDataset,
-    comments: IMetadataCommentsService,
-    people: IMetadataPeopleService
+    provider: CommentingDataProvider,
+    receiver: CommentingDataReceiver
   ) {
     super();
 
-    this._activeDataset = activeDataset;
-    this._commentsService = comments;
-    this._peopleService = people;
-
-    this._state = {
-      creator: {} as IPerson,
-      curTargetHasThreads: false,
-      expandedCard: ' ',
-      myThreads: [],
-      newThreadActive: false,
-      newThreadFile: ' ',
-      replyActiveCard: ' ',
-      response: {} as IAnnotationResponse,
-      pastTarget: '',
-      showResolved: false,
-      sortState: 'latest',
-      userSet: false
-    };
+    this._provider = provider;
+    this._receiver = receiver;
 
     this.getAllCommentCards = this.getAllCommentCards.bind(this);
     this.setExpandedCard = this.setExpandedCard.bind(this);
     this.getExpandedCard = this.getExpandedCard.bind(this);
     this.setSortState = this.setSortState.bind(this);
     this.setShowResolved = this.setShowResolved.bind(this);
-    this.putComment = this.putComment.bind(this);
-    this.putThread = this.putThread.bind(this);
-    this.setCardValue = this.setCardValue.bind(this);
     this.setNewThreadActive = this.setNewThreadActive.bind(this);
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.getReplyActiveCard = this.getReplyActiveCard.bind(this);
-    this.setUserInfo = this.setUserInfo.bind(this);
     this.getNewThreadButton = this.getNewThreadButton.bind(this);
-    this.query = this.query.bind(this);
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
   }
@@ -74,15 +58,8 @@ export class CommentingWidget extends ReactWidget {
    * Called before the widget is shown
    */
   protected onBeforeShow(): void {
-    // Sets the interval of when to periodically query for comments
-    this._periodicUpdate = setInterval(this.query, 1000);
-  }
-
-  /**
-   * Called after widget is shown
-   */
-  protected onAfterShow(): void {
-    this.query();
+    // // Sets the interval of when to periodically query for comments
+    this._periodicUpdate = setInterval(this._receiver.getAllComments, 1000);
   }
 
   /**
@@ -93,25 +70,19 @@ export class CommentingWidget extends ReactWidget {
     clearInterval(this._periodicUpdate);
   }
 
+  /**
+   * React Render function
+   */
   protected render(): React.ReactElement<any> | React.ReactElement<any>[] {
     return (
-      <UseSignal signal={this.stateUpdateSignal}>
+      <UseSignal signal={this._provider.stateUpdateSignal}>
         {(sender, args) => {
-          return (
-            <UseSignal signal={this._activeDataset.signal}>
-              {(sender, args) => {
-                if (this._pastTarget !== this.getTarget()) {
-                  this.query();
-                  this._pastTarget = this.getTarget();
-                }
-                try {
-                  return this.getApp(args.pathname.split('/').pop());
-                } catch {
-                  return this.getApp(undefined);
-                }
-              }}
-            </UseSignal>
-          );
+          try {
+            let target = this._provider.getState('target') as string;
+            return this.getApp(target.split('/').pop());
+          } catch {
+            return this.getApp(undefined);
+          }
         }}
       </UseSignal>
     );
@@ -126,40 +97,47 @@ export class CommentingWidget extends ReactWidget {
   getApp(target: string | undefined): React.ReactNode {
     return (
       <App>
-        {this._state.userSet ? (
+        {this._provider.getState('userSet') ? (
           <div className="jp-commenting-window">
             <AppHeader
               target={target}
-              cardExpanded={this._state.expandedCard !== ' '}
-              threadOpen={this._state.newThreadActive}
+              cardExpanded={this._provider.getState('expandedCard') !== ' '}
+              threadOpen={this._provider.getState('newThreadActive') as boolean}
               setExpandedCard={this.setExpandedCard}
               headerOptions={
                 <AppHeaderOptions
                   setSortState={this.setSortState}
                   showResolvedState={this.setShowResolved}
-                  cardExpanded={this._state.expandedCard !== ' '}
+                  cardExpanded={this._provider.getState('expandedCard') !== ' '}
                   target={target}
-                  hasThreads={this._state.curTargetHasThreads}
-                  showResolved={this._state.showResolved}
-                  sortState={this._state.sortState}
+                  hasThreads={
+                    this._provider.getState('curTargetHasThreads') as boolean
+                  }
+                  showResolved={
+                    this._provider.getState('showResolved') as boolean
+                  }
+                  sortState={this._provider.getState('sortState') as string}
                 />
               }
             />
             <AppBody
               cards={
-                this._state.newThreadActive
+                (this._provider.getState('newThreadActive') as boolean)
                   ? [
                       <NewThreadCard
-                        putThread={this.putThread}
+                        putThread={this._receiver.putThread}
                         setNewThreadActive={this.setNewThreadActive}
-                        creator={this._state.creator}
+                        creator={
+                          (this._provider.getState('creator') as {}) as IPerson
+                        }
                       />
                     ]
-                  : this._state.myThreads
+                  : this.getAllCommentCards()
               }
-              expanded={this._state.expandedCard !== ' '}
+              expanded={this._provider.getState('expandedCard') !== ' '}
               newThreadButton={
-                this._state.newThreadActive || target === undefined
+                this._provider.getState('newThreadActive') ||
+                target === undefined
                   ? undefined
                   : this.getNewThreadButton()
               }
@@ -167,78 +145,11 @@ export class CommentingWidget extends ReactWidget {
           </div>
         ) : (
           <div className="jp-commenting-window">
-            <UserSet setUserInfo={this.setUserInfo} />
+            <UserSet setUserInfo={this._receiver.setUserInfo} />
           </div>
         )}
       </App>
     );
-  }
-
-  /**
-   * Handles querying new data. Updates after query.
-   */
-  query(): void {
-    if (this.isVisible) {
-      // Handles clearing commenting UI when new target
-      if (
-        this._state.response.data !== undefined &&
-        this._state.response.data.annotationsByTarget !== undefined &&
-        this._state.response.data.annotationsByTarget[0] !== undefined
-      ) {
-        if (
-          this._state.response.data.annotationsByTarget[0].target !==
-          this.getTarget()
-        ) {
-          this.setState('newThreadActive', false);
-          this.setState('expandedCard', ' ');
-        }
-      }
-
-      // Fetches comments from server
-      this._commentsService
-        .queryAllByTarget(this.getTarget())
-        .then((response: any) => {
-          if (response.data.annotationsByTarget[0] !== undefined) {
-            this.setState(
-              'myThreads',
-              this.getAllCommentCards(response.data.annotationsByTarget)
-            );
-            this.setState('curTargetHasThreads', true);
-            this.setState('response', response);
-          } else {
-            this.setState('myThreads', []);
-            this.setState('curTargetHasThreads', false);
-            this.setState('response', response);
-          }
-        });
-    }
-    this.update();
-  }
-
-  /**
-   * Pushed comment back to MetadataCommentsService
-   *
-   * @param value Type: string - comment message
-   * @param threadId Type: string - commend card / thread the comment applies to
-   */
-  putComment(threadId: string, value: string): void {
-    this._commentsService.createComment(threadId, value, this._state.creator);
-    this.query();
-  }
-
-  /**
-   * Pushes new thread to GraphQL server
-   *
-   * @param value Type: string - comment message
-   * @param label Type: string - label / tag of a thread
-   */
-  putThread(value: string): void {
-    this._commentsService.createThread(
-      this.getTarget(),
-      value,
-      this._state.creator
-    );
-    this.query();
   }
 
   /**
@@ -254,7 +165,7 @@ export class CommentingWidget extends ReactWidget {
     expandedCard: boolean,
     curCardExpanded: boolean
   ): boolean {
-    if (!this._state.showResolved) {
+    if (!this._provider.getState('showResolved') as boolean) {
       if (!resolved) {
         if (expandedCard) {
           return curCardExpanded;
@@ -272,53 +183,46 @@ export class CommentingWidget extends ReactWidget {
   }
 
   /**
-   * Returns the active file path
-   *
-   * @return Type: string - file path as a string. Has leading '/'
-   *         ex. /clean.py
-   */
-  getTarget(): string {
-    if (this._activeDataset.active === null) {
-      return '';
-    }
-
-    let target = this._activeDataset.active.pathname;
-    return target === null ? '' : target;
-  }
-
-  /**
    * Creates and returns all CommentCard components with correct data
    *
    * @param allData Type: any - Comment data from this.props.data
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
-  getAllCommentCards(allData: any): React.ReactNode[] {
-    let cards: React.ReactNode[] = [];
-    for (let key in allData) {
-      if (
-        this.shouldRenderCard(
-          allData[key].resolved,
-          this._state.expandedCard !== ' ',
-          this._state.expandedCard === allData[key].id
-        )
-      ) {
-        cards.push(
-          <CommentCard
-            data={allData[key]}
-            threadId={allData[key].id}
-            setExpandedCard={this.setExpandedCard}
-            checkExpandedCard={this.getExpandedCard}
-            setReplyActiveCard={this.setReplyActiveCard}
-            checkReplyActiveCard={this.getReplyActiveCard}
-            resolved={allData[key].resolved}
-            putComment={this.putComment}
-            setCardValue={this.setCardValue}
-            target={this.getTarget()}
-          />
-        );
+  getAllCommentCards(): React.ReactNode[] {
+    let response = this._provider.getState('response') as any;
+    try {
+      let allData: any = response.data.annotationsByTarget;
+
+      let cards: React.ReactNode[] = [];
+      for (let key in allData) {
+        if (
+          this.shouldRenderCard(
+            allData[key].resolved,
+            (this._provider.getState('expandedCard') as string) !== ' ',
+            (this._provider.getState('expandedCard') as string) ===
+              allData[key].id
+          )
+        ) {
+          cards.push(
+            <CommentCard
+              data={allData[key]}
+              threadId={allData[key].id}
+              setExpandedCard={this.setExpandedCard}
+              checkExpandedCard={this.getExpandedCard}
+              setReplyActiveCard={this.setReplyActiveCard}
+              checkReplyActiveCard={this.getReplyActiveCard}
+              resolved={allData[key].resolved}
+              putComment={this._receiver.putComment}
+              setCardValue={this._receiver.setCardValue}
+              target={this._provider.getState('target') as string}
+            />
+          );
+        }
       }
+      return cards.reverse();
+    } catch (e) {
+      return [];
     }
-    return cards.reverse();
   }
 
   /**
@@ -347,7 +251,7 @@ export class CommentingWidget extends ReactWidget {
    * @return Type: boolean - True if cardId is expanded, false if cardId is not expanded
    */
   getExpandedCard(threadId: string): boolean {
-    return threadId === this._state.expandedCard;
+    return threadId === this._provider.getState('expandedCard');
   }
 
   /**
@@ -357,19 +261,7 @@ export class CommentingWidget extends ReactWidget {
    * @return type: boolean - True if cardId has reply box open, false if not active
    */
   getReplyActiveCard(threadId: string): boolean {
-    return threadId === this._state.replyActiveCard;
-  }
-
-  /**
-   * Used to set a specific field of a card
-   *
-   * @param target Type: string - id of a thread
-   * @param threadId Type: string - id of a specific card
-   * @param value Type: string - value to set
-   */
-  setCardValue(target: string, threadId: string, value: boolean): void {
-    this._commentsService.setResolvedValue(target, threadId, value);
-    this.query();
+    return threadId === this._provider.getState('replyActiveCard');
   }
 
   /**
@@ -378,8 +270,7 @@ export class CommentingWidget extends ReactWidget {
    * @param threadId Type: string - CommentCard unique id
    */
   setExpandedCard(threadId: string) {
-    this.setState('expandedCard', threadId);
-    this.query();
+    this._receiver.setState({ expandedCard: threadId });
   }
 
   /**
@@ -388,8 +279,7 @@ export class CommentingWidget extends ReactWidget {
    * @param threadId Type: string - CommentCard unique id
    */
   setReplyActiveCard(threadId: string) {
-    this.setState('replyActiveCard', threadId);
-    this.query();
+    this._receiver.setState({ replyActiveCard: threadId });
   }
 
   /**
@@ -399,10 +289,10 @@ export class CommentingWidget extends ReactWidget {
    * @param target Type: string - target of the file to add new thread to
    */
   setNewThreadActive(value: boolean) {
-    this.setState('newThreadActive', value);
-    this.setState('newThreadFile', this.getTarget());
-    this._newThreadActiveSignal.emit(value);
-    this.query();
+    this._receiver.setState({
+      newThreadActive: value,
+      newThreadFile: this._provider.getState('target')
+    });
   }
 
   /**
@@ -411,8 +301,7 @@ export class CommentingWidget extends ReactWidget {
    * @param state Type: string - Sort by type
    */
   setSortState(value: string) {
-    this.setState('sortState', value);
-    this.query();
+    this._receiver.setState({ sortState: value });
   }
 
   /**
@@ -420,95 +309,6 @@ export class CommentingWidget extends ReactWidget {
    * "Show resolved"
    */
   setShowResolved(value: boolean) {
-    this.setState('showResolved', value);
-    this.query();
+    this._receiver.setState({ showResolved: value });
   }
-
-  /**
-   * Uses Github API to fetch users name and photo
-   *
-   * @param user Type: string - users github username
-   */
-  async setUserInfo(user: string) {
-    const response = await fetch('https://api.github.com/users/' + user);
-    const myJSON = await response.json();
-
-    // If users does not have a name set, use username
-    const name = myJSON.name === null ? myJSON.login : myJSON.name;
-    if (myJSON.message !== 'Not Found') {
-      this._peopleService.queryAll().then((response: any) => {
-        if (response.data.people.length !== 0) {
-          for (let index in response.data.people) {
-            if (
-              response.data.people[index].name === name &&
-              !this._state.userSet
-            ) {
-              this.setState('creator', {
-                id: response.data.people[index].id,
-                name: name,
-                image: myJSON.avatar_url
-              });
-              this.setState('userSet', true);
-            }
-          }
-          if (!this._state.userSet) {
-            this._peopleService.create(name, '', myJSON.avatar_url);
-            let personCount: number = Number(response.data.people.length + 2);
-            this.setState('creator', {
-              id: 'person/' + personCount,
-              name: name,
-              image: myJSON.avatar_url
-            });
-            this.setState('userSet', true);
-          }
-        }
-      });
-    } else {
-      window.alert('Username not found');
-    }
-    this.query();
-  }
-
-  /**
-   * Returns signal used to track when a state updates
-   *
-   * @return Type: ISignal<this, void> - state set / update signal
-   */
-  get stateUpdateSignal(): ISignal<this, void> {
-    return this._stateUpdated;
-  }
-
-  /**
-   * Returns boolean signal based on when a new thread is shown
-   *
-   * @return Type: ISignal<this, boolean> - new thread active
-   */
-  get newThreadActive(): ISignal<this, boolean> {
-    return this._newThreadActiveSignal;
-  }
-
-  /**
-   * Updates the value of state in this._state. Only works with existing states created in the constructor.
-   * Emits signal this._signal.
-   *
-   * @param key Type: string - key of the state object to update
-   * @param value Type: any - value to update
-   */
-  setState(key: string, value: any): void {
-    if (Object.keys(this._state).indexOf(key) > -1) {
-      this._state[key] = value;
-      this._stateUpdated.emit(void 0);
-    } else {
-      throw 'Bad key value for setState in commenting.tsx';
-    }
-  }
-
-  private _state: { [key: string]: any };
-  private _activeDataset: IActiveDataset;
-  private _commentsService: IMetadataCommentsService;
-  private _peopleService: IMetadataPeopleService;
-  private _stateUpdated = new Signal<this, void>(this);
-  private _newThreadActiveSignal = new Signal<this, boolean>(this);
-  private _periodicUpdate: number;
-  private _pastTarget: string;
 }

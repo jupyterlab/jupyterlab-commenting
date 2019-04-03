@@ -24,7 +24,6 @@
     "src/*",
     "src/comments/*",
     "src/comments/components/*",
-    "src/annotations/*"
   ],
   "references": [{
       "path": "../application"
