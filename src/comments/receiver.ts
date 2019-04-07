@@ -17,10 +17,13 @@ export class CommentingDataReceiver {
   private _states: CommentingStates;
 
   // Signal when active target is updated
-  private _targetUpdated: ISignal<ActiveDataset, URL | null>;
+  private _activeTarget: ISignal<ActiveDataset, URL | null>;
 
   // Signal when new data is received and needs to be updated
   private _newDataReceived = new Signal<this, void>(this);
+
+  // Signal when new target is set
+  private _targetSet = new Signal<this, void>(this);
 
   // GraphQL commenting and people services
   private _comments: IMetadataCommentsService;
@@ -33,9 +36,25 @@ export class CommentingDataReceiver {
     activeDataset: IActiveDataset
   ) {
     this._states = states;
-    this._targetUpdated = activeDataset.signal;
+    this._activeTarget = activeDataset.signal;
     this._comments = comments;
     this._people = people;
+
+    this.setState({
+      creator: {},
+      curTargetHasThreads: false,
+      expandedCard: ' ',
+      myThreads: [],
+      newThreadActive: false,
+      newThreadFile: ' ',
+      replyActiveCard: ' ',
+      response: {},
+      pastTarget: '',
+      showResolved: true,
+      sortState: 'latest',
+      userSet: false,
+      target: ' '
+    });
 
     this.getAllComments = this.getAllComments.bind(this);
     this.putComment = this.putComment.bind(this);
@@ -66,11 +85,6 @@ export class CommentingDataReceiver {
     this._comments
       .queryAllByTarget(this._states.getState('target') as string)
       .then((response: any) => {
-        if (response === this._states.getState('response')) {
-          console.log('same');
-          return;
-        }
-
         if (response.data.annotationsByTarget[0] !== undefined) {
           this._states.setState({
             curTargetHasThreads: true,
@@ -143,6 +157,7 @@ export class CommentingDataReceiver {
       newThreadActive: false,
       expandedCard: ' '
     });
+    this._targetSet.emit(void 0);
   }
 
   /**
@@ -194,10 +209,17 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Signal when target is updated
+   * Signal when active is set
    */
-  get targetUpdated(): ISignal<ActiveDataset, URL | null> {
-    return this._targetUpdated;
+  get activeUpdated(): ISignal<ActiveDataset, URL | null> {
+    return this._activeTarget;
+  }
+
+  /**
+   * Signal when new target is set
+   */
+  get targetSet(): ISignal<this, void> {
+    return this._targetSet;
   }
 
   /**

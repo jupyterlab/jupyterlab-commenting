@@ -8,6 +8,8 @@ import {
 
 import { IEditorTracker } from '@jupyterlab/fileeditor';
 
+import { IDocumentManager } from '@jupyterlab/docmanager';
+
 import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 
 import {
@@ -16,12 +18,14 @@ import {
   ActiveDataset
 } from '@jupyterlab/dataregistry';
 
+import { DocumentRegistry } from '@jupyterlab/docregistry';
+
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 import { CommentingWidget } from './comments/commenting';
-import { TargetHandler } from './comments/targetHandler';
 import { CommentingStates } from './comments/states';
 import { CommentingDataProvider } from './comments/provider';
 import { CommentingDataReceiver } from './comments/receiver';
+import { CommentingIndicatorHandler } from './comments/indicator';
 
 /**
  * CommentingUI
@@ -31,7 +35,7 @@ export let commentingUI: CommentingWidget;
 /**
  * Handles commenting overlay for viewers
  */
-export let targetHandler: TargetHandler;
+export let indicatorHandler: CommentingIndicatorHandler;
 
 /**
  * Data receiver / handler
@@ -60,7 +64,8 @@ export function activate(
   comments: IMetadataCommentsService,
   people: IMetadataPeopleService,
   converters: IConverterRegistry,
-  tracker: IEditorTracker
+  tracker: IEditorTracker,
+  docManager: IDocumentManager
 ) {
   // Create receiver object
   receiver = new CommentingDataReceiver(
@@ -69,13 +74,6 @@ export function activate(
     people,
     activeDataset
   );
-
-  // Init commenting states in state holder
-  initCommentingUIStates();
-
-  // Connect signals
-  receiver.targetUpdated.connect(targetUpdated);
-  receiver.newDataReceived.connect(newDataReceived);
 
   // Create CommentingUI React widget
   commentingUI = new CommentingWidget(provider, receiver);
@@ -86,54 +84,68 @@ export function activate(
   // Add widget to the right area
   labShell.add(commentingUI, 'right');
 
-  // Create target handler widget
-  targetHandler = new TargetHandler(app, labShell, tracker);
-  targetHandler.id = 'jupyterlab-commenting:target-handler';
-  targetHandler.activate();
-}
+  // Create CommentingIndicatorHandler
+  indicatorHandler = new CommentingIndicatorHandler(
+    app,
+    tracker,
+    provider,
+    labShell
+  );
 
-/**
- * Sets the initial states for commentingUI
- */
-function initCommentingUIStates(): void {
-  receiver.setState({
-    creator: {},
-    curTargetHasThreads: false,
-    expandedCard: ' ',
-    myThreads: [],
-    newThreadActive: false,
-    newThreadFile: ' ',
-    replyActiveCard: ' ',
-    response: {},
-    pastTarget: '',
-    showResolved: true,
-    sortState: 'latest',
-    userSet: false,
-    target: ' '
+  // Called when ActiveDataset signal is emitted
+  receiver.activeUpdated.connect((sender: ActiveDataset, value: URL) => {
+    if (value !== null && value.pathname) {
+      receiver.setTarget(value.pathname);
+      receiver.getAllComments();
+    } else {
+      receiver.setTarget(undefined);
+      receiver.getAllComments();
+    }
+  });
+
+  // Called when state 'target' is changed
+  receiver.targetSet.connect(() => {
+    // Clear past widget
+    indicatorHandler.clearIndicatorWidget();
+
+    let path = provider.getState('target') as string;
+
+    let curWidget;
+
+    if (path) {
+      curWidget = docManager.findWidget(path);
+    }
+
+    // If widget is active, add indicator
+    if (curWidget) {
+      let context = docManager.contextForWidget(curWidget);
+      addIndicatorWidget(context);
+    }
+  });
+
+  // Called when new data is received from a metadata service
+  receiver.newDataReceived.connect(() => {
+    receiver.getAllComments();
   });
 }
 
-/**
- * Called when target is updated each time activeDataset signal is emitted
- *
- * @param sender - signal sender
- * @param value - signal params
- */
-function targetUpdated(sender: ActiveDataset, value: URL): void {
-  try {
-    receiver.setTarget(value.pathname);
-    receiver.getAllComments();
-  } catch (e) {
-    receiver.setTarget(undefined);
-    receiver.getAllComments();
-  }
-}
-
-/**
- * Called when new data received signal from receiver is emitted
- */
-function newDataReceived(): void {
-  receiver.getAllComments();
+function addIndicatorWidget(
+  context: DocumentRegistry.IContext<DocumentRegistry.IModel>
+): void {
+  const promise = context.ready;
+  promise.then(() => {
+    if (
+      context.contentsModel.type === 'file' &&
+      context.contentsModel.mimetype
+    ) {
+      receiver.setState({ curDocType: context.contentsModel.mimetype });
+    } else if (context.contentsModel.type === 'notebook') {
+      receiver.setState({ curDocType: context.contentsModel.type });
+    } else {
+      receiver.setState({ curDocType: '' });
+    }
+    indicatorHandler.addIndicatorWidget();
+  });
 }
 
 // creates extension
@@ -146,7 +158,8 @@ const commentingExtension: JupyterFrontEndPlugin<void> = {
     IMetadataCommentsService,
     IMetadataPeopleService,
     IConverterRegistry,
-    IEditorTracker
+    IEditorTracker,
+    IDocumentManager
   ],
   activate
 };

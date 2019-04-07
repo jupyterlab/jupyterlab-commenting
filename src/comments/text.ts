@@ -11,40 +11,53 @@ import { Message } from '@phosphor/messaging';
 import { IAnnotationSelection } from '../types';
 
 import { commentingUI } from '../index';
+import { CommentingDataProvider } from './provider';
 
-export class TargetHandler extends Widget {
+export class TextEditorIndicator extends Widget {
   private _app: JupyterFrontEnd;
   private _labShell: ILabShell;
   private _tracker: IEditorTracker;
+
+  private _provider: CommentingDataProvider;
 
   // private _periodicUpdate: number;
 
   constructor(
     app: JupyterFrontEnd,
     labShell: ILabShell,
-    tracker: IEditorTracker
+    tracker: IEditorTracker,
+    provider: CommentingDataProvider
   ) {
     super();
     this._app = app;
     this._labShell = labShell;
     this._tracker = tracker;
+    this._provider = provider;
 
+    this._provider;
     // this.markSelections = this.markSelections.bind(this);
   }
 
   protected onActivateRequest(msg: Message): void {
-    this.createContextMenu();
+    console.log('TEXT INDICATORS ACTIVE');
+    if (!this._app.commands.hasCommand('jupyterlab-commenting:createComment')) {
+      this.createContextMenu();
+    }
     // this._periodicUpdate = setInterval(this.markSelections, 1000);
   }
 
   protected onCloseRequest(msg: Message): void {
     // clearInterval(this._periodicUpdate);
+    console.log('TEXT INDICATORS CLOSE');
   }
 
   createContextMenu(): void {
     this._app.commands.addCommand('jupyterlab-commenting:createComment', {
       label: 'Comment',
-      isEnabled: () => true,
+      isVisible: () => {
+        let doc = this._provider.getState('curDocType') as string;
+        return doc.indexOf('text') > -1;
+      },
       execute: () => {
         let widget = this._tracker.currentWidget;
         let editor = widget.content.editor as CodeMirrorEditor;
@@ -88,8 +101,6 @@ export class TargetHandler extends Widget {
   // }
 
   addCommentBoxOverlay(): void {
-    // let widget = this.tracker.currentWidget;
-    // let editor = widget.content.editor as CodeMirrorEditor;
     this._labShell.expandRight();
     commentingUI.setNewThreadActive(true);
   }
