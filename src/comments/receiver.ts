@@ -7,6 +7,7 @@ import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 import { CommentingStates } from './states';
+import { ITextIndicator } from '../types';
 
 /**
  * Handles all interactions with data that is received. Interacts with CommentingStates
@@ -40,6 +41,7 @@ export class CommentingDataReceiver {
     this._comments = comments;
     this._people = people;
 
+    // Initial states
     this.setState({
       creator: {},
       curTargetHasThreads: false,
@@ -124,7 +126,8 @@ export class CommentingDataReceiver {
     this._comments.createThread(
       this._states.getState('target') as string,
       value,
-      this._states.getState('creator')
+      this._states.getState('creator'),
+      (this._states.getState('latestIndicatorInfo') as object) as ITextIndicator
     );
     this._newDataReceived.emit(void 0);
   }

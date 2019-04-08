@@ -8,34 +8,41 @@ import { Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
-import { IAnnotationSelection } from '../types';
-
+import { ITextIndicator, INotebookIndicator } from '../types';
 import { commentingUI } from '../index';
 import { CommentingDataProvider } from './provider';
+import { IndicatorWidget } from './indicator';
+import { CommentingDataReceiver } from './receiver';
+import { JSONValue } from '@phosphor/coreutils';
 
-export class TextEditorIndicator extends Widget {
+/**
+ * Indicator widget for the text editor viewer / widget
+ */
+export class TextEditorIndicator extends Widget implements IndicatorWidget {
   private _app: JupyterFrontEnd;
   private _labShell: ILabShell;
   private _tracker: IEditorTracker;
-
+  private _receiver: CommentingDataReceiver;
   private _provider: CommentingDataProvider;
 
-  // private _periodicUpdate: number;
+  // setInterval for querying new indicators
+  private _periodicUpdate: number;
 
   constructor(
     app: JupyterFrontEnd,
     labShell: ILabShell,
     tracker: IEditorTracker,
-    provider: CommentingDataProvider
+    provider: CommentingDataProvider,
+    receiver: CommentingDataReceiver
   ) {
     super();
     this._app = app;
     this._labShell = labShell;
     this._tracker = tracker;
     this._provider = provider;
+    this._receiver = receiver;
 
-    this._provider;
-    // this.markSelections = this.markSelections.bind(this);
+    this.putIndicators = this.putIndicators.bind(this);
   }
 
   protected onActivateRequest(msg: Message): void {
@@ -43,69 +50,60 @@ export class TextEditorIndicator extends Widget {
     if (!this._app.commands.hasCommand('jupyterlab-commenting:createComment')) {
       this.createContextMenu();
     }
-    // this._periodicUpdate = setInterval(this.markSelections, 1000);
+    this.putIndicators();
+    this._periodicUpdate = setInterval(this.putIndicators, 1000);
   }
 
   protected onCloseRequest(msg: Message): void {
-    // clearInterval(this._periodicUpdate);
+    clearInterval(this._periodicUpdate);
+    this.clearIndicators();
     console.log('TEXT INDICATORS CLOSE');
   }
 
-  createContextMenu(): void {
-    this._app.commands.addCommand('jupyterlab-commenting:createComment', {
-      label: 'Comment',
-      isVisible: () => {
-        let doc = this._provider.getState('curDocType') as string;
-        return doc.indexOf('text') > -1;
-      },
-      execute: () => {
-        let widget = this._tracker.currentWidget;
-        let editor = widget.content.editor as CodeMirrorEditor;
-
-        let selection = editor.getSelection();
-
-        if (
-          selection.start.line === selection.end.line &&
-          selection.start.column === selection.end.column
-        ) {
-          editor.doc.markText(
-            { line: selection.start.line, ch: 0 },
-            {
-              line: selection.end.line,
-              ch: editor.getLine(selection.start.line).length
-            },
-            { className: 'jp-commenting-highlight' }
-          );
-        } else {
-          this.addHighlight(selection);
-        }
-        this.addCommentBoxOverlay();
-      }
-    });
-
-    this._app.contextMenu.addItem({
-      command: 'jupyterlab-commenting:createComment',
-      selector: 'body',
-      rank: Infinity
-    });
+  openCommenting(): void {
+    commentingUI.show();
+    this._labShell.expandRight();
   }
 
-  // markSelections(): void {
-  //   commenting.commentService
-  //     .queryAllByTarget(commenting.getTarget())
-  //     .then((response: any) => {
-  //       for (let index in response.data.annotationsByTarget) {
-  //         this.addHighlight(response.data.annotationsByTarget[index].selection);
-  //       }
-  //     });
-  // }
-
-  addCommentBoxOverlay(): void {
-    this._labShell.expandRight();
+  openNewThread(): void {
+    if (!commentingUI.isVisible) {
+      this.openCommenting();
+    }
     commentingUI.setNewThreadActive(true);
   }
 
-  addHighlight(selection: IAnnotationSelection): void {
+  focusThread(threadId: string): void {
+    throw new Error('Method not implemented.');
+  }
+
+  getCurrentIndicatorInfo(): ITextIndicator | INotebookIndicator {
+    return this._provider.getState('latestIndicatorInfo');
+  }
+
+  putIndicators(): void {
+    let response = this._provider.getState('response') as any;
+    for (let index in response.data.annotationsByTarget) {
+      this.addHighlight(
+        response.data.annotationsByTarget[index].indicator,
+        false
+      );
+    }
+  }
+
+  clearIndicators(): void {
+    let response = this._provider.getState('response') as any;
+    for (let index in response.data.annotationsByTarget) {
+      this.addHighlight(
+        response.data.annotationsByTarget[index].indicator,
+        true
+      );
+    }
+  }
+
+  addHighlight(selection: ITextIndicator, remove: boolean): void {
+    if (selection === null) {
+      return;
+    }
     let widget = this._tracker.currentWidget;
     let editor = widget.content.editor as CodeMirrorEditor;
 
@@ -126,37 +124,74 @@ export class TextEditorIndicator extends Widget {
         ? selection.end.column
         : selection.start.column;
 
-    editor.doc.markText(
-      { line: startLine, ch: startCol },
-      { line: endLine, ch: endCol },
-      { className: 'jp-commenting-highlight' }
-    );
+    if (!remove) {
+      editor.doc.markText(
+        { line: startLine, ch: startCol },
+        { line: endLine, ch: endCol },
+        { css: 'background-color: yellow;' }
+      );
+    } else {
+      editor.doc.markText(
+        { line: startLine, ch: startCol },
+        { line: endLine, ch: endCol },
+        { css: 'background-color: transparent;' }
+      );
+    }
   }
 
-  getSelection(): IAnnotationSelection {
+  createContextMenu(): void {
+    this._app.commands.addCommand('jupyterlab-commenting:createComment', {
+      label: 'Comment',
+      isVisible: () => {
+        let doc = this._provider.getState('curDocType') as string;
+        return doc.indexOf('text') > -1;
+      },
+      execute: () => {
+        this.addHighlight(this.getSelection(), false);
+        this.openNewThread();
+      }
+    });
+
+    this._app.contextMenu.addItem({
+      command: 'jupyterlab-commenting:createComment',
+      selector: 'body',
+      rank: Infinity
+    });
+  }
+
+  getSelection(): ITextIndicator {
     let widget = this._tracker.currentWidget;
     let editor = widget.content.editor as CodeMirrorEditor;
 
     let selection = editor.getSelection();
+    let curSelected: ITextIndicator;
 
     if (
       selection.start.line === selection.end.line &&
       selection.start.column === selection.end.column
     ) {
-      // TODO: if same start and end -> whole line needs marked
+      curSelected = {
+        end: {
+          line: selection.end.line,
+          column: editor.getLine(selection.start.line).length
+        },
+        start: { line: selection.start.line, column: 0 }
+      };
+    } else {
+      curSelected = {
+        end: {
+          line: selection.end.line,
+          column: selection.end.column
+        },
+        start: {
+          line: selection.start.line,
+          column: selection.start.column
+        }
+      };
     }
-
-    let curSelected: IAnnotationSelection = {
-      end: {
-        line: selection.end.line,
-        column: selection.end.column
-      },
-      start: {
-        line: selection.start.line,
-        column: selection.start.column
-      }
-    };
-
+    this._receiver.setState({
+      latestIndicatorInfo: (curSelected as object) as JSONValue
+    });
     return curSelected;
   }
 }

@@ -18,8 +18,6 @@ import {
   ActiveDataset
 } from '@jupyterlab/dataregistry';
 
-import { DocumentRegistry } from '@jupyterlab/docregistry';
-
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
@@ -89,6 +87,7 @@ export function activate(
     app,
     tracker,
     provider,
+    receiver,
     labShell
   );
 
@@ -108,18 +107,8 @@ export function activate(
     // Clear past widget
     indicatorHandler.clearIndicatorWidget();
 
-    let path = provider.getState('target') as string;
-
-    let curWidget;
-
-    if (path) {
-      curWidget = docManager.findWidget(path);
-    }
-
-    // If widget is active, add indicator
-    if (curWidget) {
-      let context = docManager.contextForWidget(curWidget);
-      addIndicatorWidget(context);
+    if (commentingUI.isVisible) {
+      addIndicatorWidget(docManager);
     }
   });
 
@@ -127,25 +116,44 @@ export function activate(
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
   });
+
+  commentingUI.showSignal.connect((sender, args) => {
+    if (args) {
+      addIndicatorWidget(docManager);
+    } else {
+      indicatorHandler.clearIndicatorWidget();
+    }
+  });
 }
 
-function addIndicatorWidget(
-  context: DocumentRegistry.IContext<DocumentRegistry.IModel>
-): void {
-  const promise = context.ready;
-  promise.then(() => {
-    if (
-      context.contentsModel.type === 'file' &&
-      context.contentsModel.mimetype
-    ) {
-      receiver.setState({ curDocType: context.contentsModel.mimetype });
-    } else if (context.contentsModel.type === 'notebook') {
-      receiver.setState({ curDocType: context.contentsModel.type });
-    } else {
-      receiver.setState({ curDocType: '' });
-    }
-    indicatorHandler.addIndicatorWidget();
-  });
+function addIndicatorWidget(docManager: IDocumentManager): void {
+  let path = provider.getState('target') as string;
+
+  let curWidget;
+
+  if (path) {
+    curWidget = docManager.findWidget(path);
+  }
+
+  // If widget is active, add indicator
+  if (curWidget) {
+    let context = docManager.contextForWidget(curWidget);
+
+    const promise = context.ready;
+    promise.then(() => {
+      if (
+        context.contentsModel.type === 'file' &&
+        context.contentsModel.mimetype
+      ) {
+        receiver.setState({ curDocType: context.contentsModel.mimetype });
+      } else if (context.contentsModel.type === 'notebook') {
+        receiver.setState({ curDocType: context.contentsModel.type });
+      } else {
+        receiver.setState({ curDocType: '' });
+      }
+      indicatorHandler.addIndicatorWidget();
+    });
+  }
 }
 
 // creates extension

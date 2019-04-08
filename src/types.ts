@@ -8,9 +8,9 @@ export interface IPerson {
 }
 
 /**
- * Type interface for a highlighted section of an annotation
+ * Type interface for a text editor commenting indicator
  */
-export interface IAnnotationSelection {
+export interface ITextIndicator {
   end: {
     line: number;
     column: number;
@@ -20,6 +20,8 @@ export interface IAnnotationSelection {
     column: number;
   };
 }
+
+export interface INotebookIndicator {}
 
 /**
  * Type interface for annotations response from IMetadataCommentsService
@@ -33,7 +35,7 @@ export interface IAnnotationResponse {
         context: string;
         label: string;
         total: number;
-        selection: IAnnotationSelection;
+        indicator: ITextIndicator | INotebookIndicator;
         resolved: boolean;
         body: {
           [index: number]: { value: string; created: string; creator: IPerson };

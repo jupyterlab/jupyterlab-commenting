@@ -18,6 +18,7 @@ import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
+import { Signal, ISignal } from '@phosphor/signaling';
 
 /**
  * CommentingUI React Widget
@@ -31,6 +32,9 @@ export class CommentingWidget extends ReactWidget {
 
   // setInterval of when to poll new data
   private _periodicUpdate: number;
+
+  // Signal when commenting UI is shown or hidden
+  private _showSignal = new Signal<this, boolean>(this);
 
   constructor(
     provider: CommentingDataProvider,
@@ -60,6 +64,7 @@ export class CommentingWidget extends ReactWidget {
   protected onBeforeShow(): void {
     // // Sets the interval of when to periodically query for comments
     this._periodicUpdate = setInterval(this._receiver.getAllComments, 1000);
+    this._showSignal.emit(true);
   }
 
   /**
@@ -68,6 +73,7 @@ export class CommentingWidget extends ReactWidget {
   protected onBeforeHide(): void {
     // Stops the periodic query of comments
     clearInterval(this._periodicUpdate);
+    this._showSignal.emit(false);
   }
 
   /**
@@ -310,5 +316,13 @@ export class CommentingWidget extends ReactWidget {
    */
   setShowResolved(value: boolean) {
     this._receiver.setState({ showResolved: value });
+  }
+
+  /**
+   * Signal that is emitted when the commentingUI panel is opened or closed
+   * args - boolean: true open, false closed
+   */
+  get showSignal(): ISignal<this, boolean> {
+    return this._showSignal;
   }
 }
