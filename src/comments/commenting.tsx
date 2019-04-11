@@ -36,6 +36,9 @@ export class CommentingWidget extends ReactWidget {
   // Signal when commenting UI is shown or hidden
   private _showSignal = new Signal<this, boolean>(this);
 
+  // Signal when new thread is created or canceled
+  private _newThreadCreated = new Signal<this, boolean>(this);
+
   constructor(
     provider: CommentingDataProvider,
     receiver: CommentingDataReceiver
@@ -136,6 +139,7 @@ export class CommentingWidget extends ReactWidget {
                         creator={
                           (this._provider.getState('creator') as {}) as IPerson
                         }
+                        newThreadCreated={this._newThreadCreated}
                       />
                     ]
                   : this.getAllCommentCards()
@@ -324,5 +328,12 @@ export class CommentingWidget extends ReactWidget {
    */
   get showSignal(): ISignal<this, boolean> {
     return this._showSignal;
+  }
+
+  /**
+   * Signal when new thread is created
+   */
+  get newThreadCreated(): ISignal<this, boolean> {
+    return this._newThreadCreated;
   }
 }

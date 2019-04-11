@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { IPerson } from '../../types';
+import { CommentingWidget } from '../commenting';
+import { Signal } from '@phosphor/signaling';
 
 interface INewThreadCardProps {
   /**
@@ -26,6 +28,7 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
+  newThreadCreated: Signal<CommentingWidget, boolean>;
 }
 
 interface INewThreadCardStates {
@@ -125,11 +128,13 @@ export class NewThreadCard extends React.Component<
   handleCreateNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
+    this.props.newThreadCreated.emit(true);
   }
 
   handleCancelThread(): void {
     this.setState({ inputBox: '' });
     this.props.setNewThreadActive(false);
+    this.props.newThreadCreated.emit(false);
   }
 
   /**

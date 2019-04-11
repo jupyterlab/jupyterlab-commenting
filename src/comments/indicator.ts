@@ -6,7 +6,6 @@ import { CommentingDataProvider } from './provider';
 import { TextEditorIndicator } from './text';
 import { Widget } from '@phosphor/widgets';
 import { NotebookIndicators } from './notebook';
-import { ITextIndicator, INotebookIndicator } from '../types';
 import { CommentingDataReceiver } from './receiver';
 
 export class CommentingIndicatorHandler {
@@ -107,9 +106,4 @@ export abstract class IndicatorWidget {
    * Handle clearing indicators if needed
    */
   abstract clearIndicators(): void;
-
-  /**
-   * Gets the most recently created indicator values / information
-   */
-  abstract getCurrentIndicatorInfo(): ITextIndicator | INotebookIndicator;
 }
