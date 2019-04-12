@@ -13,6 +13,8 @@
 
 ## Installation
 
+*This doesn't work yet, because we haven't published the package*
+
 ```bash
 jupyter labextension install jupyterlab-commenting
 ```
