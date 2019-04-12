@@ -18,7 +18,7 @@ export class CommentingDataProvider {
    *
    * @param key Type: string - key value for data needed
    */
-  getState(key: string): JSONValue {
+  getState(key: ICommentingStateTypes): JSONValue {
     return this._states.getState(key);
   }
 
@@ -29,3 +29,23 @@ export class CommentingDataProvider {
     return this._states.stateUpdatedSignal;
   }
 }
+
+/**
+ * Key values for commenting states
+ */
+export type ICommentingStateTypes =
+  | 'creator'
+  | 'curTargetHasThreads'
+  | 'expandedCard'
+  | 'myThreads'
+  | 'newThreadActive'
+  | 'newThreadFile'
+  | 'replyActiveCard'
+  | 'response'
+  | 'pastTarget'
+  | 'showResolved'
+  | 'sortState'
+  | 'userSet'
+  | 'target'
+  | 'curDocType'
+  | 'latestIndicatorInfo';

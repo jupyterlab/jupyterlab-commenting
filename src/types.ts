@@ -35,7 +35,7 @@ export interface IAnnotationResponse {
         context: string;
         label: string;
         total: number;
-        indicator: ITextIndicator | INotebookIndicator;
+        indicator: ITextIndicator;
         resolved: boolean;
         body: {
           [index: number]: { value: string; created: string; creator: IPerson };

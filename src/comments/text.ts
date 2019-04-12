@@ -10,11 +10,12 @@ import { Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
-import { ITextIndicator } from '../types';
+import { ITextIndicator, IAnnotationResponse } from '../types';
 import { commentingUI } from '../index';
 import { CommentingDataProvider } from './provider';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataReceiver } from './receiver';
+import { CodeEditor } from '@jupyterlab/codeeditor';
 
 /**
  * Indicator widget for the text editor viewer / widget
@@ -56,9 +57,12 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @param msg Type: Message - activate message
    */
   protected onActivateRequest(msg: Message): void {
+    this._labShell.node.addEventListener('click', this);
+
     if (!this._app.commands.hasCommand('jupyterlab-commenting:createComment')) {
       this.createContextMenu();
     }
+
     this.putIndicators();
     this._periodicUpdate = setInterval(this.putIndicators, 1000);
 
@@ -93,7 +97,18 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    */
   protected onCloseRequest(msg: Message): void {
     clearInterval(this._periodicUpdate);
+    this._labShell.node.removeEventListener('click', this);
     this.clearIndicators();
+  }
+
+  handleEvent(event: Event): void {
+    switch (event.type) {
+      case 'click':
+        this.handleClickEvent();
+        break;
+      default:
+        break;
+    }
   }
 
   /**
@@ -121,6 +136,10 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    */
   focusThread(threadId: string): void {
     commentingUI.setExpandedCard(threadId);
+  }
+
+  unfocusThread(): void {
+    commentingUI.setExpandedCard(' ');
   }
 
   /**
@@ -300,5 +319,42 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       latestIndicatorInfo: (curSelected as object) as JSONValue
     });
     return curSelected;
+  }
+
+  handleClickEvent(): void {
+    if (
+      (this._provider.getState('curDocType') as string).indexOf('text') > -1
+    ) {
+      let widget = this._tracker.currentWidget;
+      let editor = widget.content.editor as CodeMirrorEditor;
+
+      let id = this.getThreadFromPosition(editor.getCursorPosition());
+
+      if (id) {
+        this.focusThread(id);
+      }
+    }
+  }
+
+  getThreadFromPosition(position: CodeEditor.IPosition): string {
+    let response = (this._provider.getState(
+      'response'
+    ) as object) as IAnnotationResponse;
+
+    console.log(position);
+
+    for (let i in response.data.annotationsByTarget) {
+      let selection = response.data.annotationsByTarget[i].indicator;
+
+      if (
+        position.line >= selection.start.line &&
+        position.line <= selection.end.line &&
+        position.column >= selection.start.column &&
+        position.column <= selection.end.column
+      ) {
+        return response.data.annotationsByTarget[i].id;
+      }
+    }
+    return undefined;
   }
 }
