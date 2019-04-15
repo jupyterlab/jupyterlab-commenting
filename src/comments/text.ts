@@ -135,7 +135,21 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @param threadId Type: string - threadID of thread to expand
    */
   focusThread(threadId: string): void {
-    commentingUI.setExpandedCard(threadId);
+    if (this._provider.getState('expandedCard') !== threadId) {
+      commentingUI.setExpandedCard(threadId);
+    }
+
+    let response = this._provider.getState('response') as any;
+
+    for (let index in response.data.annotationsByTarget) {
+      if (response.data.annotationsByTarget[index].id === threadId) {
+        this.addIndicator(
+          response.data.annotationsByTarget[index].indicator,
+          'highlight',
+          'orange'
+        );
+      }
+    }
   }
 
   unfocusThread(): void {
@@ -148,10 +162,32 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   putIndicators(): void {
     let response = this._provider.getState('response') as any;
     for (let index in response.data.annotationsByTarget) {
-      this.addIndicator(
-        response.data.annotationsByTarget[index].indicator,
-        'highlight'
-      );
+      if (
+        response.data.annotationsByTarget[index].id !==
+          this._provider.getState('expandedCard') &&
+        !response.data.annotationsByTarget[index].resolved
+      ) {
+        this.addIndicator(
+          response.data.annotationsByTarget[index].indicator,
+          'highlight'
+        );
+      } else {
+        if (
+          response.data.annotationsByTarget[index].id !==
+          this._provider.getState('expandedCard')
+        ) {
+          this.addIndicator(
+            response.data.annotationsByTarget[index].indicator,
+            'clear-highlight'
+          );
+        } else {
+          this.addIndicator(
+            response.data.annotationsByTarget[index].indicator,
+            'highlight',
+            'orange'
+          );
+        }
+      }
     }
   }
 
@@ -169,6 +205,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   }
 
   /**
+   * Adds indicators to text editor
    *
    * @param selection - Type: ITextIndicator - selection to highlight
    * @param type - Type: string - type of indicator
@@ -321,6 +358,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     return curSelected;
   }
 
+  /**
+   * Handles click, focuses thread that is clicked
+   */
   handleClickEvent(): void {
     if (
       (this._provider.getState('curDocType') as string).indexOf('text') > -1
@@ -328,20 +368,30 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       let widget = this._tracker.currentWidget;
       let editor = widget.content.editor as CodeMirrorEditor;
 
+      if (!editor.hasFocus()) {
+        return;
+      }
+
       let id = this.getThreadFromPosition(editor.getCursorPosition());
 
       if (id) {
         this.focusThread(id);
+        this.putIndicators();
       }
     }
   }
 
-  getThreadFromPosition(position: CodeEditor.IPosition): string {
+  /**
+   * Gets the threadId based on cursor position
+   *
+   * @param position Cursor position object
+   *
+   * @return string | undefined
+   */
+  getThreadFromPosition(position: CodeEditor.IPosition): string | undefined {
     let response = (this._provider.getState(
       'response'
     ) as object) as IAnnotationResponse;
-
-    console.log(position);
 
     for (let i in response.data.annotationsByTarget) {
       let selection = response.data.annotationsByTarget[i].indicator;

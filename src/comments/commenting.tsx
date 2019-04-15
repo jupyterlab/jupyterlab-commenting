@@ -6,7 +6,13 @@ import { ReactWidget } from '@jupyterlab/apputils';
 
 import { UseSignal } from '@jupyterlab/apputils';
 
+import { Signal, ISignal } from '@phosphor/signaling';
+
 import { IPerson } from '../types';
+
+import { CommentingDataProvider } from './provider';
+import { CommentingDataReceiver } from './receiver';
+import { activeIndicatorWidget } from './indicator';
 
 // Components
 import { App } from './components/App';
@@ -16,9 +22,6 @@ import { AppHeader } from './components/AppHeader';
 import { AppHeaderOptions } from './components/AppHeaderOptions';
 import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
-import { CommentingDataProvider } from './provider';
-import { CommentingDataReceiver } from './receiver';
-import { Signal, ISignal } from '@phosphor/signaling';
 
 /**
  * CommentingUI React Widget
@@ -281,6 +284,8 @@ export class CommentingWidget extends ReactWidget {
    */
   setExpandedCard(threadId: string) {
     this._receiver.setState({ expandedCard: threadId });
+    activeIndicatorWidget.focusThread(threadId);
+    activeIndicatorWidget.putIndicators();
   }
 
   /**

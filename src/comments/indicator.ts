@@ -2,11 +2,15 @@ import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { IEditorTracker } from '@jupyterlab/fileeditor';
 
+import { Widget } from '@phosphor/widgets';
+
 import { CommentingDataProvider } from './provider';
 import { TextEditorIndicator } from './text';
-import { Widget } from '@phosphor/widgets';
 import { NotebookIndicators } from './notebook';
 import { CommentingDataReceiver } from './receiver';
+
+// Active indicator widget
+export let activeIndicatorWidget: Widget & IndicatorWidget;
 
 export class CommentingIndicatorHandler {
   private _app: JupyterFrontEnd;
@@ -14,9 +18,6 @@ export class CommentingIndicatorHandler {
   private _provider: CommentingDataProvider;
   private _receiver: CommentingDataReceiver;
   private _labShell: ILabShell;
-
-  // Active indicator widget
-  private _activeWidget: Widget;
 
   constructor(
     app: JupyterFrontEnd,
@@ -44,34 +45,34 @@ export class CommentingIndicatorHandler {
 
     if (type.indexOf('text') > -1) {
       // Indicator Widget for text editor
-      this._activeWidget = new TextEditorIndicator(
+      activeIndicatorWidget = new TextEditorIndicator(
         this._app,
         this._labShell,
         this._tracker,
         this._provider,
         this._receiver
       );
-      this._activeWidget.id = 'jupyterlab-commenting:target-handler';
-      this._activeWidget.activate();
+      activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
+      activeIndicatorWidget.activate();
     } else if (type === 'notebook') {
       // Indicator widget for notebooks
-      this._activeWidget = new NotebookIndicators(
+      activeIndicatorWidget = new NotebookIndicators(
         this._app,
         this._labShell,
         this._provider,
         this._receiver
       );
-      this._activeWidget.id = 'jupyterlab-commenting:target-handler';
-      this._activeWidget.activate();
+      activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
+      activeIndicatorWidget.activate();
     } else {
       this.clearIndicatorWidget();
     }
   }
 
   clearIndicatorWidget(): void {
-    if (this._activeWidget && !this._activeWidget.isDisposed) {
-      this._activeWidget.close();
-      this._activeWidget.dispose();
+    if (activeIndicatorWidget && !activeIndicatorWidget.isDisposed) {
+      activeIndicatorWidget.close();
+      activeIndicatorWidget.dispose();
     }
   }
 }
