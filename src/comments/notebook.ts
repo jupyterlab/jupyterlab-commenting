@@ -53,7 +53,7 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
   }
   putIndicators(): void {}
 
-  clearIndicators(): void {
+  clearAllIndicators(): void {
     throw new Error('Method not implemented.');
   }
 }

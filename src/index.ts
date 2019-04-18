@@ -23,7 +23,10 @@ import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
 import { CommentingDataProvider } from './comments/provider';
 import { CommentingDataReceiver } from './comments/receiver';
-import { CommentingIndicatorHandler } from './comments/indicator';
+import {
+  CommentingIndicatorHandler,
+  activeIndicatorWidget
+} from './comments/indicator';
 
 /**
  * CommentingUI
@@ -115,6 +118,9 @@ export function activate(
   // Called when new data is received from a metadata service
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
+    if (commentingUI.isVisible) {
+      activeIndicatorWidget.putIndicators();
+    }
   });
 
   commentingUI.showSignal.connect((sender, args) => {

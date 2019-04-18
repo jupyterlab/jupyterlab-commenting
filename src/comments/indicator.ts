@@ -54,6 +54,7 @@ export class CommentingIndicatorHandler {
       );
       activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
       activeIndicatorWidget.activate();
+      activeIndicatorWidget.putIndicators();
     } else if (type === 'notebook') {
       // Indicator widget for notebooks
       activeIndicatorWidget = new NotebookIndicators(
@@ -64,6 +65,7 @@ export class CommentingIndicatorHandler {
       );
       activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
       activeIndicatorWidget.activate();
+      activeIndicatorWidget.putIndicators();
     } else {
       this.clearIndicatorWidget();
     }
@@ -71,6 +73,7 @@ export class CommentingIndicatorHandler {
 
   clearIndicatorWidget(): void {
     if (activeIndicatorWidget && !activeIndicatorWidget.isDisposed) {
+      activeIndicatorWidget.clearAllIndicators();
       activeIndicatorWidget.close();
       activeIndicatorWidget.dispose();
     }
@@ -106,5 +109,5 @@ export abstract class IndicatorWidget {
   /**
    * Handle clearing indicators if needed
    */
-  abstract clearIndicators(): void;
+  abstract clearAllIndicators(): void;
 }
