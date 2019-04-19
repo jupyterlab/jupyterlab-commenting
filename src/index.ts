@@ -123,6 +123,12 @@ export function activate(
     }
   });
 
+  receiver.commentsQueried.connect(() => {
+    if (commentingUI.isVisible) {
+      activeIndicatorWidget.putIndicators();
+    }
+  });
+
   commentingUI.showSignal.connect((sender, args) => {
     if (args) {
       addIndicatorWidget(docManager);

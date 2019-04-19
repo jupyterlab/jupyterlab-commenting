@@ -113,7 +113,6 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   protected onCloseRequest(msg: Message): void {
     // clearInterval(this._periodicUpdate);
     this.clearAllIndicators();
-    console.log('CLOSE');
   }
 
   /**
@@ -149,10 +148,20 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Adds all indicators to the current widget
    */
   putIndicators(): void {
+    console.log('PUT INDICATOR');
     let response = this._provider.getState('response') as any;
     let expandedCard = this._provider.getState('expandedCard') as string;
 
     let annotations = response.data.annotationsByTarget;
+
+    let widget = this._tracker.currentWidget;
+    let editor = widget.content.editor as CodeMirrorEditor;
+
+    if (!this._provider.getState('newThreadActive')) {
+      editor.doc.getAllMarks().forEach(mark => {
+        mark.clear();
+      });
+    }
 
     for (let index in annotations) {
       let indicator = annotations[index].indicator;
@@ -161,13 +170,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
       if (id !== expandedCard && !resolved) {
         this.createIndicator(indicator, id, 'highlight');
-      }
-
-      if (id !== expandedCard && resolved) {
+      } else if (id !== expandedCard && resolved) {
         this.createIndicator(indicator, id, 'clear');
-      }
-
-      if (id === expandedCard) {
+      } else if (id === expandedCard) {
         this.createIndicator(indicator, id, 'highlight', 'orange');
       }
     }
@@ -186,7 +191,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     type: 'highlight' | 'underline' | 'clear',
     color?: string
   ): void {
-    if (selection === null) {
+    if (selection === null || !selection) {
       return;
     }
 
@@ -257,10 +262,6 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         );
         break;
       case 'clear':
-        if (!this._indicators[threadId]) {
-          return;
-        }
-
         this._indicators[threadId] = editor.doc.markText(
           { line: startLine, ch: startCol },
           { line: endLine, ch: endCol },
@@ -270,6 +271,8 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         this._indicators[threadId].on('beforeCursorEnter', () => {
           return;
         });
+
+        this._indicators[threadId].clear();
         break;
       default:
         break;
@@ -291,6 +294,14 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         'clear'
       );
     }
+
+    let widget = this._tracker.currentWidget;
+    let editor = widget.content.editor as CodeMirrorEditor;
+
+    editor.doc.getAllMarks().forEach(mark => {
+      mark.clear();
+    });
+
     this._indicators = {};
   }
 

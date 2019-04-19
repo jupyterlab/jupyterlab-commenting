@@ -43,6 +43,10 @@ export class CommentingIndicatorHandler {
   addIndicatorWidget(): void {
     let type: string = this._provider.getState('curDocType') as string;
 
+    if (activeIndicatorWidget) {
+      activeIndicatorWidget.clearAllIndicators();
+    }
+
     if (type.indexOf('text') > -1) {
       // Indicator Widget for text editor
       activeIndicatorWidget = new TextEditorIndicator(
@@ -72,8 +76,7 @@ export class CommentingIndicatorHandler {
   }
 
   clearIndicatorWidget(): void {
-    if (activeIndicatorWidget && !activeIndicatorWidget.isDisposed) {
-      activeIndicatorWidget.clearAllIndicators();
+    if (activeIndicatorWidget) {
       activeIndicatorWidget.close();
       activeIndicatorWidget.dispose();
     }

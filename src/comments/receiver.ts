@@ -26,6 +26,9 @@ export class CommentingDataReceiver {
   // Signal when new target is set
   private _targetSet = new Signal<this, void>(this);
 
+  // Signal when new comments are queried
+  private _commentsQueried = new Signal<this, void>(this);
+
   // GraphQL commenting and people services
   private _comments: IMetadataCommentsService;
   private _people: IMetadataPeopleService;
@@ -99,6 +102,8 @@ export class CommentingDataReceiver {
           });
         }
       });
+
+    this._commentsQueried.emit(void 0);
   }
 
   /**
@@ -230,5 +235,12 @@ export class CommentingDataReceiver {
    */
   get newDataReceived(): ISignal<this, void> {
     return this._newDataReceived;
+  }
+
+  /**
+   * Signal when comments are queried
+   */
+  get commentsQueried(): ISignal<this, void> {
+    return this._commentsQueried;
   }
 }
