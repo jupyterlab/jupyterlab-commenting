@@ -101,6 +101,9 @@ export class CommentingDataReceiver {
             response: response
           });
         }
+      })
+      .catch(err => {
+        console.error('Comment query error', err);
       });
 
     this._commentsQueried.emit(void 0);
@@ -180,16 +183,31 @@ export class CommentingDataReceiver {
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      this._people.queryAll().then((response: any) => {
-        if (response.data.people.length !== 0) {
-          for (let index in response.data.people) {
-            if (
-              response.data.people[index].name === name &&
-              !this._states.getState('userSet')
-            ) {
+      this._people
+        .queryAll()
+        .then((response: any) => {
+          if (response.data.people.length !== 0) {
+            for (let index in response.data.people) {
+              if (
+                response.data.people[index].name === name &&
+                !this._states.getState('userSet')
+              ) {
+                this._states.setState({
+                  creator: {
+                    id: response.data.people[index].id,
+                    name: name,
+                    image: myJSON.avatar_url
+                  },
+                  userSet: true
+                });
+              }
+            }
+            if (!this._states.getState('userSet')) {
+              this._people.create(name, '', myJSON.avatar_url);
+              let personCount: number = Number(response.data.people.length + 2);
               this._states.setState({
                 creator: {
-                  id: response.data.people[index].id,
+                  id: 'person/' + personCount,
                   name: name,
                   image: myJSON.avatar_url
                 },
@@ -197,20 +215,10 @@ export class CommentingDataReceiver {
               });
             }
           }
-          if (!this._states.getState('userSet')) {
-            this._people.create(name, '', myJSON.avatar_url);
-            let personCount: number = Number(response.data.people.length + 2);
-            this._states.setState({
-              creator: {
-                id: 'person/' + personCount,
-                name: name,
-                image: myJSON.avatar_url
-              },
-              userSet: true
-            });
-          }
-        }
-      });
+        })
+        .catch(err => {
+          console.error('Git user set error for commenting extension', err);
+        });
     } else {
       window.alert('Username not found');
     }

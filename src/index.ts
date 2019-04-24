@@ -118,17 +118,19 @@ export function activate(
   // Called when new data is received from a metadata service
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
-    if (commentingUI.isVisible) {
+    if (activeIndicatorWidget && commentingUI.isVisible) {
       activeIndicatorWidget.putIndicators();
     }
   });
 
+  // Called when comments are queried
   receiver.commentsQueried.connect(() => {
-    if (commentingUI.isVisible) {
+    if (activeIndicatorWidget && commentingUI.isVisible) {
       activeIndicatorWidget.putIndicators();
     }
   });
 
+  // Called when commenting is opened or closed
   commentingUI.showSignal.connect((sender, args) => {
     if (args) {
       addIndicatorWidget(docManager);
@@ -152,19 +154,23 @@ function addIndicatorWidget(docManager: IDocumentManager): void {
     let context = docManager.contextForWidget(curWidget);
 
     const promise = context.ready;
-    promise.then(() => {
-      if (
-        context.contentsModel.type === 'file' &&
-        context.contentsModel.mimetype
-      ) {
-        receiver.setState({ curDocType: context.contentsModel.mimetype });
-      } else if (context.contentsModel.type === 'notebook') {
-        receiver.setState({ curDocType: context.contentsModel.type });
-      } else {
-        receiver.setState({ curDocType: '' });
-      }
-      indicatorHandler.addIndicatorWidget();
-    });
+    promise
+      .then(() => {
+        if (
+          context.contentsModel.type === 'file' &&
+          context.contentsModel.mimetype
+        ) {
+          receiver.setState({ curDocType: context.contentsModel.mimetype });
+        } else if (context.contentsModel.type === 'notebook') {
+          receiver.setState({ curDocType: context.contentsModel.type });
+        } else {
+          receiver.setState({ curDocType: '' });
+        }
+        indicatorHandler.addIndicatorWidget();
+      })
+      .catch(err => {
+        console.error('Add indicator error', err);
+      });
   }
 }
 

@@ -18,6 +18,7 @@ import { CommentingDataProvider } from './provider';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataReceiver } from './receiver';
 import { TextMarker } from 'codemirror';
+import { CommentingWidget } from './commenting';
 
 /**
  * Indicator widget for the text editor viewer / widget
@@ -32,9 +33,6 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
   // Commenting Data provider
   private _provider: CommentingDataProvider;
-
-  // setInterval for querying new indicators
-  // private _periodicUpdate: number;
 
   private _indicators: { [key: string]: TextMarker };
 
@@ -68,51 +66,18 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     }
 
     this.putIndicators();
-    // this._periodicUpdate = setInterval(this.putIndicators, 1000);
 
     // Handles indicator when a new thread is created or canceled
     // TODO: add disconnect signal when widget is closed / disposed
-    commentingUI.newThreadCreated.connect((sender, args) => {
-      let latestIndicator: ITextIndicator = (this._provider.getState(
-        'latestIndicatorInfo'
-      ) as object) as ITextIndicator;
-
-      if (!latestIndicator) {
-        return;
-      }
-
-      let position = {
-        column: latestIndicator.start.column,
-        line: latestIndicator.start.line
-      } as CodeEditor.IPosition;
-
-      if (args) {
-        this.createIndicator(
-          (this._provider.getState(
-            'latestIndicatorInfo'
-          ) as object) as ITextIndicator,
-          this.getAnnotationFromPosition(position),
-          'clear'
-        );
-        this._receiver.setState({ latestIndicatorInfo: '' });
-      } else {
-        this.createIndicator(
-          (this._provider.getState(
-            'latestIndicatorInfo'
-          ) as object) as ITextIndicator,
-          this.getAnnotationFromPosition(position),
-          'clear'
-        );
-      }
-    });
+    commentingUI.newThreadCreated.connect(this.handleNewThreadCreated, this);
   }
 
   /**
    * Called when the close message is sent to the widget
    */
   protected onCloseRequest(msg: Message): void {
-    // clearInterval(this._periodicUpdate);
     this.clearAllIndicators();
+    commentingUI.newThreadCreated.disconnect(this.handleNewThreadCreated, this);
   }
 
   /**
@@ -148,32 +113,34 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Adds all indicators to the current widget
    */
   putIndicators(): void {
-    console.log('PUT INDICATOR');
+    console.log(this._indicators);
     let response = this._provider.getState('response') as any;
     let expandedCard = this._provider.getState('expandedCard') as string;
 
-    let annotations = response.data.annotationsByTarget;
+    if (response && response.data && response.data.annotationsByTarget) {
+      let annotations = response.data.annotationsByTarget;
 
-    let widget = this._tracker.currentWidget;
-    let editor = widget.content.editor as CodeMirrorEditor;
+      let widget = this._tracker.currentWidget;
+      let editor = widget.content.editor as CodeMirrorEditor;
 
-    if (!this._provider.getState('newThreadActive')) {
-      editor.doc.getAllMarks().forEach(mark => {
-        mark.clear();
-      });
-    }
+      if (!this._provider.getState('newThreadActive')) {
+        editor.doc.getAllMarks().forEach(mark => {
+          mark.clear();
+        });
+      }
 
-    for (let index in annotations) {
-      let indicator = annotations[index].indicator;
-      let resolved = annotations[index].resolved;
-      let id = annotations[index].id;
+      for (let index in annotations) {
+        let indicator = annotations[index].indicator;
+        let resolved = annotations[index].resolved;
+        let id = annotations[index].id;
 
-      if (id !== expandedCard && !resolved) {
-        this.createIndicator(indicator, id, 'highlight');
-      } else if (id !== expandedCard && resolved) {
-        this.createIndicator(indicator, id, 'clear');
-      } else if (id === expandedCard) {
-        this.createIndicator(indicator, id, 'highlight', 'orange');
+        if (id !== expandedCard && !resolved) {
+          this.createIndicator(indicator, id, 'highlight');
+        } else if (id !== expandedCard && resolved) {
+          this.createIndicator(indicator, id, 'clear');
+        } else if (id === expandedCard) {
+          this.createIndicator(indicator, id, 'highlight', 'orange');
+        }
       }
     }
   }
@@ -234,21 +201,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         );
 
         this._indicators[threadId].on('beforeCursorEnter', () => {
-          let widget = this._tracker.currentWidget;
-          let editor = widget.content.editor as CodeMirrorEditor;
-
-          let annotation = this.getAnnotationFromPosition(
-            editor.getCursorPosition()
-          );
-
-          if (
-            !annotation ||
-            annotation === this._provider.getState('expandedCard')
-          ) {
-            return;
+          if (threadId) {
+            this.focusThread(threadId);
           }
-
-          this.focusThread(annotation);
         });
 
         break;
@@ -285,14 +240,16 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   clearAllIndicators(): void {
     let response = this._provider.getState('response') as any;
 
-    let annotations = response.data.annotationsByTarget;
+    if (response && response.data && response.data.annotationsByTarget) {
+      let annotations = response.data.annotationsByTarget;
 
-    for (let index in response.data.annotationsByTarget) {
-      this.createIndicator(
-        annotations[index].indicator,
-        annotations[index].id,
-        'clear'
-      );
+      for (let index in annotations) {
+        this.createIndicator(
+          annotations[index].indicator,
+          annotations[index].id,
+          'clear'
+        );
+      }
     }
 
     let widget = this._tracker.currentWidget;
@@ -303,6 +260,41 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     });
 
     this._indicators = {};
+  }
+
+  handleNewThreadCreated(sender: CommentingWidget, args: boolean) {
+    console.log('Called');
+    let latestIndicator: ITextIndicator = (this._provider.getState(
+      'latestIndicatorInfo'
+    ) as object) as ITextIndicator;
+
+    if (!latestIndicator) {
+      return;
+    }
+
+    let position = {
+      column: latestIndicator.start.column,
+      line: latestIndicator.start.line
+    } as CodeEditor.IPosition;
+
+    if (args) {
+      this.createIndicator(
+        (this._provider.getState(
+          'latestIndicatorInfo'
+        ) as object) as ITextIndicator,
+        this.getAnnotationFromPosition(position),
+        'clear'
+      );
+      this._receiver.setState({ latestIndicatorInfo: '' });
+    } else {
+      this.createIndicator(
+        (this._provider.getState(
+          'latestIndicatorInfo'
+        ) as object) as ITextIndicator,
+        this.getAnnotationFromPosition(position),
+        'clear'
+      );
+    }
   }
 
   /**
@@ -323,6 +315,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       let selection = curIndicator.find();
 
       if (
+        selection &&
         position.line >= selection.from.line &&
         position.line <= selection.to.line &&
         position.column >= selection.from.ch &&
