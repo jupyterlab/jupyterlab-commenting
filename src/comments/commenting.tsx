@@ -68,7 +68,7 @@ export class CommentingWidget extends ReactWidget {
    * Called before the widget is shown
    */
   protected onBeforeShow(): void {
-    // // Sets the interval of when to periodically query for comments
+    // Sets the interval of when to periodically query for comments and indicators
     this._periodicUpdate = setInterval(this._receiver.getAllComments, 1000);
     this._showSignal.emit(true);
   }
@@ -202,9 +202,9 @@ export class CommentingWidget extends ReactWidget {
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
   getAllCommentCards(): React.ReactNode[] {
-    let response = this._provider.getState('response') as any;
+    const response = this._provider.getState('response') as any;
     try {
-      let allData: any = response.data.annotationsByTarget;
+      const allData: any = response.data.annotationsByTarget;
 
       let cards: React.ReactNode[] = [];
       for (let key in allData) {
@@ -284,7 +284,7 @@ export class CommentingWidget extends ReactWidget {
    */
   setExpandedCard(threadId: string) {
     this._receiver.setState({ expandedCard: threadId });
-    activeIndicatorWidget.focusThread(threadId);
+    activeIndicatorWidget.scrollIntoView(threadId);
     activeIndicatorWidget.putIndicators();
   }
 

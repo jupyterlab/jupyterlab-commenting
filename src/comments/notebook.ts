@@ -46,6 +46,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
   focusThread(threadId: string): void {
     throw new Error('Method not implemented.');
   }
+  scrollIntoView(threadId: string): void {
+    throw new Error('Method not implemented.');
+  }
   getCurrentIndicatorInfo():
     | import('../types').ITextIndicator
     | import('../types').INotebookIndicator {

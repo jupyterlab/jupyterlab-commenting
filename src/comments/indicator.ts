@@ -41,7 +41,7 @@ export class CommentingIndicatorHandler {
    * Adds an indicator widget based on the current document viewer open
    */
   addIndicatorWidget(): void {
-    let type: string = this._provider.getState('curDocType') as string;
+    const type: string = this._provider.getState('curDocType') as string;
 
     if (activeIndicatorWidget) {
       activeIndicatorWidget.clearAllIndicators();
@@ -103,6 +103,11 @@ export abstract class IndicatorWidget {
    * @param threadId Type: string - Thread ID to focus
    */
   abstract focusThread(threadId: string): void;
+
+  /**
+   * Scrolls indicator into view
+   */
+  abstract scrollIntoView(threadId: string): void;
 
   /**
    * Puts indicators on the current widget

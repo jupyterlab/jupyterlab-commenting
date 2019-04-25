@@ -141,7 +141,7 @@ export function activate(
 }
 
 function addIndicatorWidget(docManager: IDocumentManager): void {
-  let path = provider.getState('target') as string;
+  const path = provider.getState('target') as string;
 
   let curWidget;
 
@@ -151,7 +151,7 @@ function addIndicatorWidget(docManager: IDocumentManager): void {
 
   // If widget is active, add indicator
   if (curWidget) {
-    let context = docManager.contextForWidget(curWidget);
+    const context = docManager.contextForWidget(curWidget);
 
     const promise = context.ready;
     promise

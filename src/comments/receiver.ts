@@ -103,7 +103,7 @@ export class CommentingDataReceiver {
         }
       })
       .catch(err => {
-        console.error('Comment query error', err);
+        return;
       });
 
     this._commentsQueried.emit(void 0);
@@ -217,7 +217,7 @@ export class CommentingDataReceiver {
           }
         })
         .catch(err => {
-          console.error('Git user set error for commenting extension', err);
+          return;
         });
     } else {
       window.alert('Username not found');
