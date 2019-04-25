@@ -23,7 +23,7 @@
   "include": [
     "src/*",
     "src/comments/*",
-    "src/comments/components/*",
+    "src/comments/components/*"
   ],
   "references": [{
       "path": "../application"
