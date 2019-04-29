@@ -111,8 +111,22 @@ export function activate(
     indicatorHandler.clearIndicatorWidget();
 
     if (commentingUI.isVisible) {
-      addIndicatorWidget(docManager);
+      addIndicatorWidget(docManager, labShell);
     }
+
+    const path = provider.getState('target') as string;
+    const curWidget = labShell.currentWidget;
+
+    if (curWidget) {
+      const context = docManager.contextForWidget(curWidget);
+      if (context && context.path) {
+        receiver.setState({
+          widgetMatchTarget: '/' + context.path === path
+        });
+        return;
+      }
+    }
+    receiver.setState({ widgetMatchTarget: false });
   });
 
   // Called when new data is received from a metadata service
@@ -133,44 +147,43 @@ export function activate(
   // Called when commenting is opened or closed
   commentingUI.showSignal.connect((sender, args) => {
     if (args) {
-      addIndicatorWidget(docManager);
+      addIndicatorWidget(docManager, labShell);
     } else {
       indicatorHandler.clearIndicatorWidget();
     }
   });
 }
 
-function addIndicatorWidget(docManager: IDocumentManager): void {
-  const path = provider.getState('target') as string;
-
-  let curWidget;
-
-  if (path) {
-    curWidget = docManager.findWidget(path);
-  }
+function addIndicatorWidget(
+  docManager: IDocumentManager,
+  labShell: ILabShell
+): void {
+  const curWidget = labShell.currentWidget;
 
   // If widget is active, add indicator
   if (curWidget) {
     const context = docManager.contextForWidget(curWidget);
 
-    const promise = context.ready;
-    promise
-      .then(() => {
-        if (
-          context.contentsModel.type === 'file' &&
-          context.contentsModel.mimetype
-        ) {
-          receiver.setState({ curDocType: context.contentsModel.mimetype });
-        } else if (context.contentsModel.type === 'notebook') {
-          receiver.setState({ curDocType: context.contentsModel.type });
-        } else {
-          receiver.setState({ curDocType: '' });
-        }
-        indicatorHandler.addIndicatorWidget();
-      })
-      .catch(err => {
-        console.error('Add indicator error', err);
-      });
+    if (context) {
+      const promise = context.ready;
+      promise
+        .then(() => {
+          if (
+            context.contentsModel.type === 'file' &&
+            context.contentsModel.mimetype
+          ) {
+            receiver.setState({ curDocType: context.contentsModel.mimetype });
+          } else if (context.contentsModel.type === 'notebook') {
+            receiver.setState({ curDocType: context.contentsModel.type });
+          } else {
+            receiver.setState({ curDocType: '' });
+          }
+          indicatorHandler.addIndicatorWidget();
+        })
+        .catch(err => {
+          console.error('Add indicator error', err);
+        });
+    }
   }
 }
 

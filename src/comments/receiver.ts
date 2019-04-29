@@ -58,7 +58,8 @@ export class CommentingDataReceiver {
       showResolved: true,
       sortState: 'latest',
       userSet: false,
-      target: ' '
+      target: ' ',
+      widgetMatchTarget: false
     });
 
     this.getAllComments = this.getAllComments.bind(this);

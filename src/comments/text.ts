@@ -130,6 +130,13 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Adds all indicators to the current widget
    */
   putIndicators(): void {
+    const targetMatch = this._provider.getState('widgetMatchTarget') as boolean;
+
+    if (!targetMatch) {
+      this.clearAllIndicators();
+      return;
+    }
+
     const response = this._provider.getState('response') as any;
     const expandedCard = this._provider.getState('expandedCard') as string;
 
@@ -187,6 +194,10 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
     const widget = this._tracker.currentWidget;
     const editor = widget.content.editor as CodeMirrorEditor;
+
+    if (widget === null) {
+      return;
+    }
 
     /**
      * Handles setting start and end ranges based on how the user selects.

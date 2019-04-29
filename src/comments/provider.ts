@@ -48,4 +48,5 @@ export type ICommentingStateTypes =
   | 'userSet'
   | 'target'
   | 'curDocType'
-  | 'latestIndicatorInfo';
+  | 'latestIndicatorInfo'
+  | 'widgetMatchTarget';

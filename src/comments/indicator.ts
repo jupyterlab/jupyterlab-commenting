@@ -31,10 +31,6 @@ export class CommentingIndicatorHandler {
     this._labShell = labShell;
     this._tracker = tracker;
     this._receiver = receiver;
-
-    this._provider.getState;
-
-    this._labShell;
   }
 
   /**
@@ -47,32 +43,37 @@ export class CommentingIndicatorHandler {
       activeIndicatorWidget.clearAllIndicators();
     }
 
-    if (type.indexOf('text') > -1) {
-      // Indicator Widget for text editor
-      activeIndicatorWidget = new TextEditorIndicator(
-        this._app,
-        this._labShell,
-        this._tracker,
-        this._provider,
-        this._receiver
-      );
-      activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
-      activeIndicatorWidget.activate();
-      activeIndicatorWidget.putIndicators();
-    } else if (type === 'notebook') {
-      // Indicator widget for notebooks
-      activeIndicatorWidget = new NotebookIndicators(
-        this._app,
-        this._labShell,
-        this._provider,
-        this._receiver
-      );
-      activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
-      activeIndicatorWidget.activate();
-      activeIndicatorWidget.putIndicators();
-    } else {
-      this.clearIndicatorWidget();
+    const targetMatch = this._provider.getState('widgetMatchTarget') as boolean;
+
+    if (targetMatch) {
+      if (type.indexOf('text') > -1) {
+        // Indicator Widget for text editor
+        activeIndicatorWidget = new TextEditorIndicator(
+          this._app,
+          this._labShell,
+          this._tracker,
+          this._provider,
+          this._receiver
+        );
+        activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
+        activeIndicatorWidget.activate();
+        activeIndicatorWidget.putIndicators();
+        return;
+      } else if (type === 'notebook') {
+        // Indicator widget for notebooks
+        activeIndicatorWidget = new NotebookIndicators(
+          this._app,
+          this._labShell,
+          this._provider,
+          this._receiver
+        );
+        activeIndicatorWidget.id = 'jupyterlab-commenting:target-handler';
+        activeIndicatorWidget.activate();
+        activeIndicatorWidget.putIndicators();
+        return;
+      }
     }
+    this.clearIndicatorWidget();
   }
 
   clearIndicatorWidget(): void {
