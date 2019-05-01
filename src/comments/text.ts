@@ -1,12 +1,10 @@
 import { JupyterFrontEnd, ILabShell } from '@jupyterlab/application';
 
-import { IEditorTracker } from '@jupyterlab/fileeditor';
+import { IEditorTracker, FileEditor } from '@jupyterlab/fileeditor';
 
 import { CodeMirrorEditor } from '@jupyterlab/codemirror';
 
-import { CodeEditor } from '@jupyterlab/codeeditor';
-
-import { JSONValue } from '@phosphor/coreutils';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { Widget } from '@phosphor/widgets';
 
@@ -20,6 +18,8 @@ import { CommentingDataProvider } from './provider';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataReceiver } from './receiver';
 import { CommentingWidget } from './commenting';
+import { IDocumentWidget, DocumentRegistry } from '@jupyterlab/docregistry';
+import { JSONValue } from '@phosphor/coreutils';
 
 /**
  * Indicator widget for the text editor viewer / widget
@@ -28,6 +28,8 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   private _app: JupyterFrontEnd;
   private _labShell: ILabShell;
   private _tracker: IEditorTracker;
+  private _docManager: IDocumentManager;
+  private _path: string;
 
   // Commenting Data receiver
   private _receiver: CommentingDataReceiver;
@@ -37,12 +39,20 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
   private _indicators: { [key: string]: TextMarker };
 
+  // Code editor widget
+  private _editorWidget: IDocumentWidget<FileEditor, DocumentRegistry.IModel>;
+
+  // Code mirror editor
+  private _editor: CodeMirrorEditor;
+
   constructor(
     app: JupyterFrontEnd,
     labShell: ILabShell,
     tracker: IEditorTracker,
     provider: CommentingDataProvider,
-    receiver: CommentingDataReceiver
+    receiver: CommentingDataReceiver,
+    docManager: IDocumentManager,
+    path: string
   ) {
     super();
     this._app = app;
@@ -50,8 +60,18 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     this._tracker = tracker;
     this._provider = provider;
     this._receiver = receiver;
+    this._docManager = docManager;
+    this._path = path;
+
+    this._tracker;
 
     this._indicators = {};
+
+    this._editorWidget = this._docManager.findWidget(
+      this._path
+    ) as IDocumentWidget<FileEditor, DocumentRegistry.IModel>;
+
+    this._editor = this._editorWidget.content.editor as CodeMirrorEditor;
 
     this.putIndicators = this.putIndicators.bind(this);
   }
@@ -65,19 +85,33 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     if (!this._app.commands.hasCommand('jupyterlab-commenting:createComment')) {
       this.createContextMenu();
     }
-
     this.putIndicators();
 
     // Handles indicator when a new thread is created or canceled
     commentingUI.newThreadCreated.connect(this.handleNewThreadCreated, this);
+
+    // Called when comments are queried
+    this._receiver.commentsQueried.connect(this.putIndicators, this);
+
+    // Called when new data is received from a metadata service
+    this._receiver.newDataReceived.connect(this.putIndicators, this);
   }
 
   /**
    * Called when the close message is sent to the widget
    */
   protected onCloseRequest(msg: Message): void {
-    this.clearAllIndicators();
+    // Disconnect signals
     commentingUI.newThreadCreated.disconnect(this.handleNewThreadCreated, this);
+    this._receiver.commentsQueried.disconnect(this.putIndicators, this);
+    this._receiver.newDataReceived.disconnect(this.putIndicators, this);
+
+    this.clearAllIndicators();
+    this._indicators = {};
+  }
+
+  dispose(): void {
+    super.dispose();
   }
 
   /**
@@ -115,14 +149,13 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @param threadId - Type: string - id of thread to scroll into view
    */
   scrollIntoView(threadId: string): void {
-    const widget = this._tracker.currentWidget;
-    const editor = widget.content.editor as CodeMirrorEditor;
-
     const indicator = this._indicators[threadId];
 
     if (indicator) {
-      const position = indicator.find().from;
-      editor.editor.scrollIntoView(position, 500);
+      const position = indicator.find();
+      if (position) {
+        this._editor.editor.scrollIntoView(position.from, 500);
+      }
     }
   }
 
@@ -130,24 +163,14 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Adds all indicators to the current widget
    */
   putIndicators(): void {
-    const targetMatch = this._provider.getState('widgetMatchTarget') as boolean;
-
-    if (!targetMatch) {
-      this.clearAllIndicators();
-      return;
-    }
-
     const response = this._provider.getState('response') as any;
     const expandedCard = this._provider.getState('expandedCard') as string;
 
     if (response && response.data && response.data.annotationsByTarget) {
       const annotations = response.data.annotationsByTarget;
 
-      const widget = this._tracker.currentWidget;
-      const editor = widget.content.editor as CodeMirrorEditor;
-
       if (!this._provider.getState('newThreadActive')) {
-        editor.doc.getAllMarks().forEach(mark => {
+        this._editor.doc.getAllMarks().forEach(mark => {
           mark.clear();
         });
       }
@@ -185,87 +208,38 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   createIndicator(
     selection: ITextIndicator,
     threadId: string,
-    type: 'highlight' | 'underline' | 'clear',
+    type: 'highlight' | 'clear',
     color?: string
   ): void {
     if (!color) {
       color = 'rgba(255, 255, 0, 0.25)';
     }
 
-    const widget = this._tracker.currentWidget;
-    const editor = widget.content.editor as CodeMirrorEditor;
+    if (type === 'highlight') {
+      this._indicators[threadId] = this._editor.doc.markText(
+        { line: selection.start.line, ch: selection.start.column },
+        { line: selection.end.line, ch: selection.end.column },
+        { css: `background-color: ${color};` }
+      );
 
-    if (widget === null) {
-      return;
+      this._indicators[threadId].on('beforeCursorEnter', () => {
+        if (threadId && this._editor.doc.getSelection().length <= 1) {
+          this.focusThread(threadId);
+        }
+      });
     }
+    if (type === 'clear') {
+      this._indicators[threadId] = this._editor.doc.markText(
+        { line: selection.start.line, ch: selection.start.column },
+        { line: selection.end.line, ch: selection.end.column },
+        { css: 'background-color: transparent; border-bottom: 0;' }
+      );
 
-    /**
-     * Handles setting start and end ranges based on how the user selects.
-     *
-     * Makes the start line and col the lowest values, and the end line and col
-     * the end values.
-     */
-    let startLine =
-      selection.start.line <= selection.end.line
-        ? selection.start.line
-        : selection.end.line;
-    let endLine =
-      selection.end.line >= selection.start.line
-        ? selection.end.line
-        : selection.start.line;
-    let startCol =
-      selection.start.column < selection.end.column
-        ? selection.start.column
-        : selection.end.column;
-    let endCol =
-      selection.end.column > selection.start.column
-        ? selection.end.column
-        : selection.start.column;
+      this._indicators[threadId].on('beforeCursorEnter', () => {
+        return;
+      });
 
-    switch (type) {
-      case 'highlight':
-        this._indicators[threadId] = editor.doc.markText(
-          { line: startLine, ch: startCol },
-          { line: endLine, ch: endCol },
-          { css: `background-color: ${color};` }
-        );
-
-        this._indicators[threadId].on('beforeCursorEnter', () => {
-          const widget = this._tracker.currentWidget;
-          const editor = widget.content.editor as CodeMirrorEditor;
-
-          if (threadId && editor.doc.getSelection().length <= 1) {
-            this.focusThread(threadId);
-          }
-        });
-
-        break;
-      case 'underline':
-        this._indicators[threadId] = editor.doc.markText(
-          { line: startLine, ch: startCol },
-          { line: endLine, ch: endCol },
-          {
-            css: `border-bottom: 2px solid ${color};`
-          }
-        );
-
-        break;
-      case 'clear':
-        this._indicators[threadId] = editor.doc.markText(
-          { line: startLine, ch: startCol },
-          { line: endLine, ch: endCol },
-          { css: 'background-color: transparent; border-bottom: 0;' }
-        );
-
-        this._indicators[threadId].on('beforeCursorEnter', () => {
-          return;
-        });
-
-        this._indicators[threadId].clear();
-
-        break;
-      default:
-        break;
+      this._indicators[threadId].clear();
     }
   }
 
@@ -273,91 +247,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Handles clearing all the indicators from the current widget
    */
   clearAllIndicators(): void {
-    const response = this._provider.getState('response') as any;
-
-    if (response && response.data && response.data.annotationsByTarget) {
-      let annotations = response.data.annotationsByTarget;
-
-      for (let index in annotations) {
-        this.createIndicator(
-          annotations[index].indicator,
-          annotations[index].id,
-          'clear'
-        );
-      }
-    }
-
-    const widget = this._tracker.currentWidget;
-    const editor = widget.content.editor as CodeMirrorEditor;
-
-    editor.doc.getAllMarks().forEach(mark => {
-      mark.clear();
+    Object.keys(this._indicators).forEach(key => {
+      this._indicators[key].clear();
     });
-
-    this._indicators = {};
-  }
-
-  handleNewThreadCreated(sender: CommentingWidget, args: boolean) {
-    const latestIndicator: ITextIndicator = (this._provider.getState(
-      'latestIndicatorInfo'
-    ) as object) as ITextIndicator;
-
-    if (!latestIndicator) {
-      return;
-    }
-
-    const position = {
-      column: latestIndicator.start.column,
-      line: latestIndicator.start.line
-    } as CodeEditor.IPosition;
-
-    if (args) {
-      this.createIndicator(
-        (this._provider.getState(
-          'latestIndicatorInfo'
-        ) as object) as ITextIndicator,
-        this.getAnnotationFromPosition(position),
-        'clear'
-      );
-      this._receiver.setState({ latestIndicatorInfo: '' });
-    } else {
-      this.createIndicator(
-        (this._provider.getState(
-          'latestIndicatorInfo'
-        ) as object) as ITextIndicator,
-        this.getAnnotationFromPosition(position),
-        'clear'
-      );
-    }
-  }
-
-  /**
-   * Returns the threadId of an annotation based on a position.
-   * Checks if the given positions is in the range of any indicator
-   * and returns the corresponding thread.
-   *
-   * @param position Type: CodeEditor.IPosition
-   *
-   * @return String - threadId of indicator | undefined if not found
-   */
-  getAnnotationFromPosition(
-    position: CodeEditor.IPosition
-  ): string | undefined {
-    for (let key in this._indicators) {
-      let curIndicator: TextMarker = this._indicators[key];
-      let selection = curIndicator.find();
-
-      if (
-        selection &&
-        position.line >= selection.from.line &&
-        position.line <= selection.to.line &&
-        position.column >= selection.from.ch &&
-        position.column <= selection.to.ch
-      ) {
-        return key;
-      }
-    }
-    return undefined;
   }
 
   /**
@@ -367,20 +259,32 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     this._app.commands.addCommand('jupyterlab-commenting:createComment', {
       label: 'Comment',
       isVisible: () => {
-        let doc = this._provider.getState('curDocType') as string;
-        return doc.indexOf('text') > -1;
+        return true;
       },
       execute: () => {
-        const response = this._provider.getState('response') as any;
+        const widget = this._tracker.currentWidget;
+        const editor = widget.content.editor as CodeMirrorEditor;
 
-        let length: number = response.data.annotationsByTarget.length + 1;
+        const selection = this.getSelection();
 
-        this.createIndicator(
-          this.getSelection(),
-          'anno/' + length,
-          'underline',
-          'rgba(0, 0, 255, 0.5)'
-        );
+        this._receiver.setState({
+          latestIndicatorInfo: (selection as object) as JSONValue
+        });
+
+        const from = {
+          line: selection.start.line,
+          ch: selection.start.column
+        };
+
+        const to = {
+          line: selection.end.line,
+          ch: selection.end.column
+        };
+
+        editor.doc.markText(from, to, {
+          css: `border-bottom: 2px solid rgba(0, 0, 255, 0.5);`
+        });
+
         this.openNewThread();
       }
     });
@@ -389,6 +293,12 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       command: 'jupyterlab-commenting:createComment',
       selector: 'body',
       rank: Infinity
+    });
+  }
+
+  handleNewThreadCreated(sender: CommentingWidget, args: boolean) {
+    this._receiver.setState({
+      latestIndicatorInfo: undefined
     });
   }
 
@@ -406,32 +316,43 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     let selection = editor.getSelection();
     let curSelected: ITextIndicator;
 
-    if (
-      selection.start.line === selection.end.line &&
-      selection.start.column === selection.end.column
-    ) {
+    let startLine =
+      selection.start.line <= selection.end.line
+        ? selection.start.line
+        : selection.end.line;
+    let endLine =
+      selection.end.line >= selection.start.line
+        ? selection.end.line
+        : selection.start.line;
+    let startCol =
+      selection.start.column < selection.end.column
+        ? selection.start.column
+        : selection.end.column;
+    let endCol =
+      selection.end.column > selection.start.column
+        ? selection.end.column
+        : selection.start.column;
+
+    if (startLine === endLine && startCol === endCol) {
       curSelected = {
         end: {
-          line: selection.end.line,
+          line: endLine,
           column: editor.getLine(selection.start.line).length
         },
-        start: { line: selection.start.line, column: 0 }
+        start: { line: startLine, column: 0 }
       };
     } else {
       curSelected = {
         end: {
-          line: selection.end.line,
-          column: selection.end.column
+          line: endLine,
+          column: endCol
         },
         start: {
-          line: selection.start.line,
-          column: selection.start.column
+          line: startLine,
+          column: startCol
         }
       };
     }
-    this._receiver.setState({
-      latestIndicatorInfo: (curSelected as object) as JSONValue
-    });
     return curSelected;
   }
 }

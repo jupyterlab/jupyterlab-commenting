@@ -130,7 +130,6 @@ export class CommentingDataReceiver {
    *
    * @param value Type: string - comment message
    */
-  // TODO: Add pushing selection
   putThread(value: string): void {
     this._comments.createThread(
       this._states.getState('target') as string,
@@ -139,6 +138,8 @@ export class CommentingDataReceiver {
       (this._states.getState('latestIndicatorInfo') as object) as ITextIndicator
     );
     this._newDataReceived.emit(void 0);
+
+    this._states.setState({ latestIndicatorInfo: undefined });
   }
 
   /**

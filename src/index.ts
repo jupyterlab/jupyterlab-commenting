@@ -10,23 +10,20 @@ import { IEditorTracker } from '@jupyterlab/fileeditor';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
-
 import {
   IActiveDataset,
   IConverterRegistry,
   ActiveDataset
 } from '@jupyterlab/dataregistry';
 
+import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
 import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
+
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
 import { CommentingDataProvider } from './comments/provider';
 import { CommentingDataReceiver } from './comments/receiver';
-import {
-  CommentingIndicatorHandler,
-  activeIndicatorWidget
-} from './comments/indicator';
+import { CommentingIndicatorHandler } from './comments/indicator';
 
 /**
  * CommentingUI
@@ -91,7 +88,8 @@ export function activate(
     tracker,
     provider,
     receiver,
-    labShell
+    labShell,
+    docManager
   );
 
   // Called when ActiveDataset signal is emitted
@@ -105,86 +103,19 @@ export function activate(
     }
   });
 
-  // Called when state 'target' is changed
-  receiver.targetSet.connect(() => {
-    // Clear past widget
-    indicatorHandler.clearIndicatorWidget();
-
-    if (commentingUI.isVisible) {
-      addIndicatorWidget(docManager, labShell);
-    }
-
-    const path = provider.getState('target') as string;
-    const curWidget = labShell.currentWidget;
-
-    if (curWidget) {
-      const context = docManager.contextForWidget(curWidget);
-      if (context && context.path) {
-        receiver.setState({
-          widgetMatchTarget: '/' + context.path === path
-        });
-        return;
-      }
-    }
-    receiver.setState({ widgetMatchTarget: false });
-  });
-
   // Called when new data is received from a metadata service
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
-    if (activeIndicatorWidget && commentingUI.isVisible) {
-      activeIndicatorWidget.putIndicators();
-    }
-  });
-
-  // Called when comments are queried
-  receiver.commentsQueried.connect(() => {
-    if (activeIndicatorWidget && commentingUI.isVisible) {
-      activeIndicatorWidget.putIndicators();
-    }
   });
 
   // Called when commenting is opened or closed
   commentingUI.showSignal.connect((sender, args) => {
     if (args) {
-      addIndicatorWidget(docManager, labShell);
+      indicatorHandler.setIndicatorWidget();
     } else {
       indicatorHandler.clearIndicatorWidget();
     }
   });
-}
-
-function addIndicatorWidget(
-  docManager: IDocumentManager,
-  labShell: ILabShell
-): void {
-  const curWidget = labShell.currentWidget;
-
-  // If widget is active, add indicator
-  if (curWidget) {
-    const context = docManager.contextForWidget(curWidget);
-
-    if (context) {
-      const promise = context.ready;
-      promise
-        .then(() => {
-          if (
-            context.contentsModel.type === 'file' &&
-            context.contentsModel.mimetype
-          ) {
-            receiver.setState({ curDocType: context.contentsModel.mimetype });
-          } else if (context.contentsModel.type === 'notebook') {
-            receiver.setState({ curDocType: context.contentsModel.type });
-          } else {
-            receiver.setState({ curDocType: '' });
-          }
-          indicatorHandler.addIndicatorWidget();
-        })
-        .catch(err => {
-          console.error('Add indicator error', err);
-        });
-    }
-  }
 }
 
 // creates extension
