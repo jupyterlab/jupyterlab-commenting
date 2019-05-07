@@ -11,6 +11,9 @@ import { TextEditorIndicator } from './text';
 import { NotebookIndicators } from './notebook';
 import { CommentingDataReceiver } from './receiver';
 
+/**
+ * This class handles setting and clearing indicator widgets
+ */
 export class CommentingIndicatorHandler {
   private _app: JupyterFrontEnd;
   private _tracker: IEditorTracker;
@@ -40,11 +43,9 @@ export class CommentingIndicatorHandler {
     this._receiver.targetSet.connect(this.handleTargetChanged, this);
   }
 
-  handleTargetChanged() {
-    // Clear past widget
-    this.setIndicatorWidget();
-  }
-
+  /**
+   * Handles determining which indicator widget to add to the opened widget
+   */
   setIndicatorWidget(): void {
     const path = this._provider.getState('target') as string;
 
@@ -80,6 +81,9 @@ export class CommentingIndicatorHandler {
     }
   }
 
+  /**
+   * Adds indicator widget for text editor
+   */
   addTextEditorIndicatorWidget(): void {
     this.clearIndicatorWidget();
     const target = this._provider.getState('target') as string;
@@ -101,6 +105,9 @@ export class CommentingIndicatorHandler {
     }
   }
 
+  /**
+   * Adds the indicator widget for notebooks
+   */
   addNotebookIndicatorWidget(): void {
     // Indicator widget for notebooks
     this._activeIndicatorWidget = new NotebookIndicators(
@@ -113,6 +120,12 @@ export class CommentingIndicatorHandler {
     this._activeIndicatorWidget.activate();
   }
 
+  /**
+   * If the active indicator widget exists, a 'close-request' message is sent,
+   * then dispose is called.
+   *
+   * @return Type: boolean - true if close and dispose complete and widget exists, false otherwise
+   */
   clearIndicatorWidget(): boolean {
     if (this._activeIndicatorWidget) {
       this._activeIndicatorWidget.close();
@@ -122,6 +135,17 @@ export class CommentingIndicatorHandler {
     return false;
   }
 
+  /**
+   * Handles when the target changes
+   */
+  handleTargetChanged() {
+    // Clear past widget
+    this.setIndicatorWidget();
+  }
+
+  /**
+   * @return - Type: IndicatorWidget & Widget - the active indicator widget
+   */
   get activeIndicatorWidget() {
     return this._activeIndicatorWidget;
   }
