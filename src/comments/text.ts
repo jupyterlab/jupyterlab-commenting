@@ -45,6 +45,8 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   // Code mirror editor
   private _editor: CodeMirrorEditor;
 
+  private _commentingUIOpened: boolean;
+
   constructor(
     app: JupyterFrontEnd,
     labShell: ILabShell,
@@ -66,6 +68,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     this._tracker;
 
     this._indicators = {};
+    this._commentingUIOpened = commentingUI.isVisible;
+
+    this._commentingUIOpened;
 
     this._editorWidget = this._docManager.findWidget(
       this._path
@@ -73,7 +78,13 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
     this._editor = this._editorWidget.content.editor as CodeMirrorEditor;
 
-    this.putIndicators = this.putIndicators.bind(this);
+    // this._editor.editor.on('change', (instance, change) => {});
+
+    this._editor.editor.on('cursorActivity', instance => {
+      let position = instance.getDoc().getCursor();
+
+      console.log('Position', position);
+    });
   }
 
   /**
@@ -86,6 +97,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       this.createContextMenu();
     }
     this.putIndicators();
+
+    // Called when commenting is opened or closed
+    commentingUI.showSignal.connect(this.handleCommentingUIShow, this);
 
     // Handles indicator when a new thread is created or canceled
     commentingUI.newThreadCreated.connect(this.handleNewThreadCreated, this);
@@ -101,16 +115,18 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Called when the close message is sent to the widget
    */
   protected onCloseRequest(msg: Message): void {
+    this.dispose();
+  }
+
+  dispose(): void {
     // Disconnect signals
     commentingUI.newThreadCreated.disconnect(this.handleNewThreadCreated, this);
+    commentingUI.showSignal.disconnect(this.handleCommentingUIShow, this);
     this._receiver.commentsQueried.disconnect(this.putIndicators, this);
     this._receiver.newDataReceived.disconnect(this.putIndicators, this);
 
     this.clearAllIndicators();
     this._indicators = {};
-  }
-
-  dispose(): void {
     super.dispose();
   }
 
@@ -162,7 +178,12 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   /**
    * Adds all indicators to the current widget
    */
-  putIndicators(): void {
+  putIndicators(sender?: any, args?: any): void {
+    if (!this._commentingUIOpened) {
+      return;
+    }
+    console.log('put', this.id);
+
     const response = this._provider.getState('response') as any;
     const expandedCard = this._provider.getState('expandedCard') as string;
 
@@ -199,6 +220,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   }
 
   /**
+   *
    * Adds indicators to text editor
    *
    * @param selection - Type: ITextIndicator - selection to highlight
@@ -217,25 +239,62 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
     if (type === 'highlight') {
       this._indicators[threadId] = this._editor.doc.markText(
-        { line: selection.start.line, ch: selection.start.column },
-        { line: selection.end.line, ch: selection.end.column },
+        {
+          line: selection.current.start.line,
+          ch: selection.current.start.column
+        },
+        { line: selection.current.end.line, ch: selection.current.end.column },
         { css: `background-color: ${color};` }
       );
 
       this._indicators[threadId].on('beforeCursorEnter', () => {
         if (threadId && this._editor.doc.getSelection().length <= 1) {
-          this.focusThread(threadId);
+          if (!commentingUI.getExpandedCard(threadId)) {
+            this.focusThread(threadId);
+          }
+        }
+      });
+
+      this._indicators[threadId].on('hide', () => {
+        this._receiver.setResolvedValue(this._path, threadId, true);
+      });
+
+      this._indicators[threadId].on('unhide', () => {
+        const response = this._provider.getState('response') as any;
+
+        if (response && response.data && response.data.annotationsByTarget) {
+          const annotations = response.data.annotationsByTarget;
+
+          for (let index in annotations) {
+            if (annotations[index].id === threadId) {
+              if (annotations[index].resolved) {
+                this._receiver.setResolvedValue(this._path, threadId, false);
+              }
+              break;
+            }
+          }
         }
       });
     }
     if (type === 'clear') {
       this._indicators[threadId] = this._editor.doc.markText(
-        { line: selection.start.line, ch: selection.start.column },
-        { line: selection.end.line, ch: selection.end.column },
+        {
+          line: selection.current.start.line,
+          ch: selection.current.start.column
+        },
+        { line: selection.current.end.line, ch: selection.current.end.column },
         { css: 'background-color: transparent; border-bottom: 0;' }
       );
 
       this._indicators[threadId].on('beforeCursorEnter', () => {
+        return;
+      });
+
+      this._indicators[threadId].on('hide', () => {
+        return;
+      });
+
+      this._indicators[threadId].on('unhide', () => {
         return;
       });
 
@@ -272,13 +331,13 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         });
 
         const from = {
-          line: selection.start.line,
-          ch: selection.start.column
+          line: selection.current.start.line,
+          ch: selection.current.start.column
         };
 
         const to = {
-          line: selection.end.line,
-          ch: selection.end.column
+          line: selection.current.end.line,
+          ch: selection.current.end.column
         };
 
         editor.doc.markText(from, to, {
@@ -300,6 +359,17 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     this._receiver.setState({
       latestIndicatorInfo: undefined
     });
+    this.putIndicators();
+  }
+
+  handleCommentingUIShow(sender: CommentingWidget, args: boolean) {
+    if (args) {
+      this._commentingUIOpened = true;
+      this.putIndicators();
+    } else {
+      this._commentingUIOpened = false;
+      this.clearAllIndicators();
+    }
   }
 
   /**
@@ -314,7 +384,10 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     const editor = widget.content.editor as CodeMirrorEditor;
 
     let selection = editor.getSelection();
-    let curSelected: ITextIndicator;
+    let context = editor.doc.getSelection();
+
+    let indicator: ITextIndicator;
+    let selected;
 
     let startLine =
       selection.start.line <= selection.end.line
@@ -334,15 +407,17 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         : selection.start.column;
 
     if (startLine === endLine && startCol === endCol) {
-      curSelected = {
+      context = editor.getLine(selection.start.line);
+      selected = {
         end: {
           line: endLine,
           column: editor.getLine(selection.start.line).length
         },
-        start: { line: startLine, column: 0 }
+        start: { line: startLine, column: 0 },
+        context: context
       };
     } else {
-      curSelected = {
+      selected = {
         end: {
           line: endLine,
           column: endCol
@@ -350,9 +425,16 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         start: {
           line: startLine,
           column: startCol
-        }
+        },
+        context: context
       };
     }
-    return curSelected;
+
+    indicator = {
+      initial: selected,
+      current: selected
+    };
+
+    return indicator;
   }
 }

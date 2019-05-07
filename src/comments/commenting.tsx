@@ -12,7 +12,6 @@ import { IPerson } from '../types';
 
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
-import { activeIndicatorWidget } from './indicator';
 
 // Components
 import { App } from './components/App';
@@ -22,6 +21,7 @@ import { AppHeader } from './components/AppHeader';
 import { AppHeaderOptions } from './components/AppHeaderOptions';
 import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
+import { indicatorHandler } from '..';
 
 /**
  * CommentingUI React Widget
@@ -226,7 +226,7 @@ export class CommentingWidget extends ReactWidget {
               checkReplyActiveCard={this.getReplyActiveCard}
               resolved={allData[key].resolved}
               putComment={this._receiver.putComment}
-              setCardValue={this._receiver.setCardValue}
+              setCardValue={this._receiver.setResolvedValue}
               target={this._provider.getState('target') as string}
             />
           );
@@ -284,8 +284,7 @@ export class CommentingWidget extends ReactWidget {
    */
   setExpandedCard(threadId: string) {
     this._receiver.setState({ expandedCard: threadId });
-    activeIndicatorWidget.scrollIntoView(threadId);
-    activeIndicatorWidget.putIndicators();
+    indicatorHandler.activeIndicatorWidget.scrollIntoView(threadId);
   }
 
   /**

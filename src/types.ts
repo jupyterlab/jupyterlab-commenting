@@ -11,13 +11,27 @@ export interface IPerson {
  * Type interface for a text editor commenting indicator
  */
 export interface ITextIndicator {
-  end: {
-    line: number;
-    column: number;
+  initial: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
   };
-  start: {
-    line: number;
-    column: number;
+  current: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
   };
 }
 

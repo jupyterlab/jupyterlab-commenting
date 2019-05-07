@@ -65,7 +65,7 @@ export class CommentingDataReceiver {
     this.getAllComments = this.getAllComments.bind(this);
     this.putComment = this.putComment.bind(this);
     this.putThread = this.putThread.bind(this);
-    this.setCardValue = this.setCardValue.bind(this);
+    this.setResolvedValue = this.setResolvedValue.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
   }
 
@@ -87,7 +87,6 @@ export class CommentingDataReceiver {
       this._states.setState({ response: {}, curTargetHasThreads: false });
       return;
     }
-
     this._comments
       .queryAllByTarget(this._states.getState('target') as string)
       .then((response: any) => {
@@ -143,7 +142,7 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Used to set a specific field of a card
+   * Used to set if a card is resolved
    *
    * @param target Type: string - id of a thread
    * @param threadId Type: string - id of a specific card
@@ -151,8 +150,17 @@ export class CommentingDataReceiver {
    *
    * @emits _newDataReceived Signal
    */
-  setCardValue(target: string, threadId: string, value: boolean): void {
+  setResolvedValue(target: string, threadId: string, value: boolean): void {
     this._comments.setResolvedValue(target, threadId, value);
+    this._newDataReceived.emit(void 0);
+  }
+
+  setCurrentTextIndicatorValue(
+    target: string,
+    threadId: string,
+    value: object
+  ): void {
+    this._comments.setCurrentIndicator(target, threadId, value);
     this._newDataReceived.emit(void 0);
   }
 

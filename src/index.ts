@@ -107,15 +107,6 @@ export function activate(
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
   });
-
-  // Called when commenting is opened or closed
-  commentingUI.showSignal.connect((sender, args) => {
-    if (args) {
-      indicatorHandler.setIndicatorWidget();
-    } else {
-      indicatorHandler.clearIndicatorWidget();
-    }
-  });
 }
 
 // creates extension
