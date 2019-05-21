@@ -7,7 +7,7 @@
 /* Header Options*/
 .jp-commenting-header-options-dropdown-item {
   display: block;
-  width: 100%;
+  /* width: 100%; */
   padding: 0.25rem 1.5rem;
   clear: both;
   font-size: var(--jp-content-font-size1);

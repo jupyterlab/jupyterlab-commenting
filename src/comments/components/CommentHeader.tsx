@@ -72,10 +72,20 @@ interface ICommentHeaderProps {
   timestamp: string;
 }
 
+interface ICommentHeaderStates {
+  /**
+   * State of drop down menu
+   */
+  moreOptionsOpened: boolean;
+}
+
 /**
  * CommentHeader React Component
  */
-export class CommentHeader extends React.Component<ICommentHeaderProps> {
+export class CommentHeader extends React.Component<
+  ICommentHeaderProps,
+  ICommentHeaderStates
+> {
   /**
    * Constructor
    *
@@ -83,12 +93,23 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    */
   constructor(props: ICommentHeaderProps) {
     super(props);
+
+    this.state = {
+      moreOptionsOpened: false
+    };
   }
 
   /**
    * React render function
    */
   render(): React.ReactNode {
+    const optionsClass = `jp-commenting-header-options-dropdown-menu${
+      (this.state.moreOptionsOpened && this.props.hover) ||
+      (this.state.moreOptionsOpened && this.props.expanded)
+        ? ' show'
+        : ''
+    }`;
+
     return this.props.resolved ? (
       <div style={this.styles['jp-commenting-thread-header-resolved']}>
         <div
@@ -120,8 +141,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
               </p>
             </div>
           </div>
-          <div style={this.styles['jp-commenting-thread-header-button-area']}>
-            {this.getCornerButton()}
+          {this.getCornerButton()}
+          <div
+            className={optionsClass}
+            style={this.styles['jp-commenting-annotations-more-options-area']}
+            onBlurCapture={() => this.setOptionsShow(false)}
+          >
+            {this.getDropDownMenu()}
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area-resolved']}>
@@ -155,8 +181,13 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
               </p>
             </div>
           </div>
-          <div style={this.styles['jp-commenting-thread-header-button-area']}>
-            {this.getCornerButton()}
+          {this.getCornerButton()}
+          <div
+            className={optionsClass}
+            style={this.styles['jp-commenting-annotations-more-options-area']}
+            onBlurCapture={() => this.setOptionsShow(false)}
+          >
+            {this.getDropDownMenu()}
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
@@ -208,6 +239,65 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  getMoreButton(): React.ReactNode {
+    return (
+      <span
+        className={'jp-Icon jp-DownCaretIcon'}
+        style={this.styles['jp-commenting-annotation-more-icon']}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
+        onClick={() => this.setOptionsShow(!this.state.moreOptionsOpened)}
+      />
+    );
+  }
+
+  getDropDownMenu(): React.ReactNode {
+    let options = [];
+
+    options.push(
+      <a
+        key={'edit'}
+        className={'jp-commenting-header-options-dropdown-item'}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
+        style={this.styles['jp-commenting-annotation-more-option-style']}
+      >
+        Edit
+      </a>
+    );
+
+    options.push(
+      <a
+        key={'delete'}
+        className={'jp-commenting-header-options-dropdown-item'}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
+        style={this.styles['jp-commenting-annotation-more-option-style']}
+      >
+        Delete
+      </a>
+    );
+
+    options.push(
+      <a
+        key={'re-open-or-resolve'}
+        className={'jp-commenting-header-options-dropdown-item'}
+        onClick={this.props.handleResolve}
+        onMouseEnter={() => this.props.handleShouldExpand(false)}
+        onMouseLeave={() => this.props.handleShouldExpand(true)}
+        style={this.styles['jp-commenting-annotation-more-option-style']}
+      >
+        {this.props.resolved ? 'Re-open' : 'Resolve'}
+      </a>
+    );
+
+    return options;
+  }
+
+  setOptionsShow(state: boolean): void {
+    this.setState({ moreOptionsOpened: state });
+  }
+
   /**
    * Creates and returns the corner button based on states
    *
@@ -216,18 +306,44 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   getCornerButton(): React.ReactNode {
     if (this.props.hover && !this.props.expanded) {
       return (
-        <div>
-          {!this.props.resolved
-            ? this.getResolveButton()
-            : this.getReopenButton()}
+        <div style={this.styles['jp-commenting-thread-header-button-area']}>
+          <div
+            style={
+              this.styles[
+                'jp-commenting-thread-header-resolve-reopen-button-area'
+              ]
+            }
+          >
+            {!this.props.resolved
+              ? this.getResolveButton()
+              : this.getReopenButton()}
+          </div>
+          <div
+            style={this.styles['jp-commenting-thread-header-more-icon-area']}
+          >
+            {this.getMoreButton()}
+          </div>
         </div>
       );
     } else if (this.props.expanded) {
       return (
-        <div>
-          {!this.props.resolved
-            ? this.getResolveButton()
-            : this.getReopenButton()}
+        <div style={this.styles['jp-commenting-thread-header-button-area']}>
+          <div
+            style={
+              this.styles[
+                'jp-commenting-thread-header-resolve-reopen-button-area'
+              ]
+            }
+          >
+            {!this.props.resolved
+              ? this.getResolveButton()
+              : this.getReopenButton()}
+          </div>
+          <div
+            style={this.styles['jp-commenting-thread-header-more-icon-area']}
+          >
+            {this.getMoreButton()}
+          </div>
         </div>
       );
     } else {
@@ -300,7 +416,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       display: 'flex',
       flexDirection: 'column' as 'column',
       flexShrink: 1,
-      minWidth: '52px',
+      minWidth: '32px',
       width: '100%',
       paddingLeft: '4px',
       boxSizing: 'border-box' as 'border-box'
@@ -322,7 +438,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     'jp-commenting-thread-header-name-area': {
       display: 'flex',
       flexShrink: 1,
-      minWidth: '52px',
+      minWidth: '32px',
       boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-thread-header-name': {
@@ -345,7 +461,7 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     },
     'jp-commenting-thread-header-timestamp-area': {
       display: 'flex',
-      minWidth: '52px',
+      minWidth: '32px',
       flexShrink: 1,
       boxSizing: 'border-box' as 'border-box'
     },
@@ -393,11 +509,38 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
       color: 'var(--jp-ui-font-color2)',
       lineHeight: 'normal'
     },
+    'jp-commenting-thread-header-more-icon-area': {
+      display: 'flex',
+      paddingRight: '4px',
+      paddingLeft: '4px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-more-icon': {
+      backgroundSize: '16px',
+      margin: '0px',
+      minWidth: '16px',
+      minHeight: '16px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-resolve-reopen-button-area': {
+      display: 'flex'
+    },
     'jp-commenting-thread-header-button-area': {
       display: 'flex',
-      minWidth: '72px',
+      minWidth: '96px',
+      maxHeight: '18px',
       paddingRight: '4px',
       paddingLeft: '8px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-more-option-style': {
+      fontSize: 'var(--jp-ui-font-size0)',
+      padding: '4px'
+    },
+    'jp-commenting-annotations-more-options-area': {
+      marginTop: '20px',
+      marginRight: '4px',
+      zIndex: 1000,
       boxSizing: 'border-box' as 'border-box'
     }
   };
