@@ -164,6 +164,11 @@ export class CommentingDataReceiver {
     this._newDataReceived.emit(void 0);
   }
 
+  removeThreadById(threadId: string): void {
+    this._comments.removeAnnotationById(threadId);
+    this._newDataReceived.emit(void 0);
+  }
+
   /**
    * Sets the target state in CommentingStates
    *

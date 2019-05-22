@@ -59,6 +59,7 @@ export class CommentingWidget extends ReactWidget {
     this.setNewThreadActive = this.setNewThreadActive.bind(this);
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.getReplyActiveCard = this.getReplyActiveCard.bind(this);
+    this.removeAnnotationById = this.removeAnnotationById.bind(this);
     this.getNewThreadButton = this.getNewThreadButton.bind(this);
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
@@ -227,6 +228,7 @@ export class CommentingWidget extends ReactWidget {
               resolved={allData[key].resolved}
               putComment={this._receiver.putComment}
               setCardValue={this._receiver.setResolvedValue}
+              removeAnnotationById={this.removeAnnotationById}
               target={this._provider.getState('target') as string}
             />
           );
@@ -324,6 +326,10 @@ export class CommentingWidget extends ReactWidget {
    */
   setShowResolved(value: boolean) {
     this._receiver.setState({ showResolved: value });
+  }
+
+  removeAnnotationById(threadId: string) {
+    this._receiver.removeThreadById(threadId);
   }
 
   /**

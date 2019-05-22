@@ -68,6 +68,12 @@ interface ICommentCardProps {
    */
   setCardValue(target: string, threadId: string, value: boolean): void;
   /**
+   * Removes a thread by its id
+   *
+   * @param threadId Type: string - removes thread by its id
+   */
+  removeAnnotationById(threadId: string): void;
+  /**
    * Unique string to identify a card
    *
    * @type string
@@ -302,6 +308,8 @@ export class CommentCard extends React.Component<
         handleResolve={this.handleResolve}
         handleShouldExpand={this.handleShouldExpand}
         hover={this.state.hover}
+        threadId={this.props.threadId}
+        removeAnnotationById={this.props.removeAnnotationById}
       />
     );
   }

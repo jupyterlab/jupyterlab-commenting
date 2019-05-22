@@ -70,6 +70,18 @@ interface ICommentHeaderProps {
    * @type string
    */
   timestamp: string;
+  /**
+   * Id of the thread
+   *
+   * @type string
+   */
+  threadId: string;
+  /**
+   * Removes an annotation by Id
+   *
+   * @param threadId Type: string - id of annotation to remove
+   */
+  removeAnnotationById(threadId: string): void;
 }
 
 interface ICommentHeaderStates {
@@ -243,6 +255,7 @@ export class CommentHeader extends React.Component<
     return (
       <span
         className={'jp-Icon jp-DownCaretIcon'}
+        title="More options..."
         style={this.styles['jp-commenting-annotation-more-icon']}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
         onMouseLeave={() => this.props.handleShouldExpand(true)}
@@ -254,17 +267,19 @@ export class CommentHeader extends React.Component<
   getDropDownMenu(): React.ReactNode {
     let options = [];
 
-    options.push(
-      <a
-        key={'edit'}
-        className={'jp-commenting-header-options-dropdown-item'}
-        onMouseEnter={() => this.props.handleShouldExpand(false)}
-        onMouseLeave={() => this.props.handleShouldExpand(true)}
-        style={this.styles['jp-commenting-annotation-more-option-style']}
-      >
-        Edit
-      </a>
-    );
+    if (this.props.expanded) {
+      options.push(
+        <a
+          key={'edit'}
+          className={'jp-commenting-header-options-dropdown-item'}
+          onMouseEnter={() => this.props.handleShouldExpand(false)}
+          onMouseLeave={() => this.props.handleShouldExpand(true)}
+          style={this.styles['jp-commenting-annotation-more-option-style']}
+        >
+          Edit
+        </a>
+      );
+    }
 
     options.push(
       <a
@@ -273,6 +288,7 @@ export class CommentHeader extends React.Component<
         onMouseEnter={() => this.props.handleShouldExpand(false)}
         onMouseLeave={() => this.props.handleShouldExpand(true)}
         style={this.styles['jp-commenting-annotation-more-option-style']}
+        onClick={() => this.props.removeAnnotationById(this.props.threadId)}
       >
         Delete
       </a>
