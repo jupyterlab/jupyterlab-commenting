@@ -37,12 +37,36 @@ interface ICommentProps {
    * @type string
    */
   timestamp: string;
+  /**
+   * Handles expanding
+   *
+   * @type void
+   */
+  handleShouldExpand: (state: boolean) => void;
+}
+
+/**
+ * Comment React States
+ */
+interface ICommentStates {
+  /**
+   * Boolean to track if mouse is hovering over comment
+   */
+  hover: boolean;
+  /**
+   * State if editing
+   */
+  isEditing: boolean;
+  /**
+   * Text of the edit box
+   */
+  editBox: string;
 }
 
 /**
  * Comment React Component
  */
-export class Comment extends React.Component<ICommentProps> {
+export class Comment extends React.Component<ICommentProps, ICommentStates> {
   /**
    * Constructor
    *
@@ -50,6 +74,18 @@ export class Comment extends React.Component<ICommentProps> {
    */
   constructor(props: ICommentProps) {
     super(props);
+
+    this.state = {
+      hover: false,
+      isEditing: false,
+      editBox: ''
+    };
+
+    this.handleChangeEditBox = this.handleChangeEditBox.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleCancelButton = this.handleCancelButton.bind(this);
+    this.handleSaveButton = this.handleSaveButton.bind(this);
+    this.setIsEditing = this.setIsEditing.bind(this);
   }
 
   /**
@@ -93,7 +129,11 @@ export class Comment extends React.Component<ICommentProps> {
         </div>
       </div>
     ) : (
-      <div style={this.styles['jp-commenting-annotation-thread']}>
+      <div
+        style={this.styles['jp-commenting-annotation-thread']}
+        onMouseOver={() => this.handleMouseOver()}
+        onMouseLeave={() => this.handleMouseLeave()}
+      >
         <div style={this.styles['jp-commenting-annotation-upper-area']}>
           <div style={this.styles['jp-commenting-annotation-photo-area']}>
             <img
@@ -111,18 +151,169 @@ export class Comment extends React.Component<ICommentProps> {
               <p style={this.styles['jp-commenting-annotation-timestamp']}>
                 {this.getStyledTimeStamp()}
               </p>
+              {this.state.hover && this.props.expanded && (
+                <div style={this.styles['jp-commenting-annotation-more-area']}>
+                  <p style={this.styles['jp-commenting-annotation-more']}>•</p>
+                  <a
+                    style={this.styles['jp-commenting-annotation-more']}
+                    className={'jp-commenting-clickable-text'}
+                    onClick={() => this.setIsEditing(true)}
+                  >
+                    Edit
+                  </a>
+                  <p style={this.styles['jp-commenting-annotation-more']}>•</p>
+                  <a
+                    style={this.styles['jp-commenting-annotation-more']}
+                    className={'jp-commenting-clickable-text'}
+                  >
+                    Delete
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
-          <p style={this.styles['jp-commenting-annotation']}>
-            {this.props.context.length >= 125 && !this.props.expanded
-              ? this.props.context.slice(0, 125) + '...'
-              : this.props.context}
-          </p>
+          {this.state.isEditing && this.props.expanded ? (
+            <textarea
+              className="jp-commenting-text-area"
+              id="editBox"
+              value={
+                this.state.editBox.trim() === ''
+                  ? this.state.editBox.trim()
+                  : this.state.editBox
+              }
+              onChange={this.handleChangeEditBox}
+              onKeyPress={this.handleKeyPress}
+            />
+          ) : (
+            <p style={this.styles['jp-commenting-annotation']}>
+              {this.props.context.length >= 125 && !this.props.expanded
+                ? this.props.context.slice(0, 125) + '...'
+                : this.props.context}
+            </p>
+          )}
+          {this.getButtons()}
         </div>
       </div>
     );
+  }
+
+  /**
+   * Handles key events
+   *
+   * @param e Type: React.KeyboardEvent - keyboard event
+   */
+  handleKeyPress(e: React.KeyboardEvent): void {
+    if (this.state.editBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
+      this.handleSaveButton();
+      document.getElementById('commentBox').blur();
+    }
+  }
+
+  /**
+   * Handles when the edit box changes
+   *
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
+   */
+  handleChangeEditBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.setState({ editBox: e.target.value });
+  }
+
+  /**
+   * Handles clicking the save button
+   */
+  handleSaveButton(): void {
+    this.setState({ editBox: '' });
+    this.setIsEditing(false);
+  }
+
+  /**
+   * Handles states when cancel is pressed
+   */
+  handleCancelButton(): void {
+    this.setState({ editBox: '' });
+    this.setIsEditing(false);
+  }
+
+  /**
+   * Returns the correct buttons for different state combinations
+   *
+   * @return Type: React.ReactNode - JSX with buttons
+   */
+  getButtons(): React.ReactNode {
+    if (this.state.isEditing && this.props.expanded) {
+      document.getElementById('editBox') !== null &&
+        document.getElementById('editBox').focus();
+      return (
+        <div style={this.styles['jp-commenting-annotation-edit-buttons-area']}>
+          {this.getSaveButton()}
+          {this.getCancelButton()}
+        </div>
+      );
+    }
+  }
+
+  /**
+   * Creates and returns reply button
+   *
+   * @return Type: React.ReactNode
+   */
+  getSaveButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleSaveButton}
+        className="jp-commenting-button-blue"
+        type="button"
+        disabled={this.state.editBox.trim() === ''}
+      >
+        Save
+      </button>
+    );
+  }
+
+  /**
+   * Creates and returns cancel button
+   *
+   * @return Type: React.ReactNode
+   */
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleCancelButton}
+        className="jp-commenting-button-red"
+        type="button"
+      >
+        Cancel
+      </button>
+    );
+  }
+
+  /**
+   * Sets the state of idEditing to the given boolean
+   *
+   * @param state Type: boolean - State to set to
+   */
+  setIsEditing(state: boolean): void {
+    if (this.state.isEditing === state) {
+      return;
+    }
+
+    this.setState({ isEditing: state });
+  }
+
+  /**
+   * Handles hover state when mouse is over comment
+   */
+  handleMouseOver(): void {
+    this.setState({ hover: true });
+  }
+
+  /**
+   * Handles hover state when mouse leaves comment area
+   */
+  handleMouseLeave(): void {
+    this.setState({ hover: false });
   }
 
   /**
@@ -234,7 +425,7 @@ export class Comment extends React.Component<ICommentProps> {
     },
     'jp-commenting-annotation-timestamp-area': {
       display: 'flex',
-      minWidth: '52px',
+      minWidth: '32px',
       flexShrink: 1,
       boxSizing: 'border-box' as 'border-box'
     },
@@ -245,6 +436,19 @@ export class Comment extends React.Component<ICommentProps> {
       overflow: 'hidden',
       textOverflow: 'ellipsis'
     },
+    'jp-commenting-annotation-more-area': {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      minWidth: '64px',
+      flexShrink: 1,
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-more': {
+      display: 'flex',
+      fontSize: '.7em',
+      paddingLeft: '4px',
+      color: 'var(--jp-ui-font-color1)'
+    },
     'jp-commenting-annotation-timestamp-resolved': {
       fontSize: '.7em',
       color: 'var(--jp-ui-font-color2)',
@@ -254,6 +458,7 @@ export class Comment extends React.Component<ICommentProps> {
     },
     'jp-commenting-annotation-area': {
       display: 'flex',
+      flexDirection: 'column' as 'column',
       maxHeight: '100%',
       maxWidth: '350px',
       boxSizing: 'border-box' as 'border-box',
@@ -281,6 +486,10 @@ export class Comment extends React.Component<ICommentProps> {
       fontSize: '12px',
       color: 'var(--jp-ui-font-color2)',
       lineHeight: 'normal'
+    },
+    'jp-commenting-annotation-edit-buttons-area': {
+      display: 'flex',
+      padding: '4px'
     }
   };
 }

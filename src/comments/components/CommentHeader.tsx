@@ -84,11 +84,26 @@ interface ICommentHeaderProps {
   removeAnnotationById(threadId: string): void;
 }
 
+/**
+ * CommentHeader React States
+ */
 interface ICommentHeaderStates {
   /**
    * State of drop down menu
    */
   moreOptionsOpened: boolean;
+  /**
+   * State if editing
+   */
+  isEditing: boolean;
+  /**
+   * Text of the edit box
+   */
+  editBox: string;
+  /**
+   * Boolean to track if mouse is hovering over comment
+   */
+  hover: boolean;
 }
 
 /**
@@ -107,8 +122,17 @@ export class CommentHeader extends React.Component<
     super(props);
 
     this.state = {
-      moreOptionsOpened: false
+      moreOptionsOpened: false,
+      isEditing: false,
+      editBox: '',
+      hover: false
     };
+
+    this.handleChangeEditBox = this.handleChangeEditBox.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleCancelButton = this.handleCancelButton.bind(this);
+    this.handleSaveButton = this.handleSaveButton.bind(this);
+    this.setIsEditing = this.setIsEditing.bind(this);
   }
 
   /**
@@ -157,7 +181,7 @@ export class CommentHeader extends React.Component<
           <div
             className={optionsClass}
             style={this.styles['jp-commenting-annotations-more-options-area']}
-            onBlurCapture={() => this.setOptionsShow(false)}
+            onMouseLeave={() => this.setOptionsShow(false)}
           >
             {this.getDropDownMenu()}
           </div>
@@ -171,7 +195,11 @@ export class CommentHeader extends React.Component<
         </div>
       </div>
     ) : (
-      <div style={this.styles['jp-commenting-thread-header']}>
+      <div
+        style={this.styles['jp-commenting-thread-header']}
+        onMouseOver={() => this.handleMouseOver()}
+        onMouseLeave={() => this.handleMouseLeave()}
+      >
         <div style={this.styles['jp-commenting-thread-header-upper-area']}>
           <div style={this.styles['jp-commenting-thread-header-photo-area']}>
             <img
@@ -191,23 +219,56 @@ export class CommentHeader extends React.Component<
               <p style={this.styles['jp-commenting-thread-header-timestamp']}>
                 {this.getStyledTimeStamp()}
               </p>
+              {this.state.hover &&
+                !this.state.isEditing &&
+                this.props.expanded && (
+                  <div
+                    style={this.styles['jp-commenting-annotation-more-area']}
+                  >
+                    <p style={this.styles['jp-commenting-annotation-more']}>
+                      •
+                    </p>
+                    <a
+                      style={this.styles['jp-commenting-annotation-more']}
+                      className={'jp-commenting-clickable-text'}
+                      onClick={() => this.setIsEditing(true)}
+                    >
+                      Edit
+                    </a>
+                  </div>
+                )}
             </div>
           </div>
           {this.getCornerButton()}
           <div
             className={optionsClass}
             style={this.styles['jp-commenting-annotations-more-options-area']}
-            onBlurCapture={() => this.setOptionsShow(false)}
+            onMouseLeave={() => this.setOptionsShow(false)}
           >
             {this.getDropDownMenu()}
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
-          <p style={this.styles['jp-commenting-annotation']}>
-            {this.props.context.length >= 125 && !this.props.expanded
-              ? this.props.context.slice(0, 125) + '...'
-              : this.props.context}
-          </p>
+          {this.state.isEditing && this.props.expanded ? (
+            <textarea
+              className="jp-commenting-text-area"
+              id="editBox"
+              value={
+                this.state.editBox.trim() === ''
+                  ? this.state.editBox.trim()
+                  : this.state.editBox
+              }
+              onChange={this.handleChangeEditBox}
+              onKeyPress={this.handleKeyPress}
+            />
+          ) : (
+            <p style={this.styles['jp-commenting-annotation']}>
+              {this.props.context.length >= 125 && !this.props.expanded
+                ? this.props.context.slice(0, 125) + '...'
+                : this.props.context}
+            </p>
+          )}
+          {this.getButtons()}
         </div>
       </div>
     );
@@ -251,6 +312,11 @@ export class CommentHeader extends React.Component<
     );
   }
 
+  /**
+   * Creates and returns the down caret button for the more options
+   *
+   * @return Type: React.ReactNode
+   */
   getMoreButton(): React.ReactNode {
     return (
       <span
@@ -264,31 +330,29 @@ export class CommentHeader extends React.Component<
     );
   }
 
+  /**
+   * Creates and returns the menu options that will be shown when the
+   * more caret is clicked
+   *
+   * @return Type: React.ReactNode
+   */
   getDropDownMenu(): React.ReactNode {
     let options = [];
-
-    if (this.props.expanded) {
-      options.push(
-        <a
-          key={'edit'}
-          className={'jp-commenting-header-options-dropdown-item'}
-          onMouseEnter={() => this.props.handleShouldExpand(false)}
-          onMouseLeave={() => this.props.handleShouldExpand(true)}
-          style={this.styles['jp-commenting-annotation-more-option-style']}
-        >
-          Edit
-        </a>
-      );
-    }
 
     options.push(
       <a
         key={'delete'}
         className={'jp-commenting-header-options-dropdown-item'}
+        onClick={() => {
+          this.props.removeAnnotationById(this.props.threadId);
+          this.setState({ moreOptionsOpened: false });
+          if (this.props.expanded) {
+            this.props.handleShrink();
+          }
+        }}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
         onMouseLeave={() => this.props.handleShouldExpand(true)}
         style={this.styles['jp-commenting-annotation-more-option-style']}
-        onClick={() => this.props.removeAnnotationById(this.props.threadId)}
       >
         Delete
       </a>
@@ -310,12 +374,136 @@ export class CommentHeader extends React.Component<
     return options;
   }
 
+  /**
+   * Handles key events
+   *
+   * @param e Type: React.KeyboardEvent - keyboard event
+   */
+  handleKeyPress(e: React.KeyboardEvent): void {
+    if (this.state.editBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
+      this.handleSaveButton();
+      document.getElementById('commentBox').blur();
+    }
+  }
+
+  /**
+   * Handles when the edit box changes
+   *
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
+   */
+  handleChangeEditBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.setState({ editBox: e.target.value });
+  }
+
+  /**
+   * Handles clicking the save button
+   */
+  handleSaveButton(): void {
+    this.setState({ editBox: '' });
+    this.setIsEditing(false);
+  }
+
+  /**
+   * Handles states when cancel is pressed
+   */
+  handleCancelButton(): void {
+    this.setState({ editBox: '' });
+    this.setIsEditing(false);
+  }
+
+  /**
+   * Returns the correct buttons for different state combinations
+   *
+   * @return Type: React.ReactNode - JSX with buttons
+   */
+  getButtons(): React.ReactNode {
+    if (this.state.isEditing && this.props.expanded) {
+      document.getElementById('editBox') !== null &&
+        document.getElementById('editBox').focus();
+      return (
+        <div
+          style={this.styles['jp-commenting-thread-header-edit-buttons-area']}
+        >
+          {this.getSaveButton()}
+          {this.getCancelButton()}
+        </div>
+      );
+    }
+  }
+
+  /**
+   * Creates and returns reply button
+   *
+   * @return Type: React.ReactNode
+   */
+  getSaveButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleSaveButton}
+        className="jp-commenting-button-blue"
+        type="button"
+        disabled={this.state.editBox.trim() === ''}
+      >
+        Save
+      </button>
+    );
+  }
+
+  /**
+   * Creates and returns cancel button
+   *
+   * @return Type: React.ReactNode
+   */
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        onClick={this.handleCancelButton}
+        className="jp-commenting-button-red"
+        type="button"
+      >
+        Cancel
+      </button>
+    );
+  }
+
+  /**
+   * Sets the state of moreOptionsOpened to the given boolean
+   *
+   * @param state Type: boolean - State to set to
+   */
   setOptionsShow(state: boolean): void {
     this.setState({ moreOptionsOpened: state });
   }
 
   /**
-   * Creates and returns the corner button based on states
+   * Sets the state of idEditing to the given boolean
+   *
+   * @param state Type: boolean - State to set to
+   */
+  setIsEditing(state: boolean): void {
+    if (this.state.isEditing === state) {
+      return;
+    }
+
+    this.setState({ isEditing: state });
+  }
+
+  /**
+   * Handles hover state when mouse is over comment header
+   */
+  handleMouseOver(): void {
+    this.setState({ hover: true });
+  }
+
+  /**
+   * Handles hover state when mouse leaves comment header
+   */
+  handleMouseLeave(): void {
+    this.setState({ hover: false });
+  }
+
+  /**
+   * Creates and returns the resolve or re-open button based on states
    *
    * @type React.ReactNode
    */
@@ -466,6 +654,10 @@ export class CommentHeader extends React.Component<
       textOverflow: 'ellipsis',
       margin: '0px'
     },
+    'jp-commenting-thread-header-edit-buttons-area': {
+      display: 'flex',
+      padding: '4px'
+    },
     'jp-commenting-thread-header-name-resolved': {
       fontSize: '13px',
       color: 'var(--jp-ui-font-color2)',
@@ -488,6 +680,19 @@ export class CommentHeader extends React.Component<
       overflow: 'hidden',
       textOverflow: 'ellipsis'
     },
+    'jp-commenting-annotation-more-area': {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      minWidth: '64px',
+      flexShrink: 1,
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-annotation-more': {
+      display: 'flex',
+      fontSize: 'var(--jp-ui-font-size0)',
+      paddingLeft: '4px',
+      color: 'var(--jp-ui-font-color1)'
+    },
     'jp-commenting-thread-header-timestamp-resolved': {
       fontSize: 'var(--jp-ui-font-size0)',
       color: 'var(--jp-ui-font-color2)',
@@ -497,6 +702,7 @@ export class CommentHeader extends React.Component<
     },
     'jp-commenting-annotation-area': {
       display: 'flex',
+      flexDirection: 'column' as 'column',
       maxHeight: '100%',
       maxWidth: '350px',
       boxSizing: 'border-box' as 'border-box',

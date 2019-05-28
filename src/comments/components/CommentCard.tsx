@@ -281,6 +281,7 @@ export class CommentCard extends React.Component<
             photo={this.props.data.body[key].creator.image}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
             resolved={this.props.resolved}
+            handleShouldExpand={this.handleShouldExpand}
           />
         );
       }
