@@ -82,6 +82,19 @@ interface ICommentHeaderProps {
    * @param threadId Type: string - id of annotation to remove
    */
   removeAnnotationById(threadId: string): void;
+  /**
+   * State if is editing a comment
+   *
+   * @param key Type: string - key of what is being edited,
+   * for comment header it is the threadID
+   */
+  isEditing(key: string): boolean;
+  /**
+   * Handles setting the state of isEditing
+   *
+   * @param key Type: string - sets the state to the given key (threadId)
+   */
+  setIsEditing(key: string): void;
 }
 
 /**
@@ -92,10 +105,6 @@ interface ICommentHeaderStates {
    * State of drop down menu
    */
   moreOptionsOpened: boolean;
-  /**
-   * State if editing
-   */
-  isEditing: boolean;
   /**
    * Text of the edit box
    */
@@ -123,7 +132,6 @@ export class CommentHeader extends React.Component<
 
     this.state = {
       moreOptionsOpened: false,
-      isEditing: false,
       editBox: '',
       hover: false
     };
@@ -132,7 +140,6 @@ export class CommentHeader extends React.Component<
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleCancelButton = this.handleCancelButton.bind(this);
     this.handleSaveButton = this.handleSaveButton.bind(this);
-    this.setIsEditing = this.setIsEditing.bind(this);
   }
 
   /**
@@ -220,7 +227,7 @@ export class CommentHeader extends React.Component<
                 {this.getStyledTimeStamp()}
               </p>
               {this.state.hover &&
-                !this.state.isEditing &&
+                !this.props.isEditing(this.props.threadId) &&
                 this.props.expanded && (
                   <div
                     style={this.styles['jp-commenting-annotation-more-area']}
@@ -231,7 +238,10 @@ export class CommentHeader extends React.Component<
                     <a
                       style={this.styles['jp-commenting-annotation-more']}
                       className={'jp-commenting-clickable-text'}
-                      onClick={() => this.setIsEditing(true)}
+                      onClick={() => {
+                        this.setState({ editBox: '' });
+                        this.props.setIsEditing(this.props.threadId);
+                      }}
                     >
                       Edit
                     </a>
@@ -249,7 +259,7 @@ export class CommentHeader extends React.Component<
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
-          {this.state.isEditing && this.props.expanded ? (
+          {this.props.isEditing(this.props.threadId) && this.props.expanded ? (
             <textarea
               className="jp-commenting-text-area"
               id="editBox"
@@ -400,7 +410,7 @@ export class CommentHeader extends React.Component<
    */
   handleSaveButton(): void {
     this.setState({ editBox: '' });
-    this.setIsEditing(false);
+    this.props.setIsEditing('');
   }
 
   /**
@@ -408,7 +418,7 @@ export class CommentHeader extends React.Component<
    */
   handleCancelButton(): void {
     this.setState({ editBox: '' });
-    this.setIsEditing(false);
+    this.props.setIsEditing('');
   }
 
   /**
@@ -417,7 +427,7 @@ export class CommentHeader extends React.Component<
    * @return Type: React.ReactNode - JSX with buttons
    */
   getButtons(): React.ReactNode {
-    if (this.state.isEditing && this.props.expanded) {
+    if (this.props.isEditing(this.props.threadId) && this.props.expanded) {
       document.getElementById('editBox') !== null &&
         document.getElementById('editBox').focus();
       return (
@@ -473,19 +483,6 @@ export class CommentHeader extends React.Component<
    */
   setOptionsShow(state: boolean): void {
     this.setState({ moreOptionsOpened: state });
-  }
-
-  /**
-   * Sets the state of idEditing to the given boolean
-   *
-   * @param state Type: boolean - State to set to
-   */
-  setIsEditing(state: boolean): void {
-    if (this.state.isEditing === state) {
-      return;
-    }
-
-    this.setState({ isEditing: state });
   }
 
   /**

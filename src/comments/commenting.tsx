@@ -63,6 +63,8 @@ export class CommentingWidget extends ReactWidget {
     this.getNewThreadButton = this.getNewThreadButton.bind(this);
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
+    this.checkIsEditing = this.checkIsEditing.bind(this);
+    this.setIsEditing = this.setIsEditing.bind(this);
   }
 
   /**
@@ -230,6 +232,8 @@ export class CommentingWidget extends ReactWidget {
               setCardValue={this._receiver.setResolvedValue}
               removeAnnotationById={this.removeAnnotationById}
               target={this._provider.getState('target') as string}
+              checkIsEditing={this.checkIsEditing}
+              setIsEditing={this.setIsEditing}
             />
           );
         }
@@ -286,6 +290,11 @@ export class CommentingWidget extends ReactWidget {
    */
   setExpandedCard(threadId: string) {
     this._receiver.setState({ expandedCard: threadId });
+
+    if (threadId === ' ') {
+      this.setIsEditing('');
+    }
+
     indicatorHandler.activeIndicatorWidget.scrollIntoView(threadId);
   }
 
@@ -326,6 +335,28 @@ export class CommentingWidget extends ReactWidget {
    */
   setShowResolved(value: boolean) {
     this._receiver.setState({ showResolved: value });
+  }
+
+  /**
+   * Used to check if a key is being edited
+   *
+   * @param key Type: string - key of what is being edited
+   */
+  checkIsEditing(key: string): boolean {
+    return this._provider.getState('isEditing') === key;
+  }
+
+  /**
+   * Used to set what is being edited
+   *
+   * @param key Type: string - key of what is being edited
+   */
+  setIsEditing(key: string): void {
+    if (key === this._provider.getState('isEditing')) {
+      return;
+    }
+
+    this._receiver.setState({ isEditing: key });
   }
 
   removeAnnotationById(threadId: string) {

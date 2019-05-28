@@ -43,6 +43,23 @@ interface ICommentProps {
    * @type void
    */
   handleShouldExpand: (state: boolean) => void;
+  /**
+   * State if is editing a comment
+   *
+   * @param key Type: string - key of what is being edited,
+   * for comment it is the index
+   */
+  isEditing(key: string): boolean;
+  /**
+   * Handles setting the state of isEditing
+   *
+   * @param key Type: string - sets the state to the given key (index)
+   */
+  setIsEditing(key: string): void;
+  /**
+   * Index of comment in datastore
+   */
+  index: number;
 }
 
 /**
@@ -53,10 +70,6 @@ interface ICommentStates {
    * Boolean to track if mouse is hovering over comment
    */
   hover: boolean;
-  /**
-   * State if editing
-   */
-  isEditing: boolean;
   /**
    * Text of the edit box
    */
@@ -77,7 +90,6 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
 
     this.state = {
       hover: false,
-      isEditing: false,
       editBox: ''
     };
 
@@ -85,7 +97,6 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleCancelButton = this.handleCancelButton.bind(this);
     this.handleSaveButton = this.handleSaveButton.bind(this);
-    this.setIsEditing = this.setIsEditing.bind(this);
   }
 
   /**
@@ -151,30 +162,42 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
               <p style={this.styles['jp-commenting-annotation-timestamp']}>
                 {this.getStyledTimeStamp()}
               </p>
-              {this.state.hover && this.props.expanded && (
-                <div style={this.styles['jp-commenting-annotation-more-area']}>
-                  <p style={this.styles['jp-commenting-annotation-more']}>•</p>
-                  <a
-                    style={this.styles['jp-commenting-annotation-more']}
-                    className={'jp-commenting-clickable-text'}
-                    onClick={() => this.setIsEditing(true)}
+              {this.state.hover &&
+                this.props.expanded &&
+                !this.props.isEditing(this.props.index.toString()) && (
+                  <div
+                    style={this.styles['jp-commenting-annotation-more-area']}
                   >
-                    Edit
-                  </a>
-                  <p style={this.styles['jp-commenting-annotation-more']}>•</p>
-                  <a
-                    style={this.styles['jp-commenting-annotation-more']}
-                    className={'jp-commenting-clickable-text'}
-                  >
-                    Delete
-                  </a>
-                </div>
-              )}
+                    <p style={this.styles['jp-commenting-annotation-more']}>
+                      •
+                    </p>
+                    <a
+                      style={this.styles['jp-commenting-annotation-more']}
+                      className={'jp-commenting-clickable-text'}
+                      onClick={() => {
+                        this.setState({ editBox: '' });
+                        this.props.setIsEditing(this.props.index.toString());
+                      }}
+                    >
+                      Edit
+                    </a>
+                    <p style={this.styles['jp-commenting-annotation-more']}>
+                      •
+                    </p>
+                    <a
+                      style={this.styles['jp-commenting-annotation-more']}
+                      className={'jp-commenting-clickable-text'}
+                    >
+                      Delete
+                    </a>
+                  </div>
+                )}
             </div>
           </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
-          {this.state.isEditing && this.props.expanded ? (
+          {this.props.isEditing(this.props.index.toString()) &&
+          this.props.expanded ? (
             <textarea
               className="jp-commenting-text-area"
               id="editBox"
@@ -225,7 +248,7 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    */
   handleSaveButton(): void {
     this.setState({ editBox: '' });
-    this.setIsEditing(false);
+    this.props.setIsEditing('');
   }
 
   /**
@@ -233,7 +256,7 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    */
   handleCancelButton(): void {
     this.setState({ editBox: '' });
-    this.setIsEditing(false);
+    this.props.setIsEditing('');
   }
 
   /**
@@ -242,7 +265,10 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    * @return Type: React.ReactNode - JSX with buttons
    */
   getButtons(): React.ReactNode {
-    if (this.state.isEditing && this.props.expanded) {
+    if (
+      this.props.isEditing(this.props.index.toString()) &&
+      this.props.expanded
+    ) {
       document.getElementById('editBox') !== null &&
         document.getElementById('editBox').focus();
       return (
@@ -287,19 +313,6 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
         Cancel
       </button>
     );
-  }
-
-  /**
-   * Sets the state of idEditing to the given boolean
-   *
-   * @param state Type: boolean - State to set to
-   */
-  setIsEditing(state: boolean): void {
-    if (this.state.isEditing === state) {
-      return;
-    }
-
-    this.setState({ isEditing: state });
   }
 
   /**

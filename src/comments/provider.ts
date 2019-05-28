@@ -49,4 +49,5 @@ export type ICommentingStateTypes =
   | 'target'
   | 'curDocType'
   | 'latestIndicatorInfo'
-  | 'widgetMatchTarget';
+  | 'widgetMatchTarget'
+  | 'isEditing';

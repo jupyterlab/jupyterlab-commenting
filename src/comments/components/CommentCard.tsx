@@ -83,6 +83,18 @@ interface ICommentCardProps {
    * Path of file used to itemize comment thread to file
    */
   target: string;
+  /**
+   * Used to check if a key is being edited
+   *
+   * @param key Type: string - key of what is being edited
+   */
+  checkIsEditing(key: string): boolean;
+  /**
+   * Used to set what is being edited
+   *
+   * @param key Type: string - key of what is being edited
+   */
+  setIsEditing(key: string): void;
 }
 
 /**
@@ -101,6 +113,10 @@ interface ICommentCardStates {
    * @type boolean
    */
   shouldExpand: boolean;
+  /**
+   * Tracks when a comment is being edited
+   */
+  isEditing: string;
 }
 
 /**
@@ -117,7 +133,7 @@ export class CommentCard extends React.Component<
    */
   constructor(props: ICommentCardProps) {
     super(props);
-    this.state = { hover: false, shouldExpand: true };
+    this.state = { hover: false, shouldExpand: true, isEditing: '' };
 
     this.handleExpand = this.handleExpand.bind(this);
     this.handleShrink = this.handleShrink.bind(this);
@@ -282,6 +298,9 @@ export class CommentCard extends React.Component<
             expanded={this.props.checkExpandedCard(this.props.threadId)}
             resolved={this.props.resolved}
             handleShouldExpand={this.handleShouldExpand}
+            isEditing={this.props.checkIsEditing}
+            setIsEditing={this.props.setIsEditing}
+            index={key}
           />
         );
       }
@@ -311,6 +330,8 @@ export class CommentCard extends React.Component<
         hover={this.state.hover}
         threadId={this.props.threadId}
         removeAnnotationById={this.props.removeAnnotationById}
+        isEditing={this.props.checkIsEditing}
+        setIsEditing={this.props.setIsEditing}
       />
     );
   }

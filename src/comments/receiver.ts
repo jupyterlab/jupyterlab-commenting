@@ -59,7 +59,8 @@ export class CommentingDataReceiver {
       sortState: 'latest',
       userSet: false,
       target: ' ',
-      widgetMatchTarget: false
+      widgetMatchTarget: false,
+      isEditing: ''
     });
 
     this.getAllComments = this.getAllComments.bind(this);
