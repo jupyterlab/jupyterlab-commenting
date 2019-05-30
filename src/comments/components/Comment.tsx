@@ -57,6 +57,13 @@ interface ICommentProps {
    */
   setIsEditing(key: string): void;
   /**
+   * Used to update a comment to the edited value
+   *
+   * @param comment Type: string - new comment to push
+   * @param index Type: number - index of comment to push edits to
+   */
+  pushEdit(comment: string, index: number): void;
+  /**
    * Index of comment in datastore
    */
   index: number;
@@ -247,6 +254,7 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    * Handles clicking the save button
    */
   handleSaveButton(): void {
+    this.props.pushEdit(this.state.editBox, this.props.index);
     this.setState({ editBox: '' });
     this.props.setIsEditing('');
   }
@@ -454,13 +462,16 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
       flexDirection: 'row' as 'row',
       minWidth: '64px',
       flexShrink: 1,
+      paddingRight: '4px',
       boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-annotation-more': {
       display: 'flex',
       fontSize: '.7em',
-      paddingLeft: '4px',
-      color: 'var(--jp-ui-font-color1)'
+      paddingLeft: '2px',
+      paddingRight: '2px',
+      color: 'var(--jp-ui-font-color1)',
+      boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-annotation-timestamp-resolved': {
       fontSize: '.7em',

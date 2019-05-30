@@ -116,11 +116,13 @@ export class CommentingDataReceiver {
    * @param value Type: string - comment message
    * @param threadId Type: string - commend card / thread the comment applies to
    */
-  putComment(threadId: string, value: string): void {
+  putComment(threadId: string, value: string, index?: number): void {
+    console.log(index);
     this._comments.createComment(
       threadId,
       value,
-      this._states.getState('creator')
+      this._states.getState('creator'),
+      index
     );
     this._newDataReceived.emit(void 0);
   }

@@ -146,13 +146,6 @@ export class CommentHeader extends React.Component<
    * React render function
    */
   render(): React.ReactNode {
-    const optionsClass = `jp-commenting-header-options-dropdown-menu${
-      (this.state.moreOptionsOpened && this.props.hover) ||
-      (this.state.moreOptionsOpened && this.props.expanded)
-        ? ' show'
-        : ''
-    }`;
-
     return this.props.resolved ? (
       <div style={this.styles['jp-commenting-thread-header-resolved']}>
         <div
@@ -185,13 +178,6 @@ export class CommentHeader extends React.Component<
             </div>
           </div>
           {this.getCornerButton()}
-          <div
-            className={optionsClass}
-            style={this.styles['jp-commenting-annotations-more-options-area']}
-            onMouseLeave={() => this.setOptionsShow(false)}
-          >
-            {this.getDropDownMenu()}
-          </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area-resolved']}>
           <p style={this.styles['jp-commenting-annotation-resolved']}>
@@ -250,13 +236,6 @@ export class CommentHeader extends React.Component<
             </div>
           </div>
           {this.getCornerButton()}
-          <div
-            className={optionsClass}
-            style={this.styles['jp-commenting-annotations-more-options-area']}
-            onMouseLeave={() => this.setOptionsShow(false)}
-          >
-            {this.getDropDownMenu()}
-          </div>
         </div>
         <div style={this.styles['jp-commenting-annotation-area']}>
           {this.props.isEditing(this.props.threadId) && this.props.expanded ? (
@@ -320,68 +299,6 @@ export class CommentHeader extends React.Component<
         Re-open
       </button>
     );
-  }
-
-  /**
-   * Creates and returns the down caret button for the more options
-   *
-   * @return Type: React.ReactNode
-   */
-  getMoreButton(): React.ReactNode {
-    return (
-      <span
-        className={'jp-Icon jp-DownCaretIcon'}
-        title="More options..."
-        style={this.styles['jp-commenting-annotation-more-icon']}
-        onMouseEnter={() => this.props.handleShouldExpand(false)}
-        onMouseLeave={() => this.props.handleShouldExpand(true)}
-        onClick={() => this.setOptionsShow(!this.state.moreOptionsOpened)}
-      />
-    );
-  }
-
-  /**
-   * Creates and returns the menu options that will be shown when the
-   * more caret is clicked
-   *
-   * @return Type: React.ReactNode
-   */
-  getDropDownMenu(): React.ReactNode {
-    let options = [];
-
-    options.push(
-      <a
-        key={'delete'}
-        className={'jp-commenting-header-options-dropdown-item'}
-        onClick={() => {
-          this.props.removeAnnotationById(this.props.threadId);
-          this.setState({ moreOptionsOpened: false });
-          if (this.props.expanded) {
-            this.props.handleShrink();
-          }
-        }}
-        onMouseEnter={() => this.props.handleShouldExpand(false)}
-        onMouseLeave={() => this.props.handleShouldExpand(true)}
-        style={this.styles['jp-commenting-annotation-more-option-style']}
-      >
-        Delete
-      </a>
-    );
-
-    options.push(
-      <a
-        key={'re-open-or-resolve'}
-        className={'jp-commenting-header-options-dropdown-item'}
-        onClick={this.props.handleResolve}
-        onMouseEnter={() => this.props.handleShouldExpand(false)}
-        onMouseLeave={() => this.props.handleShouldExpand(true)}
-        style={this.styles['jp-commenting-annotation-more-option-style']}
-      >
-        {this.props.resolved ? 'Re-open' : 'Resolve'}
-      </a>
-    );
-
-    return options;
   }
 
   /**
@@ -477,15 +394,6 @@ export class CommentHeader extends React.Component<
   }
 
   /**
-   * Sets the state of moreOptionsOpened to the given boolean
-   *
-   * @param state Type: boolean - State to set to
-   */
-  setOptionsShow(state: boolean): void {
-    this.setState({ moreOptionsOpened: state });
-  }
-
-  /**
    * Handles hover state when mouse is over comment header
    */
   handleMouseOver(): void {
@@ -519,11 +427,6 @@ export class CommentHeader extends React.Component<
               ? this.getResolveButton()
               : this.getReopenButton()}
           </div>
-          <div
-            style={this.styles['jp-commenting-thread-header-more-icon-area']}
-          >
-            {this.getMoreButton()}
-          </div>
         </div>
       );
     } else if (this.props.expanded) {
@@ -539,11 +442,6 @@ export class CommentHeader extends React.Component<
             {!this.props.resolved
               ? this.getResolveButton()
               : this.getReopenButton()}
-          </div>
-          <div
-            style={this.styles['jp-commenting-thread-header-more-icon-area']}
-          >
-            {this.getMoreButton()}
           </div>
         </div>
       );
@@ -746,20 +644,10 @@ export class CommentHeader extends React.Component<
     },
     'jp-commenting-thread-header-button-area': {
       display: 'flex',
-      minWidth: '96px',
+      minWidth: '72px',
       maxHeight: '18px',
       paddingRight: '4px',
-      paddingLeft: '8px',
-      boxSizing: 'border-box' as 'border-box'
-    },
-    'jp-commenting-annotation-more-option-style': {
-      fontSize: 'var(--jp-ui-font-size0)',
-      padding: '4px'
-    },
-    'jp-commenting-annotations-more-options-area': {
-      marginTop: '20px',
-      marginRight: '4px',
-      zIndex: 1000,
+      paddingLeft: '4px',
       boxSizing: 'border-box' as 'border-box'
     }
   };

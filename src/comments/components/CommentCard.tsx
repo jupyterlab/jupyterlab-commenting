@@ -38,7 +38,7 @@ interface ICommentCardProps {
    * @param comment Type: string - comment message
    * @param cardId Type: String - commend card / thread the comment applies to
    */
-  putComment: (threadId: string, value: string) => void;
+  putComment: (threadId: string, value: string, index?: number) => void;
   /**
    * Is the card resolved
    *
@@ -145,6 +145,7 @@ export class CommentCard extends React.Component<
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleShouldExpand = this.handleShouldExpand.bind(this);
+    this.pushEdit = this.pushEdit.bind(this);
   }
 
   /**
@@ -280,6 +281,16 @@ export class CommentCard extends React.Component<
   }
 
   /**
+   * Used to update a comment to the edited value
+   *
+   * @param comment Type: string - new comment to push
+   * @param index Type: number - index of comment to push edits to
+   */
+  pushEdit(comment: string, index: number): void {
+    this.props.putComment(this.props.threadId, comment, index);
+  }
+
+  /**
    * Creates a Comment component for each comment in the this.props.data
    *
    * @return React.ReactNode[]: List of Comment ReactNodes / Components
@@ -300,6 +311,7 @@ export class CommentCard extends React.Component<
             handleShouldExpand={this.handleShouldExpand}
             isEditing={this.props.checkIsEditing}
             setIsEditing={this.props.setIsEditing}
+            pushEdit={this.pushEdit}
             index={key}
           />
         );
