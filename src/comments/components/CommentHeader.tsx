@@ -11,6 +11,12 @@ interface ICommentHeaderProps {
    */
   context: string;
   /**
+   * State if the comment is edited
+   *
+   * @type boolean
+   */
+  edited: boolean;
+  /**
    * Tracks the state if the card is expanded
    *
    * @type boolean
@@ -47,6 +53,13 @@ interface ICommentHeaderProps {
    */
   hover: boolean;
   /**
+   * State if is editing a comment
+   *
+   * @param key Type: string - key of what is being edited,
+   * for comment header it is the threadID
+   */
+  isEditing(key: string): boolean;
+  /**
    * Person name of comment
    *
    * @type string
@@ -59,11 +72,21 @@ interface ICommentHeaderProps {
    */
   photo: string;
   /**
+   * Updates the comment value of a thread
+   */
+  putThreadEdit(threadId: string, value: string): void;
+  /**
    * Is the card resolved
    *
    * @type boolean
    */
   resolved: boolean;
+  /**
+   * Handles setting the state of isEditing
+   *
+   * @param key Type: string - sets the state to the given key (threadId)
+   */
+  setIsEditing(key: string): void;
   /**
    * Time stamp of comment
    *
@@ -76,25 +99,6 @@ interface ICommentHeaderProps {
    * @type string
    */
   threadId: string;
-  /**
-   * Removes an annotation by Id
-   *
-   * @param threadId Type: string - id of annotation to remove
-   */
-  removeAnnotationById(threadId: string): void;
-  /**
-   * State if is editing a comment
-   *
-   * @param key Type: string - key of what is being edited,
-   * for comment header it is the threadID
-   */
-  isEditing(key: string): boolean;
-  /**
-   * Handles setting the state of isEditing
-   *
-   * @param key Type: string - sets the state to the given key (threadId)
-   */
-  setIsEditing(key: string): void;
 }
 
 /**
@@ -109,6 +113,10 @@ interface ICommentHeaderStates {
    * Text of the edit box
    */
   editBox: string;
+  /**
+   * Tracks if the comment was edited when the edit button is clicked
+   */
+  contextEdited: boolean;
   /**
    * Boolean to track if mouse is hovering over comment
    */
@@ -133,13 +141,14 @@ export class CommentHeader extends React.Component<
     this.state = {
       moreOptionsOpened: false,
       editBox: '',
-      hover: false
+      hover: false,
+      contextEdited: false
     };
 
     this.handleChangeEditBox = this.handleChangeEditBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleCancelButton = this.handleCancelButton.bind(this);
-    this.handleSaveButton = this.handleSaveButton.bind(this);
+    this.handleEditCancelButton = this.handleEditCancelButton.bind(this);
+    this.handleEditSaveButton = this.handleEditSaveButton.bind(this);
   }
 
   /**
@@ -173,7 +182,9 @@ export class CommentHeader extends React.Component<
                   this.styles['jp-commenting-thread-header-timestamp-resolved']
                 }
               >
-                {this.getStyledTimeStamp()}
+                {(this.props.edited &&
+                  'Edited on: ' + this.getStyledTimeStamp()) ||
+                  this.getStyledTimeStamp()}
               </p>
             </div>
           </div>
@@ -210,7 +221,9 @@ export class CommentHeader extends React.Component<
               style={this.styles['jp-commenting-thread-header-timestamp-area']}
             >
               <p style={this.styles['jp-commenting-thread-header-timestamp']}>
-                {this.getStyledTimeStamp()}
+                {(this.props.edited &&
+                  'Edited on: ' + this.getStyledTimeStamp()) ||
+                  this.getStyledTimeStamp()}
               </p>
               {this.state.hover &&
                 !this.props.isEditing(this.props.threadId) &&
@@ -244,7 +257,9 @@ export class CommentHeader extends React.Component<
               id="editBox"
               value={
                 this.state.editBox.trim() === ''
-                  ? this.state.editBox.trim()
+                  ? this.state.contextEdited
+                    ? this.state.editBox
+                    : this.props.context
                   : this.state.editBox
               }
               onChange={this.handleChangeEditBox}
@@ -257,7 +272,7 @@ export class CommentHeader extends React.Component<
                 : this.props.context}
             </p>
           )}
-          {this.getButtons()}
+          {this.getEditButtons()}
         </div>
       </div>
     );
@@ -307,8 +322,9 @@ export class CommentHeader extends React.Component<
    * @param e Type: React.KeyboardEvent - keyboard event
    */
   handleKeyPress(e: React.KeyboardEvent): void {
+    // Enables pressing enter key to save a comment
     if (this.state.editBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
-      this.handleSaveButton();
+      this.handleEditSaveButton();
       document.getElementById('commentBox').blur();
     }
   }
@@ -319,22 +335,23 @@ export class CommentHeader extends React.Component<
    * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
    */
   handleChangeEditBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
-    this.setState({ editBox: e.target.value });
+    this.setState({ editBox: e.target.value, contextEdited: true });
   }
 
   /**
    * Handles clicking the save button
    */
-  handleSaveButton(): void {
-    this.setState({ editBox: '' });
+  handleEditSaveButton(): void {
+    this.props.putThreadEdit(this.props.threadId, this.state.editBox);
+    this.setState({ editBox: '', contextEdited: false });
     this.props.setIsEditing('');
   }
 
   /**
    * Handles states when cancel is pressed
    */
-  handleCancelButton(): void {
-    this.setState({ editBox: '' });
+  handleEditCancelButton(): void {
+    this.setState({ editBox: '', contextEdited: false });
     this.props.setIsEditing('');
   }
 
@@ -343,30 +360,34 @@ export class CommentHeader extends React.Component<
    *
    * @return Type: React.ReactNode - JSX with buttons
    */
-  getButtons(): React.ReactNode {
+  getEditButtons(): React.ReactNode {
     if (this.props.isEditing(this.props.threadId) && this.props.expanded) {
-      document.getElementById('editBox') !== null &&
-        document.getElementById('editBox').focus();
+      let element = document.getElementById('editBox') as HTMLTextAreaElement;
+      if (element !== null) {
+        // Focus editbox and set cursor to the end
+        element.focus();
+        element.setSelectionRange(element.value.length, element.value.length);
+      }
       return (
         <div
           style={this.styles['jp-commenting-thread-header-edit-buttons-area']}
         >
-          {this.getSaveButton()}
-          {this.getCancelButton()}
+          {this.getEditSaveButton()}
+          {this.getEditCancelButton()}
         </div>
       );
     }
   }
 
   /**
-   * Creates and returns reply button
+   * Creates and returns save button
    *
    * @return Type: React.ReactNode
    */
-  getSaveButton(): React.ReactNode {
+  getEditSaveButton(): React.ReactNode {
     return (
       <button
-        onClick={this.handleSaveButton}
+        onClick={this.handleEditSaveButton}
         className="jp-commenting-button-blue"
         type="button"
         disabled={this.state.editBox.trim() === ''}
@@ -381,10 +402,10 @@ export class CommentHeader extends React.Component<
    *
    * @return Type: React.ReactNode
    */
-  getCancelButton(): React.ReactNode {
+  getEditCancelButton(): React.ReactNode {
     return (
       <button
-        onClick={this.handleCancelButton}
+        onClick={this.handleEditCancelButton}
         className="jp-commenting-button-red"
         type="button"
       >

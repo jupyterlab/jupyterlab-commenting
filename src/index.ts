@@ -10,14 +10,13 @@ import { IEditorTracker } from '@jupyterlab/fileeditor';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+
 import {
   IActiveDataset,
   IConverterRegistry,
   ActiveDataset
 } from '@jupyterlab/dataregistry';
-
-import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
-import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
 
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
@@ -59,19 +58,13 @@ export function activate(
   app: JupyterFrontEnd,
   activeDataset: IActiveDataset,
   labShell: ILabShell,
-  comments: IMetadataCommentsService,
-  people: IMetadataPeopleService,
   converters: IConverterRegistry,
   tracker: IEditorTracker,
-  docManager: IDocumentManager
+  docManager: IDocumentManager,
+  browserFactory: IFileBrowserFactory
 ) {
   // Create receiver object
-  receiver = new CommentingDataReceiver(
-    states,
-    comments,
-    people,
-    activeDataset
-  );
+  receiver = new CommentingDataReceiver(states, activeDataset, browserFactory);
 
   // Create CommentingUI React widget
   commentingUI = new CommentingWidget(provider, receiver);
@@ -116,11 +109,10 @@ const commentingExtension: JupyterFrontEndPlugin<void> = {
   requires: [
     IActiveDataset,
     ILabShell,
-    IMetadataCommentsService,
-    IMetadataPeopleService,
     IConverterRegistry,
     IEditorTracker,
-    IDocumentManager
+    IDocumentManager,
+    IFileBrowserFactory
   ],
   activate
 };

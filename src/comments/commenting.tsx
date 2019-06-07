@@ -8,7 +8,7 @@ import { UseSignal } from '@jupyterlab/apputils';
 
 import { Signal, ISignal } from '@phosphor/signaling';
 
-import { IPerson } from '../types';
+import { IPerson } from './service';
 
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
@@ -59,7 +59,6 @@ export class CommentingWidget extends ReactWidget {
     this.setNewThreadActive = this.setNewThreadActive.bind(this);
     this.setReplyActiveCard = this.setReplyActiveCard.bind(this);
     this.getReplyActiveCard = this.getReplyActiveCard.bind(this);
-    this.removeAnnotationById = this.removeAnnotationById.bind(this);
     this.getNewThreadButton = this.getNewThreadButton.bind(this);
     this.update = this.update.bind(this);
     this.render = this.render.bind(this);
@@ -205,32 +204,33 @@ export class CommentingWidget extends ReactWidget {
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
   getAllCommentCards(): React.ReactNode[] {
-    const response = this._provider.getState('response') as any;
+    const threads = this._provider.getState('response') as any;
     try {
-      const allData: any = response.data.annotationsByTarget;
-
       let cards: React.ReactNode[] = [];
-      for (let key in allData) {
+      for (let index in threads) {
+        let curThread = threads[index];
+
         if (
           this.shouldRenderCard(
-            allData[key].resolved,
+            threads[index].resolved,
             (this._provider.getState('expandedCard') as string) !== ' ',
-            (this._provider.getState('expandedCard') as string) ===
-              allData[key].id
+            (this._provider.getState('expandedCard') as string) === curThread.id
           )
         ) {
           cards.push(
             <CommentCard
-              data={allData[key]}
-              threadId={allData[key].id}
+              data={curThread}
+              threadId={curThread.id}
               setExpandedCard={this.setExpandedCard}
               checkExpandedCard={this.getExpandedCard}
               setReplyActiveCard={this.setReplyActiveCard}
               checkReplyActiveCard={this.getReplyActiveCard}
-              resolved={allData[key].resolved}
+              resolved={curThread.resolved}
               putComment={this._receiver.putComment}
-              setCardValue={this._receiver.setResolvedValue}
-              removeAnnotationById={this.removeAnnotationById}
+              putCommentEdit={this._receiver.putCommentEdit}
+              putThreadEdit={this._receiver.putThreadEdit}
+              deleteComment={this._receiver.deleteComment}
+              setResolveValue={this._receiver.setResolvedValue}
               target={this._provider.getState('target') as string}
               checkIsEditing={this.checkIsEditing}
               setIsEditing={this.setIsEditing}
@@ -357,10 +357,6 @@ export class CommentingWidget extends ReactWidget {
     }
 
     this._receiver.setState({ isEditing: key });
-  }
-
-  removeAnnotationById(threadId: string) {
-    this._receiver.removeThreadById(threadId);
   }
 
   /**

@@ -2,17 +2,46 @@ import * as React from 'react';
 
 interface ICommentProps {
   /**
-   * Actual comment from the user
+   * The contents of the comment by the user
    *
    * @type string
    */
-  context?: string;
+  context: string;
   /**
-   * State if the CommentCard is expanded
+   * Deletes a comment based on index
+   *
+   * @param index Type: number - index of comment
+   */
+  deleteComment(index: number): void;
+  /**
+   * State when the CommentCard is expanded
    *
    * @type string
    */
   expanded: boolean;
+  /**
+   * State when the comment is edited
+   *
+   * @type boolean
+   */
+  edited: boolean;
+  /**
+   * Handles expanding
+   *
+   * @type void
+   */
+  handleShouldExpand: (state: boolean) => void;
+  /**
+   * Index of comment in datastore
+   */
+  index: number;
+  /**
+   * Checks if a comment is being edited
+   *
+   * @param key Type: string - key of what is being edited,
+   * for comment it is the index
+   */
+  isEditing(key: string): boolean;
   /**
    * Name of person commenting
    *
@@ -26,37 +55,6 @@ interface ICommentProps {
    */
   photo: string;
   /**
-   * State if thread is resolved
-   *
-   * @type boolean
-   */
-  resolved: boolean;
-  /**
-   * Time comment was made
-   *
-   * @type string
-   */
-  timestamp: string;
-  /**
-   * Handles expanding
-   *
-   * @type void
-   */
-  handleShouldExpand: (state: boolean) => void;
-  /**
-   * State if is editing a comment
-   *
-   * @param key Type: string - key of what is being edited,
-   * for comment it is the index
-   */
-  isEditing(key: string): boolean;
-  /**
-   * Handles setting the state of isEditing
-   *
-   * @param key Type: string - sets the state to the given key (index)
-   */
-  setIsEditing(key: string): void;
-  /**
    * Used to update a comment to the edited value
    *
    * @param comment Type: string - new comment to push
@@ -64,9 +62,23 @@ interface ICommentProps {
    */
   pushEdit(comment: string, index: number): void;
   /**
-   * Index of comment in datastore
+   * State if thread is resolved
+   *
+   * @type boolean
    */
-  index: number;
+  resolved: boolean;
+  /**
+   * Handles setting the state of isEditing
+   *
+   * @param key Type: string - sets the state to the given key (index)
+   */
+  setIsEditing(key: string): void;
+  /**
+   * Time comment was made
+   *
+   * @type string
+   */
+  timestamp: string;
 }
 
 /**
@@ -74,13 +86,17 @@ interface ICommentProps {
  */
 interface ICommentStates {
   /**
-   * Boolean to track if mouse is hovering over comment
+   * Tracks if the comment was edited when the edit button is clicked
    */
-  hover: boolean;
+  contextEdited: boolean;
   /**
    * Text of the edit box
    */
   editBox: string;
+  /**
+   * Boolean to track if mouse is hovering over comment
+   */
+  hover: boolean;
 }
 
 /**
@@ -97,13 +113,14 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
 
     this.state = {
       hover: false,
-      editBox: ''
+      editBox: '',
+      contextEdited: false
     };
 
     this.handleChangeEditBox = this.handleChangeEditBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleCancelButton = this.handleCancelButton.bind(this);
-    this.handleSaveButton = this.handleSaveButton.bind(this);
+    this.handleCancelSaveButton = this.handleCancelSaveButton.bind(this);
+    this.handleEditSaveButton = this.handleEditSaveButton.bind(this);
   }
 
   /**
@@ -133,7 +150,9 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
                   this.styles['jp-commenting-annotation-timestamp-resolved']
                 }
               >
-                {this.getStyledTimeStamp()}
+                {(this.props.edited &&
+                  'Edited on: ' + this.getStyledTimeStamp()) ||
+                  this.getStyledTimeStamp()}
               </p>
             </div>
           </div>
@@ -167,7 +186,9 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
             </div>
             <div style={this.styles['jp-commenting-annotation-timestamp-area']}>
               <p style={this.styles['jp-commenting-annotation-timestamp']}>
-                {this.getStyledTimeStamp()}
+                {(this.props.edited &&
+                  'Edited on: ' + this.getStyledTimeStamp()) ||
+                  this.getStyledTimeStamp()}
               </p>
               {this.state.hover &&
                 this.props.expanded &&
@@ -194,6 +215,7 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
                     <a
                       style={this.styles['jp-commenting-annotation-more']}
                       className={'jp-commenting-clickable-text'}
+                      onClick={() => this.props.deleteComment(this.props.index)}
                     >
                       Delete
                     </a>
@@ -210,7 +232,9 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
               id="editBox"
               value={
                 this.state.editBox.trim() === ''
-                  ? this.state.editBox.trim()
+                  ? this.state.contextEdited
+                    ? this.state.editBox
+                    : this.props.context
                   : this.state.editBox
               }
               onChange={this.handleChangeEditBox}
@@ -223,7 +247,7 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
                 : this.props.context}
             </p>
           )}
-          {this.getButtons()}
+          {this.getEditButtons()}
         </div>
       </div>
     );
@@ -235,8 +259,9 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    * @param e Type: React.KeyboardEvent - keyboard event
    */
   handleKeyPress(e: React.KeyboardEvent): void {
+    // Handles saving on enter key
     if (this.state.editBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
-      this.handleSaveButton();
+      this.handleEditSaveButton();
       document.getElementById('commentBox').blur();
     }
   }
@@ -247,23 +272,23 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
    */
   handleChangeEditBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
-    this.setState({ editBox: e.target.value });
+    this.setState({ editBox: e.target.value, contextEdited: true });
   }
 
   /**
    * Handles clicking the save button
    */
-  handleSaveButton(): void {
+  handleEditSaveButton(): void {
     this.props.pushEdit(this.state.editBox, this.props.index);
-    this.setState({ editBox: '' });
+    this.setState({ editBox: '', contextEdited: false });
     this.props.setIsEditing('');
   }
 
   /**
    * Handles states when cancel is pressed
    */
-  handleCancelButton(): void {
-    this.setState({ editBox: '' });
+  handleCancelSaveButton(): void {
+    this.setState({ editBox: '', contextEdited: false });
     this.props.setIsEditing('');
   }
 
@@ -272,17 +297,21 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    *
    * @return Type: React.ReactNode - JSX with buttons
    */
-  getButtons(): React.ReactNode {
+  getEditButtons(): React.ReactNode {
     if (
       this.props.isEditing(this.props.index.toString()) &&
       this.props.expanded
     ) {
-      document.getElementById('editBox') !== null &&
-        document.getElementById('editBox').focus();
+      let element = document.getElementById('editBox') as HTMLTextAreaElement;
+      if (element !== null) {
+        // Focus editbox and set cursor to the end
+        element.focus();
+        element.setSelectionRange(element.value.length, element.value.length);
+      }
       return (
         <div style={this.styles['jp-commenting-annotation-edit-buttons-area']}>
-          {this.getSaveButton()}
-          {this.getCancelButton()}
+          {this.getEditSaveButton()}
+          {this.getEditCancelButton()}
         </div>
       );
     }
@@ -293,10 +322,10 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    *
    * @return Type: React.ReactNode
    */
-  getSaveButton(): React.ReactNode {
+  getEditSaveButton(): React.ReactNode {
     return (
       <button
-        onClick={this.handleSaveButton}
+        onClick={this.handleEditSaveButton}
         className="jp-commenting-button-blue"
         type="button"
         disabled={this.state.editBox.trim() === ''}
@@ -311,10 +340,10 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
    *
    * @return Type: React.ReactNode
    */
-  getCancelButton(): React.ReactNode {
+  getEditCancelButton(): React.ReactNode {
     return (
       <button
-        onClick={this.handleCancelButton}
+        onClick={this.handleCancelSaveButton}
         className="jp-commenting-button-red"
         type="button"
       >
@@ -451,6 +480,13 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
       boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-annotation-timestamp': {
+      fontSize: '.7em',
+      color: 'var(--jp-ui-font-color1)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-annotation-edited': {
       fontSize: '.7em',
       color: 'var(--jp-ui-font-color1)',
       whiteSpace: 'nowrap' as 'nowrap',

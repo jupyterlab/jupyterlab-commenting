@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { IPerson } from '../../types';
+import { IPerson } from '../service';
 import { CommentingWidget } from '../commenting';
 import { Signal } from '@phosphor/signaling';
 
@@ -12,23 +12,21 @@ interface INewThreadCardProps {
    */
   creator: IPerson;
   /**
-   * Function to put comment back to server
+   * New thread created signal
+   */
+  newThreadCreated: Signal<CommentingWidget, boolean>;
+  /**
+   * Creates new thread
    *
    * @param comment Type: string -  the comment to be added
-   * @param tag Type: string - category tag / label for thread
-   *
-   * @type void function
    */
-  putThread: (comment?: string) => void;
+  putThread(comment: string): void;
   /**
-   * Sets the state if a new thread is to be created
+   * Sets the state if this component is visible
    *
    * @param state Type: boolean - state to set to
-   *
-   * @type void function
    */
-  setNewThreadActive: (state: boolean) => void;
-  newThreadCreated: Signal<CommentingWidget, boolean>;
+  setNewThreadActive(state: boolean): void;
 }
 
 interface INewThreadCardStates {
@@ -125,12 +123,18 @@ export class NewThreadCard extends React.Component<
     this.setState({ inputBox: e.target.value });
   }
 
+  /**
+   * Handles comment button
+   */
   handleCreateNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
     this.props.newThreadCreated.emit(true);
   }
 
+  /**
+   * Handles cancel button
+   */
   handleCancelThread(): void {
     this.setState({ inputBox: '' });
     this.props.setNewThreadActive(false);

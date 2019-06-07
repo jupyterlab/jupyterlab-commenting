@@ -17,7 +17,7 @@ interface ICommentCardProps {
    *
    * @return boolean: true if card is expanded, false if not
    */
-  checkExpandedCard: (cardId: string) => boolean;
+  checkExpandedCard(cardId: string): boolean;
   /**
    * Used to check if the threadId passed in has reply box active
    *
@@ -25,7 +25,15 @@ interface ICommentCardProps {
    *
    * @return type: boolean - True if cardId has reply box open, false if not active
    */
-  checkReplyActiveCard: (cardId: string) => boolean;
+  checkReplyActiveCard(cardId: string): boolean;
+  /**
+   * Used to check if a key is being edited
+   *
+   * @param key Type: string - key of what is being edited
+   *
+   * @return type boolean: true if editing, false if not editing
+   */
+  checkIsEditing(key: string): boolean;
   /**
    * Comment thread data
    *
@@ -33,48 +41,74 @@ interface ICommentCardProps {
    */
   data: any;
   /**
-   * Pushed comment back to MetadataCommentsService
+   * Used to delete a comment in a comment thread
    *
-   * @param comment Type: string - comment message
-   * @param cardId Type: String - commend card / thread the comment applies to
+   * @param threadId Type: string - id of thread that contains comment to delete
+   * @param index Type: number - index of comment in the comment data store to delete
    */
-  putComment: (threadId: string, value: string, index?: number) => void;
+  deleteComment(threadId: string, index: number): void;
   /**
-   * Is the card resolved
+   * Adds comment to comment data store
+   *
+   * @param target Type: string - path of the file the comment relates to
+   * @param threadId Type: string - id of the thread the comment relates to
+   * @param value Type: string - value of comment
+   */
+  putComment(target: string, threadId: string, value: string): void;
+  /**
+   * Updates a comment with a new value
+   *
+   * @param target Type: string - path of the file the comment relates to
+   * @param threadId Type: string - id of the thread that contains the comment
+   * @param value Type: string
+   * @param index
+   */
+  putCommentEdit(
+    target: string,
+    threadId: string,
+    value: string,
+    index: number
+  ): void;
+  /**
+   *
+   * @param threadId Type: string - id of the thread to be edited
+   * @param value Type: string - new value of thread content
+   */
+  putThreadEdit(threadId: string, value: string): void;
+  /**
+   * Resolve state of the thread
    *
    * @type boolean
    */
   resolved: boolean;
   /**
-   * Function to set the state of the current expanded card in "App.tsx"
+   * Sets the resolve state of a thread
    *
-   * @param cardId - string: Card unique id
+   * @param target Type: string - path of file thread relates to
+   * @param threadId Type: string - id of thread to set resolve on
+   * @param value Type: boolean - resolve value to set
    */
-  setExpandedCard: (cardId: string) => void;
+  setResolveValue(target: string, threadId: string, value: boolean): void;
   /**
-   * Sets this.state.replyActiveCard to the passed in cardId
+   * Function to set the state of the current expanded card
    *
-   * @param cardId Type: string - CommentCard unique id
+   * @param threadId - string: thread unique id
    */
-  setReplyActiveCard: (cardId: string) => void;
+  setExpandedCard(threadId: string): void;
   /**
-   * Sets the value of the given key value pair in specific itemId and cardId
+   * Sets the commenting state of the reply box being opened
    *
-   * @param cardId Type: string - id of card to set value on
-   * @param key Type: string - key of value to set
-   * @param value Type: boolean - value to set to key
-   *
-   * @type void function
+   * @param threadId Type: string - id of thread
    */
-  setCardValue(target: string, threadId: string, value: boolean): void;
+  setReplyActiveCard(threadId: string): void;
   /**
-   * Removes a thread by its id
+   * Used to set what is being edited
    *
-   * @param threadId Type: string - removes thread by its id
+   * @param key Type: string - key of what is being edited
    */
-  removeAnnotationById(threadId: string): void;
+  setIsEditing(key: string): void;
   /**
-   * Unique string to identify a card
+   * Unique string to identify a thread
    *
    * @type string
    */
@@ -83,18 +117,6 @@ interface ICommentCardProps {
    * Path of file used to itemize comment thread to file
    */
   target: string;
-  /**
-   * Used to check if a key is being edited
-   *
-   * @param key Type: string - key of what is being edited
-   */
-  checkIsEditing(key: string): boolean;
-  /**
-   * Used to set what is being edited
-   *
-   * @param key Type: string - key of what is being edited
-   */
-  setIsEditing(key: string): void;
 }
 
 /**
@@ -115,6 +137,8 @@ interface ICommentCardStates {
   shouldExpand: boolean;
   /**
    * Tracks when a comment is being edited
+   *
+   * @type string
    */
   isEditing: string;
 }
@@ -140,12 +164,13 @@ export class CommentCard extends React.Component<
     this.handleReplyOpen = this.handleReplyOpen.bind(this);
     this.handleReplyClose = this.handleReplyClose.bind(this);
     this.handleExpandAndReply = this.handleExpandAndReply.bind(this);
-    this.getInput = this.getInput.bind(this);
+    this.putComment = this.putComment.bind(this);
     this.handleResolve = this.handleResolve.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
     this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleShouldExpand = this.handleShouldExpand.bind(this);
     this.pushEdit = this.pushEdit.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
   }
 
   /**
@@ -206,7 +231,7 @@ export class CommentCard extends React.Component<
   }
 
   /**
-   * Handle a CommentCard expanding
+   * Handle a thread expanding
    */
   handleExpand(): void {
     this.props.setExpandedCard(this.props.threadId);
@@ -216,7 +241,7 @@ export class CommentCard extends React.Component<
   }
 
   /**
-   * Handles a CommentCard shrinking
+   * Handles a thread shrinking
    */
   handleShrink(): void {
     this.props.setExpandedCard(' ');
@@ -226,14 +251,14 @@ export class CommentCard extends React.Component<
   }
 
   /**
-   * Sets the state of replyActive to true
+   * Sets the value of replyActive to the thread with reply active
    */
   handleReplyOpen(): void {
     this.props.setReplyActiveCard(this.props.threadId);
   }
 
   /**
-   * Sets the state of replyActive to false
+   * Sets the value of replyActive to no related value
    */
   handleReplyClose(): void {
     this.props.setReplyActiveCard(' ');
@@ -248,12 +273,13 @@ export class CommentCard extends React.Component<
   }
 
   /**
-   * Passes resolve state to setCardValue in App.tsx
+   * Handles setting the resolve state in comments store and firing the
+   * event based on the state
    *
    * @param resolved Type: boolean - resolve state
    */
   handleResolve(): void {
-    this.props.setCardValue(
+    this.props.setResolveValue(
       this.props.target,
       this.props.threadId,
       !this.props.resolved
@@ -271,12 +297,12 @@ export class CommentCard extends React.Component<
   }
 
   /**
-   * Passes comment message to putComment in App.tsx
+   * Pushed comment to comments store
    *
    * @param comment Type: string - comment message
    */
-  getInput(comment: string): void {
-    this.props.putComment(this.props.threadId, comment);
+  putComment(comment: string): void {
+    this.props.putComment(this.props.target, this.props.threadId, comment);
     this.handleReplyClose();
   }
 
@@ -287,7 +313,21 @@ export class CommentCard extends React.Component<
    * @param index Type: number - index of comment to push edits to
    */
   pushEdit(comment: string, index: number): void {
-    this.props.putComment(this.props.threadId, comment, index);
+    this.props.putCommentEdit(
+      this.props.target,
+      this.props.threadId,
+      comment,
+      index
+    );
+  }
+
+  /**
+   * Deletes a comment from the comment store based on its index
+   *
+   * @param index Type: number - index of comment in comments store
+   */
+  deleteComment(index: number): void {
+    this.props.deleteComment(this.props.threadId, index);
   }
 
   /**
@@ -307,11 +347,13 @@ export class CommentCard extends React.Component<
             timestamp={this.props.data.body[key].created}
             photo={this.props.data.body[key].creator.image}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
+            edited={this.props.data.body[key].edited}
             resolved={this.props.resolved}
             handleShouldExpand={this.handleShouldExpand}
             isEditing={this.props.checkIsEditing}
             setIsEditing={this.props.setIsEditing}
             pushEdit={this.pushEdit}
+            deleteComment={this.deleteComment}
             index={key}
           />
         );
@@ -333,15 +375,16 @@ export class CommentCard extends React.Component<
         context={this.props.data.body[0].value}
         timestamp={this.props.data.body[0].created}
         photo={this.props.data.body[0].creator.image}
+        edited={this.props.data.body[0].edited}
         expanded={this.props.checkExpandedCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
         handleShrink={this.handleShrink}
         handleResolve={this.handleResolve}
         handleShouldExpand={this.handleShouldExpand}
+        putThreadEdit={this.props.putThreadEdit}
         hover={this.state.hover}
         threadId={this.props.threadId}
-        removeAnnotationById={this.props.removeAnnotationById}
         isEditing={this.props.checkIsEditing}
         setIsEditing={this.props.setIsEditing}
       />
@@ -367,7 +410,7 @@ export class CommentCard extends React.Component<
           handleReplyOpen={this.handleReplyOpen}
           handleReplyClose={this.handleReplyClose}
           expandAndReply={this.handleExpandAndReply}
-          getInput={this.getInput}
+          getInput={this.putComment}
           handleResolve={this.handleResolve}
         />
       );

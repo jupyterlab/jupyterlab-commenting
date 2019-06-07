@@ -9,7 +9,7 @@ interface IUserSetProps {
    *
    * @param user Type: string - username for github
    */
-  setUserInfo: (user: string) => void;
+  setUserInfo(user: string): void;
 }
 
 /**

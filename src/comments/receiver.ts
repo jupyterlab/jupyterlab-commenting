@@ -1,13 +1,12 @@
 import { IActiveDataset, ActiveDataset } from '@jupyterlab/dataregistry';
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { ISignal, Signal } from '@phosphor/signaling';
 import { JSONObject } from '@phosphor/coreutils';
 
-import { IMetadataCommentsService } from 'jupyterlab-metadata-service';
-import { IMetadataPeopleService } from 'jupyterlab-metadata-service';
-
 import { CommentingStates } from './states';
-import { ITextIndicator } from '../types';
+import { IPerson } from './service';
+import { CommentsService } from './service';
 
 /**
  * Handles all interactions with data that is received. Interacts with CommentingStates
@@ -29,20 +28,17 @@ export class CommentingDataReceiver {
   // Signal when new comments are queried
   private _commentsQueried = new Signal<this, void>(this);
 
-  // GraphQL commenting and people services
-  private _comments: IMetadataCommentsService;
-  private _people: IMetadataPeopleService;
+  private _commentService: CommentsService;
 
   constructor(
     states: CommentingStates,
-    comments: IMetadataCommentsService,
-    people: IMetadataPeopleService,
-    activeDataset: IActiveDataset
+    activeDataset: IActiveDataset,
+    browserFactory: IFileBrowserFactory
   ) {
     this._states = states;
     this._activeTarget = activeDataset.signal;
-    this._comments = comments;
-    this._people = people;
+
+    this._commentService = new CommentsService(browserFactory);
 
     // Initial states
     this.setState({
@@ -66,7 +62,10 @@ export class CommentingDataReceiver {
     this.getAllComments = this.getAllComments.bind(this);
     this.putComment = this.putComment.bind(this);
     this.putThread = this.putThread.bind(this);
+    this.putCommentEdit = this.putCommentEdit.bind(this);
+    this.putThreadEdit = this.putThreadEdit.bind(this);
     this.setResolvedValue = this.setResolvedValue.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
   }
 
@@ -88,24 +87,21 @@ export class CommentingDataReceiver {
       this._states.setState({ response: {}, curTargetHasThreads: false });
       return;
     }
-    this._comments
-      .queryAllByTarget(this._states.getState('target') as string)
-      .then((response: any) => {
-        if (response.data.annotationsByTarget[0] !== undefined) {
-          this._states.setState({
-            curTargetHasThreads: true,
-            response: response
-          });
-        } else {
-          this._states.setState({
-            curTargetHasThreads: false,
-            response: response
-          });
-        }
-      })
-      .catch(err => {
-        return;
+    let threads = this._commentService.getThreadsByTarget(this._states.getState(
+      'target'
+    ) as string);
+
+    if (threads) {
+      this._states.setState({
+        curTargetHasThreads: true,
+        response: threads
       });
+    } else {
+      this._states.setState({
+        curTargetHasThreads: false,
+        response: threads
+      });
+    }
 
     this._commentsQueried.emit(void 0);
   }
@@ -116,14 +112,35 @@ export class CommentingDataReceiver {
    * @param value Type: string - comment message
    * @param threadId Type: string - commend card / thread the comment applies to
    */
-  putComment(threadId: string, value: string, index?: number): void {
-    console.log(index);
-    this._comments.createComment(
+  putComment(target: string, threadId: string, value: string): void {
+    this._commentService.createComment(
+      target,
       threadId,
       value,
-      this._states.getState('creator'),
-      index
+      (this._states.getState('creator') as Object) as IPerson
     );
+
+    this._newDataReceived.emit(void 0);
+  }
+
+  putCommentEdit(
+    target: string,
+    threadId: string,
+    value: string,
+    index: number
+  ): void {
+    this._commentService.editComment(target, threadId, value, index);
+
+    this._newDataReceived.emit(void 0);
+  }
+
+  putThreadEdit(threadId: string, value: string): void {
+    this._commentService.editThread(
+      this._states.getState('target') as string,
+      threadId,
+      value
+    );
+
     this._newDataReceived.emit(void 0);
   }
 
@@ -133,11 +150,10 @@ export class CommentingDataReceiver {
    * @param value Type: string - comment message
    */
   putThread(value: string): void {
-    this._comments.createThread(
+    this._commentService.createThread(
       this._states.getState('target') as string,
       value,
-      this._states.getState('creator'),
-      (this._states.getState('latestIndicatorInfo') as object) as ITextIndicator
+      (this._states.getState('creator') as Object) as IPerson
     );
     this._newDataReceived.emit(void 0);
 
@@ -154,7 +170,7 @@ export class CommentingDataReceiver {
    * @emits _newDataReceived Signal
    */
   setResolvedValue(target: string, threadId: string, value: boolean): void {
-    this._comments.setResolvedValue(target, threadId, value);
+    this._commentService.setResolvedValue(target, threadId, value);
     this._newDataReceived.emit(void 0);
   }
 
@@ -163,12 +179,15 @@ export class CommentingDataReceiver {
     threadId: string,
     value: object
   ): void {
-    this._comments.setCurrentIndicator(target, threadId, value);
     this._newDataReceived.emit(void 0);
   }
 
-  removeThreadById(threadId: string): void {
-    this._comments.removeAnnotationById(threadId);
+  deleteComment(threadId: string, index: number): void {
+    this._commentService.deleteComment(
+      this._states.getState('target') as string,
+      threadId,
+      index
+    );
     this._newDataReceived.emit(void 0);
   }
 
@@ -201,42 +220,33 @@ export class CommentingDataReceiver {
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      this._people
-        .queryAll()
-        .then((response: any) => {
-          if (response.data.people.length !== 0) {
-            for (let index in response.data.people) {
-              if (
-                response.data.people[index].name === name &&
-                !this._states.getState('userSet')
-              ) {
-                this._states.setState({
-                  creator: {
-                    id: response.data.people[index].id,
-                    name: name,
-                    image: myJSON.avatar_url
-                  },
-                  userSet: true
-                });
-              }
-            }
-            if (!this._states.getState('userSet')) {
-              this._people.create(name, '', myJSON.avatar_url);
-              let personCount: number = Number(response.data.people.length + 2);
-              this._states.setState({
-                creator: {
-                  id: 'person/' + personCount,
-                  name: name,
-                  image: myJSON.avatar_url
-                },
-                userSet: true
-              });
-            }
+      let persons = this._commentService.getAllPersons();
+
+      if (persons) {
+        for (let key in persons) {
+          if (persons[key].name === name && !this._states.getState('userSet')) {
+            this._states.setState({
+              creator: {
+                id: key,
+                name: name,
+                image: myJSON.avatar_url
+              },
+              userSet: true
+            });
           }
-        })
-        .catch(err => {
-          return;
+        }
+      }
+      if (!this._states.getState('userSet')) {
+        let id = this._commentService.createPerson(name, myJSON.avatar_url);
+        this._states.setState({
+          creator: {
+            id: id,
+            name: name,
+            image: myJSON.avatar_url
+          },
+          userSet: true
         });
+      }
     } else {
       window.alert('Username not found');
     }

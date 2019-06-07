@@ -50,8 +50,8 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
     throw new Error('Method not implemented.');
   }
   getCurrentIndicatorInfo():
-    | import('../types').ITextIndicator
-    | import('../types').INotebookIndicator {
+    | import('./service').ITextIndicator
+    | import('./service').INotebookIndicator {
     throw new Error('Method not implemented.');
   }
   putIndicators(): void {}
