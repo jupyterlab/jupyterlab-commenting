@@ -5,6 +5,7 @@ import { CommentHeader } from './CommentHeader';
 import { CommentBody } from './CommentBody';
 import { CommentFooter } from './CommentFooter';
 import { Comment } from './Comment';
+import { ICommentThread } from '../service';
 
 /**
  * React Props interface
@@ -37,9 +38,9 @@ interface ICommentCardProps {
   /**
    * Comment thread data
    *
-   * @type any
+   * @type ICommentThread
    */
-  data: any;
+  data: ICommentThread;
   /**
    * Used to delete a comment in a comment thread
    *

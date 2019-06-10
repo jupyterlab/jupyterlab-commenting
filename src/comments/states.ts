@@ -1,6 +1,5 @@
-import { JSONObject, JSONValue } from '@phosphor/coreutils';
-
 import { Signal, ISignal } from '@phosphor/signaling';
+import { ICommentThread, IPerson } from './service';
 
 /**
  * CommentingStates is used as a state holder and handler for the extension
@@ -9,7 +8,7 @@ import { Signal, ISignal } from '@phosphor/signaling';
  */
 export class CommentingStates {
   // JSONObject to hold all states
-  private _state: JSONObject;
+  private _state: ICommentStates;
 
   // Signal when states update
   private _stateUpdated = new Signal<this, void>(this);
@@ -24,7 +23,7 @@ export class CommentingStates {
    * @param key Type: string - key value for data
    * @param value Type: JSONValue - data to store
    */
-  protected set(key: string, value: JSONValue): void {
+  protected set(key: string, value: ICommentStateValue): void {
     if (this._state[key] === value) {
       return;
     }
@@ -37,7 +36,7 @@ export class CommentingStates {
    *
    * @param values Type: JSONObject - all states to be updated / set / created
    */
-  setState(values: JSONObject): void {
+  setState(values: ICommentStates): void {
     for (let key in values) {
       this.set(key, values[key]);
     }
@@ -49,14 +48,14 @@ export class CommentingStates {
    *
    * @param key Type: string - key of data to access
    */
-  getState(key: string): JSONValue {
+  getState(key: string): ICommentStateValue {
     return this._state[key];
   }
 
   /**
    * Returns entire state object as JSON
    */
-  getJSON(): JSONObject {
+  getAllStates(): ICommentStates {
     return this._state;
   }
 
@@ -67,3 +66,15 @@ export class CommentingStates {
     return this._stateUpdated;
   }
 }
+
+export interface ICommentStates {
+  [key: string]: ICommentStateValue;
+}
+
+export declare type ICommentStateValue =
+  | string
+  | boolean
+  | number
+  | ICommentThread
+  | IPerson
+  | Object;

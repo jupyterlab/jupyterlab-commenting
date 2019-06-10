@@ -2,9 +2,8 @@ import { IActiveDataset, ActiveDataset } from '@jupyterlab/dataregistry';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { ISignal, Signal } from '@phosphor/signaling';
-import { JSONObject } from '@phosphor/coreutils';
 
-import { CommentingStates } from './states';
+import { CommentingStates, ICommentStates } from './states';
 import { IPerson } from './service';
 import { CommentsService } from './service';
 
@@ -75,7 +74,7 @@ export class CommentingDataReceiver {
    * @param values Type: JSONObject - values that need to be set / updated / created
    * in CommentingStates Object
    */
-  setState(values: JSONObject): void {
+  setState(values: ICommentStates): void {
     this._states.setState(values);
   }
 
