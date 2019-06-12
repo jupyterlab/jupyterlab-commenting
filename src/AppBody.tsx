@@ -9,7 +9,7 @@ interface IAppBodyProps {
    *
    * @type React.ReactNode
    */
-  cards?: React.ReactNode[];
+  cards: React.ReactNode[];
   /**
    * Tracks if card is expanded
    *
@@ -38,12 +38,16 @@ export class AppBody extends React.Component<IAppBodyProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     const items = this.props.cards.map((card, i) => <div key={i}>{card}</div>);
 
     return (
       <div
-        style={this.props.expanded ? this.bodyStyleExpanded : this.bodyStyle}
+        style={
+          this.props.expanded
+            ? this.styles['jp-commenting-body-area-expanded']
+            : this.styles['jp-commenting-body-area']
+        }
       >
         {!this.props.expanded && this.props.newThreadButton}
         {items}
@@ -54,22 +58,24 @@ export class AppBody extends React.Component<IAppBodyProps> {
   /**
    * CSS styles
    */
-  bodyStyle = {
-    width: '100%',
-    maxHeight: '81vh',
-    overflowY: 'scroll' as 'scroll',
-    overflowX: 'hidden' as 'hidden',
-    justifyContent: 'center',
-    padding: '4px'
-  };
-
-  bodyStyleExpanded = {
-    width: '100%',
-    maxHeight: '85vh',
-    overflowY: 'scroll' as 'scroll',
-    overflowX: 'hidden' as 'hidden',
-    justifyContent: 'center',
-    paddingRight: '5px',
-    paddingLeft: '5px'
+  styles = {
+    'jp-commenting-body-area': {
+      width: '100%',
+      maxHeight: '94%',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      boxSizing: 'border-box' as 'border-box',
+      justifyContent: 'center',
+      padding: '4px'
+    },
+    'jp-commenting-body-area-expanded': {
+      width: '100%',
+      maxHeight: '96%',
+      overflowY: 'scroll' as 'scroll',
+      overflowX: 'hidden' as 'hidden',
+      boxSizing: 'border-box' as 'border-box',
+      justifyContent: 'center',
+      padding: '4px'
+    }
   };
 }

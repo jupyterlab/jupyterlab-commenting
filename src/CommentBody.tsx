@@ -9,16 +9,22 @@ interface ICommentBodyProps {
    *
    * @type ReactNode[]
    */
-  comments?: React.ReactNode[];
+  comments: React.ReactNode[];
   /**
    * Tracks if card is expanded
    *
    * @type boolean
    */
   expanded: boolean;
+  /**
+   * Tracks if a thread is resolved
+   *
+   * @type boolean
+   */
+  resolved: boolean;
 }
 
-const _maxCommentsPerShrinkCard = 3;
+const _maxCommentsPerShrinkThread: number = 3;
 
 /**
  * CommentBody React Component
@@ -36,8 +42,12 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
   /**
    * React render function
    */
-  render() {
-    return <div style={this.styles.commentBodyStyle}>{this.getComments()}</div>;
+  render(): React.ReactNode {
+    return (
+      <div style={this.styles['jp-commenting-annotation-body-area']}>
+        {this.getComments()}
+      </div>
+    );
   }
 
   /**
@@ -49,7 +59,7 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
     let items: React.ReactNode;
     if (this.props.comments != null) {
       if (
-        this.props.comments.length <= _maxCommentsPerShrinkCard ||
+        this.props.comments.length <= _maxCommentsPerShrinkThread ||
         this.props.expanded
       ) {
         // Maps each Comment component into an individual div tag
@@ -58,10 +68,18 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
         ));
       } else if (!this.props.expanded) {
         items = (
-          <div>
+          <div
+            style={
+              this.props.resolved
+                ? this.styles[
+                    'jp-commenting-more-annotations-icon-area-resolved'
+                  ]
+                : this.styles['jp-commenting-more-annotations-icon-area']
+            }
+          >
             <span
               className={'jp-Icon jp-MoreHorizIcon'}
-              style={this.styles.circles}
+              style={this.styles['jp-commenting-more-annotations-icon']}
             />
             <div>{this.props.comments[this.props.comments.length - 1]}</div>
           </div>
@@ -77,14 +95,20 @@ export class CommentBody extends React.Component<ICommentBodyProps> {
    * CSS styles
    */
   styles = {
-    commentBodyStyle: {
+    'jp-commenting-annotation-body-area': {
       padding: '0px'
     },
-    circles: {
+    'jp-commenting-more-annotations-icon': {
       minWidth: '28px',
       minHeight: '28px',
       backgroundSize: '28px',
       transform: 'rotate(90deg)'
+    },
+    'jp-commenting-more-annotations-icon-area': {
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-more-annotations-icon-area-resolved': {
+      background: 'var(--jp-layout-color2)'
     }
   };
 }

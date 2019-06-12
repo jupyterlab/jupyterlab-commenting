@@ -5,23 +5,17 @@ import * as React from 'react';
  */
 interface IAppHeaderProps {
   /**
-   * Receives a value for a header
-   *
-   * @type string
-   */
-  header?: string;
-  /**
    * Tracks if card is expanded
    *
    * @type boolean
    */
-  cardExpanded?: boolean;
+  cardExpanded: boolean;
   /**
-   * Tracks if the new thread window is active
+   * Receives the AppHeaderOption component for render purposes
    *
-   * @type boolean
+   * @type React.ReactNode
    */
-  threadOpen?: boolean;
+  headerOptions: React.ReactNode;
   /**
    * Function to set the state of the current expanded card in "App.tsx"
    *
@@ -29,11 +23,17 @@ interface IAppHeaderProps {
    */
   setExpandedCard: (cardId: string) => void;
   /**
-   * Recieves the AppHeaderOption componenet for render purposes
+   * Receives a value for a header
    *
-   * @type React.ReactNode
+   * @type string
    */
-  headerOptions: React.ReactNode;
+  target: string;
+  /**
+   * Tracks if the new thread window is active
+   *
+   * @type boolean
+   */
+  threadOpen: boolean;
 }
 
 /**
@@ -48,7 +48,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   constructor(props: IAppHeaderProps) {
     super(props);
 
-    this.renderAppHeader = this.renderAppHeader.bind(this);
+    this.getAppHeader = this.getAppHeader.bind(this);
     this.getBackButton = this.getBackButton.bind(this);
     this.setShrink = this.setShrink.bind(this);
   }
@@ -56,18 +56,33 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
-      <div style={this.styles['jp-commenting-header-area']}>
-        <div style={this.styles['jp-commenting-header-target-area']}>
+      <div style={this.styles['jp-commenting-app-header-area']}>
+        <div style={this.styles['jp-commenting-header-area']}>
           <div style={this.styles['jp-commenting-back-arrow-area']}>
-            {this.getCornerButton()}
+            {this.props.cardExpanded && this.props.target !== undefined
+              ? this.getBackButton()
+              : ''}
           </div>
-          {this.renderAppHeader(this.props.header)}
+          {this.getAppHeader(this.props.target)}
         </div>
         {this.shouldRenderOptions()}
       </div>
     );
+  }
+
+  /**
+   * Checks the state of New Thread
+   *
+   * @returns Type: React.ReactNode. If the New Thread is not open
+   */
+  shouldRenderOptions(): React.ReactNode {
+    if (!this.props.threadOpen && !this.props.cardExpanded) {
+      return <div>{this.props.headerOptions}</div>;
+    } else {
+      return <div />;
+    }
   }
 
   /**
@@ -77,20 +92,26 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * @param header Type: string
    * @return Type: React.ReactNode - App Header with correct string
    */
-  renderAppHeader(header: string): React.ReactNode {
+  getAppHeader(header: string): React.ReactNode {
     if (header === undefined) {
       return (
-        <div>
-          <h5 style={this.styles['jp-commenting-header-text-empty']}>
-            Select a file to view comments
-          </h5>
+        <div style={this.styles['jp-commenting-header-target-area']}>
+          <div style={this.styles['jp-commenting-header-label-area']}>
+            <label style={this.styles['jp-commenting-header-label']}>
+              Select a file to view comments
+            </label>
+          </div>
         </div>
       );
     } else {
       return (
-        <div style={this.styles['jp-commenting-header-target-icon-container']}>
-          {this.getFileIcon(this.props.header)}
-          <div style={this.styles['jp-commenting-header-label']}>{header}</div>
+        <div style={this.styles['jp-commenting-header-target-area']}>
+          {this.getFileIcon(this.props.target)}
+          <div style={this.styles['jp-commenting-header-label-area']}>
+            <label style={this.styles['jp-commenting-header-label']}>
+              {header}
+            </label>
+          </div>
         </div>
       );
     }
@@ -109,51 +130,28 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
         for (let value in this.fileTypes[key].extensions) {
           if (extensionName === this.fileTypes[key].extensions[value]) {
             return (
-              <span
-                className={this.fileTypes[key].iconClass}
-                style={this.styles['jp-commenting-header-icon']}
-              />
+              <div style={this.styles['jp-commenting-header-target-icon-area']}>
+                <span
+                  className={this.fileTypes[key].iconClass}
+                  style={this.styles['jp-commenting-header-target-icon']}
+                />
+              </div>
             );
           }
         }
       }
       return (
-        <span
-          className="jp-FileIcon"
-          style={this.styles['jp-commenting-header-icon']}
-        />
+        <div style={this.styles['jp-commenting-header-target-icon-area']}>
+          <span
+            className="jp-FileIcon"
+            style={this.styles['jp-commenting-header-target-icon']}
+          />
+        </div>
       );
     } catch {
       return <span />;
     }
   }
-
-  /**
-   * Checks the state of New Thread
-   *
-   * @returns Type: React.ReactNode. If the New Thread is not open
-   */
-  shouldRenderOptions(): React.ReactNode {
-    if (!this.props.threadOpen && !this.props.cardExpanded) {
-      return <div>{this.props.headerOptions}</div>;
-    } else {
-      return <div />;
-    }
-  }
-
-  /**
-   * Returns a button from the current state of the comment box
-   *
-   * @return Type: React.ReactNode
-   */
-  getCornerButton(): React.ReactNode {
-    if (this.props.cardExpanded && this.props.header !== undefined) {
-      return this.getBackButton();
-    } else {
-      return;
-    }
-  }
-
   /**
    * Renders a back button inside the header
    *
@@ -164,7 +162,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <input
         type="image"
-        style={this.styles['jp-commenting-header-button-back']}
+        style={this.styles['jp-commenting-header-back-arrow']}
         src={'https://i.ibb.co/xg3hwy8/Vector.png'}
         onClick={this.setShrink}
       />
@@ -254,62 +252,55 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    * App header styles
    */
   styles = {
-    'jp-commenting-header-area': {
+    'jp-commenting-app-header-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
-      borderBottom: '1px solid #e0e0e0',
+      borderBottom: '1px solid var(--jp-border-color1)',
       boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-header-area': {
+      display: 'flex',
+      flexShrink: 1,
+      flexDirection: 'row' as 'row',
+      padding: '4px',
+      minWidth: '52px'
+    },
+    'jp-commenting-back-arrow-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      justifyContent: 'center',
+      width: '20px'
+    },
+    'jp-commenting-header-back-arrow': {
+      width: '12px',
+      height: '12px'
     },
     'jp-commenting-header-target-area': {
       display: 'flex',
       flexDirection: 'row' as 'row',
-      paddingTop: '4px',
-      paddingBottom: '4px',
-      fontSize: 'var(--jp-ui-font-size1)'
-    },
-    'jp-commenting-back-arrow-area': {
-      width: '20px',
-      marginLeft: '4px'
-    },
-    'jp-commenting-header-text-empty': {
-      background: 'white',
-      fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var( --jp-ui-font-color2)',
-      fontWeight: 400,
-      margin: '0px',
-      paddingLeft: '4px',
-      textAlign: 'left' as 'left',
-      whiteSpace: 'nowrap' as 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
+      minWidth: '52px',
+      paddingLeft: '8px',
       flexShrink: 1
     },
-    'jp-commenting-header-target-icon-container': {
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      minWidth: '75px',
-      paddingLeft: '8px'
+    'jp-commenting-header-target-icon-area': {
+      display: 'flex'
     },
-    'jp-commenting-header-label': {
-      fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var(--jp-font-color0)',
-      paddingLeft: '4px',
-      textAlign: 'left' as 'left',
-      whiteSpace: 'nowrap' as 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      flexShrink: 1
-    },
-    'jp-commenting-header-icon': {
+    'jp-commenting-header-target-icon': {
       minWidth: '20px',
       minHeight: '20px',
       backgroundSize: '20px'
     },
-    'jp-commenting-header-button-back': {
-      display: 'flex',
-      width: '12px',
-      height: '12px',
-      marginTop: '4px'
+    'jp-commenting-header-label-area': {
+      paddingLeft: '4px',
+      textAlign: 'left' as 'left',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      flexShrink: 1
+    },
+    'jp-commenting-header-label': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--jp-ui-font-color1)'
     }
   };
 }

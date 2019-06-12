@@ -11,11 +11,37 @@ interface ICommentFooterProps {
    */
   expanded: boolean;
   /**
-   * Is the card resolved
+   * Function to call to parent component to handle expanding and opening the reply box
    *
-   * @type boolean
+   * @type void
    */
-  resolved: boolean;
+  expandAndReply: () => void;
+  /**
+   * Passes comment message to putComment in App.tsx
+   *
+   * @param comment Type: string - comment message
+   *
+   * @type void
+   */
+  getInput: (comment: string) => void;
+  /**
+   * Reverses resolve state
+   *
+   * @type: void
+   */
+  handleResolve: () => void;
+  /**
+   * Function to call to parent component to close the reply box
+   *
+   * @type void
+   */
+  handleReplyClose: () => void;
+  /**
+   * Function to call to parent component to open the reply box
+   *
+   * @type void
+   */
+  handleReplyOpen: () => void;
   /**
    * Tracks if the reply box is active
    *
@@ -23,43 +49,22 @@ interface ICommentFooterProps {
    */
   replyActive: boolean;
   /**
-   * Function to call to parent component to open the reply box
+   * Is the card resolved
    *
-   * @type VoidFunction
+   * @type boolean
    */
-  handleReplyOpen: VoidFunction;
-  /**
-   * Function to call to parent component to close the reply box
-   *
-   * @type VoidFunction
-   */
-  handleReplyClose: VoidFunction;
-  /**
-   * Function to call to parent component to handle expanding and opening the reply box
-   *
-   * @type VoidFunction
-   */
-  expandAndReply: VoidFunction;
-  /**
-   * Passes comment message to putComment in App.tsx
-   *
-   * @param comment Type: string - comment message
-   *
-   * @type void function
-   */
-  getInput: (comment: string) => void;
-  /**
-   * Reverses resolve state
-   *
-   * @type: void function
-   */
-  handleResolve: VoidFunction;
+  resolved: boolean;
 }
 
 /**
  * React States interface
  */
 interface ICommentFooterStates {
+  /**
+   * Tracks what is in the text area
+   *
+   * @type string
+   */
   commentBox: string;
 }
 
@@ -90,14 +95,14 @@ export class CommentFooter extends React.Component<
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
-      <div style={this.styles.footerArea}>
+      <div style={this.styles['jp-commenting-thread-footer-area']}>
         <div
           style={
             this.props.replyActive
-              ? this.styles.inputBoxAreaActive
-              : this.styles.inputBoxAreaNotActive
+              ? this.styles['jp-commenting-thread-footer-input-active']
+              : this.styles['jp-commenting-thread-footer-input-not-active']
           }
         >
           {this.props.expanded && (
@@ -116,9 +121,53 @@ export class CommentFooter extends React.Component<
             />
           )}
         </div>
-        <div style={this.styles.buttonArea}>{this.getButtons()}</div>
+        <div style={this.styles['jp-commenting-thread-footer-button-area']}>
+          {this.getButtons()}
+        </div>
       </div>
     );
+  }
+
+  /**
+   * Handles key events
+   *
+   * @param e Type: React.KeyboardEvent - keyboard event
+   */
+  handleKeyPress(e: React.KeyboardEvent): void {
+    if (
+      this.state.commentBox.trim() !== '' &&
+      e.key === 'Enter' &&
+      !e.shiftKey
+    ) {
+      this.handleCommentButton();
+      document.getElementById('commentBox').blur();
+    }
+  }
+
+  /**
+   * Handles when the comment box changes
+   *
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
+   */
+  handleChangeCommentBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
+    this.setState({ commentBox: e.target.value });
+  }
+
+  /**
+   * Handles clicking the comment button
+   */
+  handleCommentButton(): void {
+    this.props.getInput(this.state.commentBox);
+    this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
+  }
+
+  /**
+   * Handles states when cancel is pressed
+   */
+  handleCancelButton(): void {
+    this.setState({ commentBox: '' });
+    this.props.handleReplyClose();
   }
 
   /**
@@ -173,66 +222,25 @@ export class CommentFooter extends React.Component<
   }
 
   /**
-   * Handles key events
-   *
-   * @param e Type: ? - keyboard event
-   */
-  handleKeyPress(e: any): void {
-    if (
-      this.state.commentBox.trim() !== '' &&
-      e.key === 'Enter' &&
-      !e.shiftKey
-    ) {
-      this.handleCommentButton();
-      document.getElementById('commentBox').blur();
-    }
-  }
-
-  // TODO: Get correct type
-  /**
-   * Handles when the comment box changes
-   *
-   * @param e Type: any - input box event
-   */
-  handleChangeCommentBox(e: any): void {
-    this.setState({ commentBox: e.target.value });
-  }
-
-  /**
-   * Handles clicking the comment button
-   */
-  handleCommentButton(): void {
-    this.props.getInput(this.state.commentBox);
-    this.setState({ commentBox: '' });
-    this.props.handleReplyClose();
-  }
-
-  handleCancelButton(): void {
-    this.setState({ commentBox: '' });
-    this.props.handleReplyClose();
-  }
-
-  /**
    * CSS styles
    */
   styles = {
-    footerArea: {
+    'jp-commenting-thread-footer-area': {
       display: 'flex',
       flexDirection: 'column' as 'column',
-      maxHeight: '94px',
       padding: '4px'
     },
-    buttonArea: {
+    'jp-commenting-thread-footer-button-area': {
       display: 'flex',
-      marginTop: '16px'
+      paddingTop: '4px'
     },
-    inputBoxAreaActive: {
+    'jp-commenting-thread-footer-input-active': {
       display: 'flex',
-      height: '60px'
+      height: '72px'
     },
-    inputBoxAreaNotActive: {
+    'jp-commenting-thread-footer-input-not-active': {
       display: 'flex',
-      height: '14px'
+      height: '24px'
     }
   };
 }

@@ -24,9 +24,29 @@ interface IAppHeaderOptionsProps {
    * @type boolean
    */
   cardExpanded: boolean;
-  header: string;
+  /**
+   * Current target name
+   *
+   * @type string
+   */
+  target: string;
+  /**
+   * Tracks if the current open thread had cards
+   *
+   * @type boolean
+   */
   hasThreads: boolean;
+  /**
+   * Tracks when to show resolved threads
+   *
+   * @type boolean
+   */
   showResolved: boolean;
+  /**
+   * String that tracks what to sort by
+   *
+   * @type string
+   */
   sortState: string;
 }
 
@@ -40,7 +60,6 @@ interface IAppHeaderOptionsState {
    * @type boolean
    */
   isOpen: boolean;
-  showResolved: boolean;
 }
 
 /**
@@ -58,12 +77,16 @@ export class AppHeaderOptions extends React.Component<
   constructor(props: IAppHeaderOptionsProps) {
     super(props);
 
-    this.state = { isOpen: false, showResolved: false };
+    this.state = { isOpen: false };
 
     this.setResolvedState = this.setResolvedState.bind(this);
     this.matchCheckBoxState = this.matchCheckBoxState.bind(this);
+    this.toggleOpen = this.toggleOpen.bind(this);
   }
 
+  /**
+   * Checks the state of the component and controlls Show Resolved
+   */
   componentDidMount(): void {
     if (document.getElementById('controls') !== null) {
       this.matchCheckBoxState();
@@ -79,116 +102,124 @@ export class AppHeaderOptions extends React.Component<
     }`;
     return (
       <div className="jp-commenting-header-options-area">
-        <div className={menuClass} style={{ marginTop: '30px' }}>
-          {this.getSortItems()}
-        </div>
         <div style={this.styles.optionBar}>
-          {this.renderCheckbox()}
-          {this.renderDropdownLabel()}
+          {this.getCheckbox()}
+          {this.getDropdown()}
+        </div>
+        <div
+          style={this.styles['jp-commenting-header-options-dropdown-menu-area']}
+        >
+          <div className={menuClass}>{this.getSortItems()}</div>
         </div>
       </div>
     );
   }
 
-  renderCheckbox() {
+  /**
+   * Renders the checkbox and label
+   *
+   * @return React.ReactNode
+   */
+  getCheckbox(): React.ReactNode {
     return (
-      <div style={this.styles.checkboxArea}>
-        <label
-          style={{
-            paddingTop: '5px',
-            paddingRight: '4px',
-            paddingLeft: '4px'
-          }}
-          className={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-              ? 'jp-commenting-header-options-checkbox-label-disable'
-              : 'jp-commenting-header-options-checkbox-label-enable'
-          }
-        >
-          Show Resolved
-        </label>
-        <input
-          type="checkbox"
-          id="controls"
-          onClick={() =>
-            this.setResolvedState(document.getElementById(
-              'controls'
-            ) as HTMLInputElement)
-          }
-          className={'bp3-checkbox jp-commenting-header-options-checkbox'}
-          disabled={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-          }
-        />
-      </div>
-    );
-  }
-
-  renderDropdownLabel() {
-    return (
-      <div style={this.styles.dropdownBox} onClick={this.toggleOpen}>
-        <label
+      <div
+        style={this.styles['jp-commenting-header-options-showResolved-area']}
+      >
+        <div
           style={
-            this.props.cardExpanded ||
-            this.props.header === undefined ||
-            !this.props.hasThreads
-              ? this.styles.dropdownLabelDisabled
-              : this.styles.dropdownLabelEnabled
+            this.styles['jp-commenting-header-options-showResolved-label-area']
           }
         >
-          Sort By:
-        </label>
-        {this.renderDropdownButton()}
-      </div>
-    );
-  }
-
-  renderDropdownButton() {
-    return (
-      <div style={this.styles.dropdownButton}>
-        <input
-          type="image"
-          style={this.styles.dropdownButton}
-          src={
-            'https://material.io/tools/icons/static/icons/baseline-arrow_drop_down-24px.svg'
+          <label
+            style={
+              this.props.cardExpanded ||
+              this.props.target === undefined ||
+              !this.props.hasThreads
+                ? this.styles[
+                    'jp-commenting-header-options-showResolved-label-disable'
+                  ]
+                : this.styles[
+                    'jp-commenting-header-options-showResolved-label-enable'
+                  ]
+            }
+          >
+            Show Resolved
+          </label>
+        </div>
+        <div
+          style={
+            this.styles[
+              'jp-commenting-header-options-showResolved-checkbox-area'
+            ]
           }
-          data-toggle="dropdown"
-          disabled={this.props.header === undefined || !this.props.hasThreads}
-        />
+        >
+          <input
+            type="checkbox"
+            id="controls"
+            onClick={() =>
+              this.setResolvedState(document.getElementById(
+                'controls'
+              ) as HTMLInputElement)
+            }
+            className={'bp3-checkbox'}
+            disabled={
+              this.props.cardExpanded ||
+              this.props.target === undefined ||
+              !this.props.hasThreads
+            }
+          />
+        </div>
       </div>
     );
   }
 
   /**
-   * Sets the "isOpen" state to control the dropdown menu
+   * Renders the dropdown menu and label
+   *
+   * @return React.ReactNode
    */
-  toggleOpen = () =>
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  /**
-   * Sets "showResolved" state in "App.tsx"
-   */
-  setResolvedState(e: HTMLInputElement) {
-    this.props.showResolvedState(e.checked);
-  }
-
-  matchCheckBoxState(): void {
-    let checkBox: HTMLInputElement = document.getElementById(
-      'controls'
-    ) as HTMLInputElement;
-
-    checkBox.checked = this.props.showResolved;
+  getDropdown(): React.ReactNode {
+    return (
+      <div
+        style={this.styles['jp-commenting-header-options-dropdown-area']}
+        onClick={this.toggleOpen}
+      >
+        <div
+          style={
+            this.styles['jp-commenting-header-options-dropdown-label-area']
+          }
+        >
+          <label
+            style={
+              this.props.cardExpanded ||
+              this.props.target === undefined ||
+              !this.props.hasThreads
+                ? this.styles[
+                    'jp-commenting-header-options-dropdown-label-disabled'
+                  ]
+                : this.styles[
+                    'jp-commenting-header-options-dropdown-label-enabled'
+                  ]
+            }
+          >
+            Sort By:
+          </label>
+        </div>
+        <div
+          style={
+            this.styles['jp-commenting-header-options-dropdown-button-area']
+          }
+        >
+          <span
+            style={this.styles['jp-commenting-header-options-dropdown-button']}
+          />
+        </div>
+      </div>
+    );
   }
 
   /**
    * Gets values for the dropdown menu
-   *
-   * @callback to setSortState function
    *
    * @returns React.ReactNode with dropdown menu items
    */
@@ -214,6 +245,13 @@ export class AppHeaderOptions extends React.Component<
   }
 
   /**
+   * Sets "showResolved" state in "App.tsx"
+   */
+  setResolvedState(e: HTMLInputElement) {
+    this.props.showResolvedState(e.checked);
+  }
+
+  /**
    * Sets "sortState" state in "App.tsx"
    * Adds a name to the Sort by: label
    *
@@ -223,6 +261,26 @@ export class AppHeaderOptions extends React.Component<
   setSortState(state: string) {
     this.toggleOpen();
     this.props.setSortState(state);
+  }
+
+  /**
+   * Sets the "isOpen" state to control the dropdown menu
+   */
+  toggleOpen(): void {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  /**
+   * Sets the resolve state based on the state of the checkbox
+   */
+  matchCheckBoxState(): void {
+    let checkBox: HTMLInputElement = document.getElementById(
+      'controls'
+    ) as HTMLInputElement;
+
+    checkBox.checked = this.props.showResolved;
   }
 
   /**
@@ -240,65 +298,94 @@ export class AppHeaderOptions extends React.Component<
    */
   styles = {
     optionBar: {
-      height: '28px',
+      height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
       justifyContent: 'center'
     },
-    dropdownBox: {
-      height: '28px',
+    'jp-commenting-header-options-showResolved-area': {
+      height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
-      borderLeftWidth: '1px',
-      borderLeftStyle: 'solid' as 'solid',
-      borderLeftColor: 'rgb(224, 224, 224)',
-      marginLeft: '8px',
+      paddingRight: '8px',
       width: '50%',
       minWidth: '50px',
       flexShrink: 1
     },
-    dropdownLabelEnabled: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' as 'nowrap',
-      height: '28px',
-      lineHeight: 'normal',
-      fontSize: '13px',
-      paddingTop: '6px',
-      paddingLeft: '4px',
-      paddingRight: '10px',
-      minWidth: '10px',
-      width: '100%',
-      flexShrink: 1
-    },
-    dropdownLabelDisabled: {
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap' as 'nowrap',
-      height: '28px',
-      lineHeight: 'normal',
-      fontSize: '13px',
-      paddingTop: '6px',
-      paddingLeft: '4px',
-      paddingRight: '10px',
-      minWidth: '10px',
-      width: '100%',
-      color: '#E0E0E0',
-      flexShrink: 1
-    },
-    dropdownButton: {
+    'jp-commenting-header-options-showResolved-label-area': {
       display: 'flex',
-      height: '28px',
+      justifyContent: 'center',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+
+      height: '24px',
+      minWidth: '52px',
+
+      textAlign: 'right' as 'right',
+      paddingLeft: '4px'
+    },
+    'jp-commenting-header-options-showResolved-label-enable': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--jp-ui-font-color1)'
+    },
+    'jp-commenting-header-options-showResolved-label-disable': {
+      fontSize: 'var(--jp-ui-font-size1)',
+      color: 'var(--md-grey-300)'
+    },
+    'jp-commenting-header-options-showResolved-checkbox-area': {
+      alignSelf: 'center',
+      minWidth: '20px'
+    },
+    'jp-commenting-header-options-dropdown-area': {
+      height: '24px',
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      borderLeft: '1px solid var(--jp-border-color1)',
+      width: '50%',
+      minWidth: '50px',
+      flexShrink: 1
+    },
+    'jp-commenting-header-options-dropdown-label-area': {
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+
+      overflow: 'hidden',
+      whiteSpace: 'nowrap' as 'nowrap',
+
+      height: '24px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      minWidth: '10px',
+      width: '100%'
+    },
+    'jp-commenting-header-options-dropdown-label-enabled': {
+      lineHeight: 'normal',
+      fontSize: '13px',
+      color: 'var(--jp-ui-font-color1)'
+    },
+    'jp-commenting-header-options-dropdown-label-disabled': {
+      lineHeight: 'normal',
+      fontSize: '13px',
+      color: 'var(--md-grey-300)'
+    },
+    'jp-commenting-header-options-dropdown-button-area': {
+      display: 'flex',
+      height: '24px',
       width: '40px',
       minWidth: '40px'
     },
-    checkboxArea: {
-      height: '28px',
-      display: 'flex',
-      flexDirection: 'row' as 'row',
-      width: '50%',
-      minWidth: '50px',
-      flexShrink: 1
+    'jp-commenting-header-options-dropdown-menu-area': {},
+    'jp-commenting-header-options-dropdown-button': {
+      minWidth: '40px',
+      minHeight: '24px',
+      backgroundImage: 'var(--jp-icon-caretdown)',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center'
     }
   };
 }

@@ -11,17 +11,34 @@ import { Comment } from './Comment';
  */
 interface ICommentCardProps {
   /**
+   * Function to check if the given cardID is the current expanded card
+   *
+   * @param cardId - string: Card unique id
+   *
+   * @return boolean: true if card is expanded, false if not
+   */
+  checkExpandedCard: (cardId: string) => boolean;
+  /**
+   * Used to check if the threadId passed in has reply box active
+   *
+   * @param threadId Type: string - CommentCard unique id
+   *
+   * @return type: boolean - True if cardId has reply box open, false if not active
+   */
+  checkReplyActiveCard: (cardId: string) => boolean;
+  /**
    * Comment thread data
    *
    * @type any
    */
-  data?: any;
+  data: any;
   /**
-   * Unique string to identify a card
+   * Pushed comment back to MetadataCommentsService
    *
-   * @type string
+   * @param comment Type: string - comment message
+   * @param cardId Type: String - commend card / thread the comment applies to
    */
-  threadId: string;
+  putComment: (threadId: string, value: string) => void;
   /**
    * Is the card resolved
    *
@@ -35,60 +52,48 @@ interface ICommentCardProps {
    */
   setExpandedCard: (cardId: string) => void;
   /**
-   * Function to check if the given cardID is the current expanded card
-   *
-   * @param cardId - string: Card unique id
-   *
-   * @return boolean: true if card is expanded, false if not
-   */
-  checkExpandedCard: (cardId: string) => boolean;
-  /**
    * Sets this.state.replyActiveCard to the passed in cardId
    *
    * @param cardId Type: string - CommentCard unique id
    */
   setReplyActiveCard: (cardId: string) => void;
   /**
-   * Used to check if the cardId passed in has reply box active
-   *
-   * @param cardId Type: string - CommentCard unique id
-   * @return type: boolean - True if cardId has reply box open, false if not active
-   */
-  checkReplyActiveCard: (cardId: string) => boolean;
-  /**
-   * Pushed comment back to MetadataCommentsService
-   *
-   * @param comment Type: string - comment message
-   * @param cardId Type: String - commend card / thread the comment applies to
-   */
-  /**
    * Sets the value of the given key value pair in specific itemId and cardId
    *
    * @param cardId Type: string - id of card to set value on
    * @param key Type: string - key of value to set
-   * @param value Type: sting - value to set to key
+   * @param value Type: boolean - value to set to key
    *
    * @type void function
    */
   setCardValue(target: string, threadId: string, value: boolean): void;
   /**
-   * Pushed comment back to MetadataCommentsService
+   * Unique string to identify a card
    *
-   * @param comment Type: string - comment message
-   * @param cardId Type: String - commend card / thread the comment applies to
+   * @type string
    */
-  putComment: (threadId: string, value: string) => void;
+  threadId: string;
   /**
    * Path of file used to itemize comment thread to file
    */
-  target?: string;
+  target: string;
 }
 
 /**
  * React States interface
  */
 interface ICommentCardStates {
+  /**
+   * Tracks if mouse is hovering over thread
+   *
+   * @type boolean
+   */
   hover: boolean;
+  /**
+   * Tracks when to expand
+   *
+   * @type boolean
+   */
   shouldExpand: boolean;
 }
 
@@ -108,12 +113,11 @@ export class CommentCard extends React.Component<
     super(props);
     this.state = { hover: false, shouldExpand: true };
 
-    // Functions to bind(this)
     this.handleExpand = this.handleExpand.bind(this);
     this.handleShrink = this.handleShrink.bind(this);
     this.handleReplyOpen = this.handleReplyOpen.bind(this);
     this.handleReplyClose = this.handleReplyClose.bind(this);
-    this.expandAndReply = this.expandAndReply.bind(this);
+    this.handleExpandAndReply = this.handleExpandAndReply.bind(this);
     this.getInput = this.getInput.bind(this);
     this.handleResolve = this.handleResolve.bind(this);
     this.handleMouseEnter = this.handleMouseEnter.bind(this);
@@ -124,16 +128,13 @@ export class CommentCard extends React.Component<
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
       <div
         className={
           this.props.checkExpandedCard(this.props.threadId)
-            ? 'jp-commenting-thread-area-disabled'
+            ? 'jp-commenting-thread-area-no-hover'
             : 'jp-commenting-thread-area'
-        }
-        style={
-          this.props.resolved ? this.styles.resolvedCard : this.styles.card
         }
         onClick={
           !this.props.checkExpandedCard(this.props.threadId)
@@ -145,40 +146,38 @@ export class CommentCard extends React.Component<
         onMouseMoveCapture={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
       >
-        <div
-          style={
-            this.props.resolved
-              ? this.styles.resolvedCardHeading
-              : this.styles.cardHeading
-          }
-        >
-          {this.getCommentHeader()}
-        </div>
-        <div
-          style={
-            this.props.resolved
-              ? this.styles.resolvedCardBody
-              : this.styles.cardBody
-          }
-        >
+        <div>{this.getCommentHeader()}</div>
+        <div>
           <CommentBody
             comments={this.getAllComments()}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
+            resolved={this.props.resolved}
           />
         </div>
-        <div style={this.styles.cardFooter}>{this.getCommentFooter()}</div>
+        <div>{this.getCommentFooter()}</div>
       </div>
     );
   }
 
-  handleMouseEnter(e: any): void {
+  /**
+   * Handles state when mouse enters thread area
+   */
+  handleMouseEnter(): void {
     this.setState({ hover: true });
   }
 
-  handleMouseLeave(e: any): void {
+  /**
+   * Handles state when mouse leaves thread area
+   */
+  handleMouseLeave(): void {
     this.setState({ hover: false });
   }
 
+  /**
+   * Sets the state for should expand
+   *
+   * @param state Type: boolean - sets the state of should expand
+   */
   handleShouldExpand(state: boolean) {
     this.setState({ shouldExpand: state });
   }
@@ -220,19 +219,9 @@ export class CommentCard extends React.Component<
   /**
    * Handles expanding and opening the reply box
    */
-  expandAndReply(): void {
+  handleExpandAndReply(): void {
     this.handleReplyOpen();
     this.handleExpand();
-  }
-
-  /**
-   * Passes comment message to putComment in App.tsx
-   *
-   * @param comment Type: string - comment message
-   */
-  getInput(comment: string): void {
-    this.props.putComment(this.props.threadId, comment);
-    this.handleReplyClose();
   }
 
   /**
@@ -259,6 +248,16 @@ export class CommentCard extends React.Component<
   }
 
   /**
+   * Passes comment message to putComment in App.tsx
+   *
+   * @param comment Type: string - comment message
+   */
+  getInput(comment: string): void {
+    this.props.putComment(this.props.threadId, comment);
+    this.handleReplyClose();
+  }
+
+  /**
    * Creates a Comment component for each comment in the this.props.data
    *
    * @return React.ReactNode[]: List of Comment ReactNodes / Components
@@ -275,6 +274,7 @@ export class CommentCard extends React.Component<
             timestamp={this.props.data.body[key].created}
             photo={this.props.data.body[key].creator.image}
             expanded={this.props.checkExpandedCard(this.props.threadId)}
+            resolved={this.props.resolved}
           />
         );
       }
@@ -295,7 +295,6 @@ export class CommentCard extends React.Component<
         context={this.props.data.body[0].value}
         timestamp={this.props.data.body[0].created}
         photo={this.props.data.body[0].creator.image}
-        tag={this.props.data.label}
         expanded={this.props.checkExpandedCard(this.props.threadId)}
         resolved={this.props.resolved}
         handleExpand={this.handleExpand}
@@ -325,54 +324,11 @@ export class CommentCard extends React.Component<
           resolved={this.props.resolved}
           handleReplyOpen={this.handleReplyOpen}
           handleReplyClose={this.handleReplyClose}
-          expandAndReply={this.expandAndReply}
+          expandAndReply={this.handleExpandAndReply}
           getInput={this.getInput}
           handleResolve={this.handleResolve}
         />
       );
     }
   }
-
-  /**
-   * CSS styles
-   */
-  styles = {
-    card: { marginTop: '5px', marginBottom: '5px', background: 'white' },
-    resolvedCard: {
-      marginTop: '5px',
-      marginBottom: '5px',
-      background: 'var(--jp-layout-color2)',
-      color: '#4f4f4f'
-    },
-    cardHeading: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    cardBody: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    cardFooter: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'white',
-      borderBottom: '0px'
-    },
-    resolvedCardHeading: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'var(--jp-layout-color2)',
-      borderBottom: '0px'
-    },
-    resolvedCardBody: {
-      display: 'flex' as 'flex',
-      flexDirection: 'column' as 'column',
-      background: 'var(--jp-layout-color2)',
-      borderBottom: '0px'
-    }
-  };
 }

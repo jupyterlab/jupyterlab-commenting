@@ -1,6 +1,14 @@
 import * as React from 'react';
 
+import { IPerson } from './app';
+
 interface INewThreadCardProps {
+  /**
+   * Creator object
+   *
+   * @type IPerson
+   */
+  creator: IPerson;
   /**
    * Function to put comment back to server
    *
@@ -18,7 +26,6 @@ interface INewThreadCardProps {
    * @type void function
    */
   setNewThreadActive: (state: boolean) => void;
-  creator: any;
 }
 
 interface INewThreadCardStates {
@@ -45,18 +52,29 @@ export class NewThreadCard extends React.Component<
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.createNewThread = this.createNewThread.bind(this);
-    this.cancelThread = this.cancelThread.bind(this);
+    this.handleCreateNewThread = this.handleCreateNewThread.bind(this);
+    this.handleCancelThread = this.handleCancelThread.bind(this);
+  }
+
+  /**
+   * Called when a component is mounted
+   */
+  componentDidMount(): void {
+    document.getElementById('commentBox').focus();
   }
 
   /**
    * React render function
    */
-  render() {
+  render(): React.ReactNode {
     return (
-      <div className="jp-commenting-new-thread-area">
-        <label style={this.styles.name}>{this.props.creator.name}</label>
-        <div style={this.styles.inputBoxArea}>
+      <div style={this.styles['jp-commenting-new-thread-area']}>
+        <div style={this.styles['jp-commenting-new-thread-name-area']}>
+          <span style={this.styles['jp-commenting-new-thread-name']}>
+            {this.props.creator.name}
+          </span>
+        </div>
+        <div style={this.styles['jp-commenting-text-input-area']}>
           <textarea
             className="jp-commenting-text-area"
             id={'commentBox'}
@@ -69,7 +87,7 @@ export class NewThreadCard extends React.Component<
             onKeyPress={this.handleKeyPress}
           />
         </div>
-        <div style={this.styles.buttons}>
+        <div style={this.styles['jp-commenting-new-thread-button-area']}>
           {this.getCommentButton()}
           {this.getCancelButton()}
         </div>
@@ -77,16 +95,17 @@ export class NewThreadCard extends React.Component<
     );
   }
 
-  componentDidMount() {
-    document.getElementById('commentBox').focus();
-  }
-
+  /**
+   * Creates and returns the comment button
+   *
+   * @return Type: React.ReactNode - JSX button
+   */
   getCommentButton(): React.ReactNode {
     return (
       <button
         className="jp-commenting-button-blue"
         type="button"
-        onClick={this.createNewThread}
+        onClick={this.handleCreateNewThread}
         disabled={this.state.inputBox.trim() === ''}
       >
         Comment
@@ -94,34 +113,21 @@ export class NewThreadCard extends React.Component<
     );
   }
 
-  getCancelButton(): React.ReactNode {
-    return (
-      <button
-        className="jp-commenting-button-red"
-        type="button"
-        onClick={this.cancelThread}
-      >
-        Cancel
-      </button>
-    );
-  }
-
-  // TODO: Get correct type
   /**
    * Handles when the comment box changes
    *
-   * @param e Type: any - input box event
+   * @param e Type: React.ChangeEvent<HTMLTextAreaElement> - input box event
    */
-  handleChangeCommentBox(e: any): void {
+  handleChangeCommentBox(e: React.ChangeEvent<HTMLTextAreaElement>): void {
     this.setState({ inputBox: e.target.value });
   }
 
-  createNewThread(): void {
+  handleCreateNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
   }
 
-  cancelThread(): void {
+  handleCancelThread(): void {
     this.setState({ inputBox: '' });
     this.props.setNewThreadActive(false);
   }
@@ -129,38 +135,61 @@ export class NewThreadCard extends React.Component<
   /**
    * Handles key events
    *
-   * @param e Type: ? - keyboard event
+   * @param e Type: React.KeyboardEvent - keyboard event
    */
-  handleKeyPress(e: any): void {
+  handleKeyPress(e: React.KeyboardEvent): void {
     if (this.state.inputBox.trim() !== '' && e.key === 'Enter' && !e.shiftKey) {
-      this.createNewThread();
+      this.handleCreateNewThread();
     }
+  }
+
+  /**
+   * Creates and returns the cancel button
+   *
+   * @return Type: React.ReactNode - JSX button
+   */
+  getCancelButton(): React.ReactNode {
+    return (
+      <button
+        className="jp-commenting-button-red"
+        type="button"
+        onClick={this.handleCancelThread}
+      >
+        Cancel
+      </button>
+    );
   }
 
   /**
    * CSS styles
    */
   styles = {
-    inputBoxArea: {
+    'jp-commenting-new-thread-area': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexDirection: 'column' as 'column',
+      borderRadius: 'var(--jp-border-radius)',
+      border: '1px solid var(--jp-border-color2)',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-text-input-area': {
       display: 'flex',
       padding: '4px',
-      maxWidth: '95%',
-      minHeight: '80px',
-      lineHeight: 'normal'
+      width: '95%',
+      height: '80px'
     },
-    name: {
-      display: 'flex',
-      fontSize: '16px',
+    'jp-commenting-new-thread-name': {
+      fontSize: 'var(--jp-ui-font-size1)',
       fontWeight: 'bold' as 'bold',
-      marginTop: '4px',
-      marginBottom: '4px',
-      marginLeft: '4px'
+      color: 'var(--jp-ui-font-color1)'
     },
-    buttons: {
+    'jp-commenting-new-thread-name-area': {
       display: 'flex',
-      marginTop: '12px',
-      marginBottom: '4px',
-      marginLeft: '4px'
+      padding: '4px'
+    },
+    'jp-commenting-new-thread-button-area': {
+      display: 'flex',
+      padding: '4px'
     }
   };
 }

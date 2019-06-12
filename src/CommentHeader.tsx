@@ -5,35 +5,11 @@ import * as React from 'react';
  */
 interface ICommentHeaderProps {
   /**
-   * Person name of comment
-   *
-   * @type string
-   */
-  name: string;
-  /**
-   * Time stamp of comment
-   *
-   * @type string
-   */
-  timestamp: string;
-  /**
-   * URL to Person photo to display
-   *
-   * @type string
-   */
-  photo: string;
-  /**
    * Text comment to display
    *
    * @type string
    */
-  context?: string;
-  /**
-   * Tag to display in the header
-   *
-   * @type string
-   */
-  tag?: string;
+  context: string;
   /**
    * Tracks the state if the card is expanded
    *
@@ -41,31 +17,59 @@ interface ICommentHeaderProps {
    */
   expanded: boolean;
   /**
+   * Function to handle the CommentCard expanding
+   *
+   * @type void
+   */
+  handleExpand: () => void;
+  /**
+   * Reverses resolve state
+   *
+   * @type: void
+   */
+  handleResolve: () => void;
+  /**
+   * Handles expanding
+   *
+   * @type void
+   */
+  handleShouldExpand: (state: boolean) => void;
+  /**
+   * Function to handle the CommentCard shrinking
+   *
+   * @type void
+   */
+  handleShrink: () => void;
+  /**
+   * Tracks if cursor is hovering over card
+   *
+   * @type boolean
+   */
+  hover: boolean;
+  /**
+   * Person name of comment
+   *
+   * @type string
+   */
+  name: string;
+  /**
+   * URL to Person photo to display
+   *
+   * @type string
+   */
+  photo: string;
+  /**
    * Is the card resolved
    *
    * @type boolean
    */
   resolved: boolean;
   /**
-   * Function to handle the CommentCard expanding
+   * Time stamp of comment
    *
-   * @type VoidFunction
+   * @type string
    */
-  handleExpand: VoidFunction;
-  /**
-   * Function to handle the CommentCard shrinking
-   *
-   * @type VoidFunction
-   */
-  handleShrink: VoidFunction;
-  /**
-   * Reverses resolve state
-   *
-   * @type: void function
-   */
-  handleResolve: VoidFunction;
-  hover: boolean;
-  handleShouldExpand: (state: boolean) => void;
+  timestamp: string;
 }
 
 /**
@@ -84,35 +88,79 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
   /**
    * React render function
    */
-  render() {
-    return (
-      <div>
-        <div style={this.styles.upperHeader}>
-          <div style={{ paddingLeft: '5px', paddingTop: '5px' }}>
-            <img style={this.styles.photo} src={this.props.photo} />
-          </div>
-          <div style={this.styles.commentInfo}>
-            <div style={this.styles.nameArea}>
-              <h1 style={this.styles.name}>{this.props.name}</h1>
-            </div>
-            <p style={this.styles.timestamp}>{this.timeStampStyle()}</p>
-          </div>
-          {this.shouldRenderCornerButtons()}
-        </div>
+  render(): React.ReactNode {
+    return this.props.resolved ? (
+      <div style={this.styles['jp-commenting-thread-header-resolved']}>
         <div
-          style={{
-            paddingLeft: '4px',
-            paddingRight: '8px',
-            paddingTop: '4px'
-          }}
+          style={this.styles['jp-commenting-thread-header-upper-area-resolved']}
         >
-          <p
-            className={
-              this.props.expanded
-                ? 'jp-commenting-annotation-expanded'
-                : 'jp-commenting-annotation-not-expanded'
-            }
-          >
+          <div style={this.styles['jp-commenting-thread-header-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-thread-header-photo-resolved']}
+              src={this.props.photo}
+            />
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-info-area']}>
+            <div style={this.styles['jp-commenting-thread-header-name-area']}>
+              <h1
+                style={this.styles['jp-commenting-thread-header-name-resolved']}
+              >
+                {this.props.name}
+              </h1>
+            </div>
+            <div
+              style={this.styles['jp-commenting-thread-header-timestamp-area']}
+            >
+              <p
+                style={
+                  this.styles['jp-commenting-thread-header-timestamp-resolved']
+                }
+              >
+                {this.getStyledTimeStamp()}
+              </p>
+            </div>
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-button-area']}>
+            {this.getCornerButton()}
+          </div>
+        </div>
+        <div style={this.styles['jp-commenting-annotation-area-resolved']}>
+          <p style={this.styles['jp-commenting-annotation-resolved']}>
+            {this.props.context.length >= 125 && !this.props.expanded
+              ? this.props.context.slice(0, 125) + '...'
+              : this.props.context}
+          </p>
+        </div>
+      </div>
+    ) : (
+      <div style={this.styles['jp-commenting-thread-header']}>
+        <div style={this.styles['jp-commenting-thread-header-upper-area']}>
+          <div style={this.styles['jp-commenting-thread-header-photo-area']}>
+            <img
+              style={this.styles['jp-commenting-thread-header-photo']}
+              src={this.props.photo}
+            />
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-info-area']}>
+            <div style={this.styles['jp-commenting-thread-header-name-area']}>
+              <h1 style={this.styles['jp-commenting-thread-header-name']}>
+                {this.props.name}
+              </h1>
+            </div>
+            <div
+              style={this.styles['jp-commenting-thread-header-timestamp-area']}
+            >
+              <p style={this.styles['jp-commenting-thread-header-timestamp']}>
+                {this.getStyledTimeStamp()}
+              </p>
+            </div>
+          </div>
+          <div style={this.styles['jp-commenting-thread-header-button-area']}>
+            {this.getCornerButton()}
+          </div>
+        </div>
+        <div style={this.styles['jp-commenting-annotation-area']}>
+          <p style={this.styles['jp-commenting-annotation']}>
             {this.props.context.length >= 125 && !this.props.expanded
               ? this.props.context.slice(0, 125) + '...'
               : this.props.context}
@@ -131,7 +179,6 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     return (
       <button
         className="jp-commenting-button-blue"
-        style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
@@ -142,11 +189,15 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
+  /**
+   * Creates and returns re-open button
+   *
+   * @type Type: React.ReactNode
+   */
   getReopenButton(): React.ReactNode {
     return (
       <button
         className="jp-commenting-button-blue jp-commenting-button-resolved"
-        style={this.styles.resolveButton}
         type="button"
         onClick={this.props.handleResolve}
         onMouseEnter={() => this.props.handleShouldExpand(false)}
@@ -157,7 +208,12 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     );
   }
 
-  shouldRenderCornerButtons(): React.ReactNode {
+  /**
+   * Creates and returns the corner button based on states
+   *
+   * @type React.ReactNode
+   */
+  getCornerButton(): React.ReactNode {
     if (this.props.hover && !this.props.expanded) {
       return (
         <div>
@@ -179,14 +235,19 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
     }
   }
 
-  timeStampStyle(): string {
+  /**
+   * Styles and returns timestamp
+   *
+   * @type string
+   */
+  getStyledTimeStamp(): string {
     let serverTimeStamp = new Date(this.props.timestamp);
     let localTimeStamp = serverTimeStamp.toLocaleString();
     let fullDate = localTimeStamp.split(',')[0].split('/');
     let fullTime = localTimeStamp.split(',')[1].split(':');
     let timeIdentifier = fullTime[2].slice(3).toLowerCase();
 
-    let month: any = {
+    let month: { [key: string]: String } = {
       '1': 'Jan',
       '2': 'Feb',
       '3': 'Mar',
@@ -215,32 +276,129 @@ export class CommentHeader extends React.Component<ICommentHeaderProps> {
    * CSS styles
    */
   styles = {
-    upperHeader: { display: 'flex', flexDirection: 'row' as 'row' },
-    resolveButton: {
-      marginRight: '5px',
-      marginTop: '5px',
-      fontSize: 'var(--jp-content-font-size0)',
-      fontFamily: 'var(--jp-content-font-family)'
+    'jp-commenting-thread-header': {
+      background: 'var(--jp-layout-color1)'
     },
-    commentInfo: {
-      paddingLeft: '5px',
+    'jp-commenting-thread-header-resolved': {
+      background: 'var(--jp-layout-color2)'
+    },
+    'jp-commenting-thread-header-upper-area': {
       display: 'flex',
-      flexGrow: 2,
-      flexDirection: 'column' as 'column'
+      flexDirection: 'row' as 'row',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color1)'
     },
-    photo: {
+    'jp-commenting-thread-header-upper-area-resolved': {
+      display: 'flex',
+      flexDirection: 'row' as 'row',
+      boxSizing: 'border-box' as 'border-box',
+      padding: '4px',
+      background: 'var(--jp-layout-color2)'
+    },
+    'jp-commenting-thread-header-info-area': {
+      display: 'flex',
+      flexDirection: 'column' as 'column',
+      flexShrink: 1,
+      minWidth: '52px',
+      width: '100%',
+      paddingLeft: '4px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-photo-area': {
+      display: 'flex'
+    },
+    'jp-commenting-thread-header-photo': {
       height: '36px',
       width: '36px',
-      borderRadius: '2px'
+      borderRadius: 'var(--jp-border-radius)'
     },
-    nameArea: {
-      paddingTop: '11px'
+    'jp-commenting-thread-header-photo-resolved': {
+      height: '36px',
+      width: '36px',
+      opacity: 0.5,
+      borderRadius: 'var(--jp-border-radius)'
     },
-    name: {
+    'jp-commenting-thread-header-name-area': {
+      display: 'flex',
+      flexShrink: 1,
+      minWidth: '52px',
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-name': {
       fontSize: '13px',
+      color: 'var(--jp-ui-font-color1)',
       fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
       margin: '0px'
     },
-    timestamp: { fontSize: '.7em' }
+    'jp-commenting-thread-header-name-resolved': {
+      fontSize: '13px',
+      color: 'var(--jp-ui-font-color2)',
+      fontWeight: 'bold' as 'bold',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      margin: '0px'
+    },
+    'jp-commenting-thread-header-timestamp-area': {
+      display: 'flex',
+      minWidth: '52px',
+      flexShrink: 1,
+      boxSizing: 'border-box' as 'border-box'
+    },
+    'jp-commenting-thread-header-timestamp': {
+      fontSize: 'var(--jp-ui-font-size0)',
+      color: 'var(--jp-ui-font-color1)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-thread-header-timestamp-resolved': {
+      fontSize: 'var(--jp-ui-font-size0)',
+      color: 'var(--jp-ui-font-color2)',
+      whiteSpace: 'nowrap' as 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    },
+    'jp-commenting-annotation-area': {
+      display: 'flex',
+      maxHeight: '100%',
+      maxWidth: '350px',
+      boxSizing: 'border-box' as 'border-box',
+      paddingBottom: '4px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      background: 'var(--jp-layout-color1)'
+    },
+    'jp-commenting-annotation': {
+      fontSize: 'var(--jp-content-font-size0)',
+      color: 'var(--jp-ui-font-color1)',
+      lineHeight: 'normal'
+    },
+    'jp-commenting-annotation-area-resolved': {
+      display: 'flex',
+      maxHeight: '100%',
+      maxWidth: '350px',
+      boxSizing: 'border-box' as 'border-box',
+      paddingBottom: '4px',
+      paddingLeft: '4px',
+      paddingRight: '4px',
+      background: 'var(--jp-layout-color2)'
+    },
+    'jp-commenting-annotation-resolved': {
+      fontSize: 'var(--jp-content-font-size0)',
+      color: 'var(--jp-ui-font-color2)',
+      lineHeight: 'normal'
+    },
+    'jp-commenting-thread-header-button-area': {
+      display: 'flex',
+      minWidth: '72px',
+      paddingRight: '4px',
+      paddingLeft: '8px',
+      boxSizing: 'border-box' as 'border-box'
+    }
   };
 }
