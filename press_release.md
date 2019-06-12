@@ -1,4 +1,4 @@
-[back to project](./README.md)
+[back to project](./)
 
 # Press Release from the Future
 
