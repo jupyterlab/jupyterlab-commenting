@@ -6,12 +6,9 @@
 # JupyterLab Commenting and Annotation
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 
-**[Jump to Project Vision](#project-vision)**
-
 ## Project Vision
 
 We have articulated our vision for this project as a ["Press Release from the Future"](./press_release.md). We are now pursing that vision to make it a _reality_. Have feedback or want to get involved? [Let us know!](https://discourse.jupyter.org/c/jupyterlab)
-
 
 ## Prerequisites
 
