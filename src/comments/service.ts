@@ -162,9 +162,104 @@ export class CommentsService {
    * Returns an array of all threads for the given target
    *
    * @param target Type: string - path of file to get threads for
+   * @param sortBy Type:
    */
-  getThreadsByTarget(target: string): Array<ICommentThread> {
-    return this._commentsStore[target];
+  getThreadsByTarget(target: string, sortBy?: string): Array<ICommentThread> {
+    let threads = this._commentsStore[target];
+
+    if (!threads) {
+      return [];
+    }
+
+    switch (sortBy) {
+      case 'latest':
+        return this.sortByLatestReply(threads, target);
+      case 'date':
+        return this.sortByDateCreated(threads, target);
+      case 'mostReplies':
+        return this.sortByMostReplies(threads, target);
+      default:
+        return this.sortByLatestReply(threads, target);
+    }
+  }
+
+  /**
+   * Returns an array of comment threads sorted by latest reply
+   *
+   * @param threads Type: Array<ICommentThreads> - comment threads to sort
+   * @param target Type: string - path of file threads relate to
+   */
+  sortByLatestReply(
+    threads: Array<ICommentThread>,
+    target: string
+  ): Array<ICommentThread> {
+    let sorted = new Array<ICommentThread>();
+    let latestPair: { [key: string]: string } = {};
+
+    threads.forEach(thread => {
+      let sort = thread.body.sort((a, b) => {
+        return new Date(a.created).getTime() - new Date(b.created).getTime();
+      });
+      let latest = sort[sort.length - 1];
+      latestPair[latest.created] = thread.id;
+    });
+
+    Object.keys(latestPair)
+      .sort((a, b) => {
+        return new Date(a).getTime() - new Date(b).getTime();
+      })
+      .forEach(date => {
+        sorted.push(this.getThread(target, latestPair[date]));
+      });
+
+    return sorted;
+  }
+
+  /**
+   * Returns an array of comment threads sorted by initial date the thread was created
+   *
+   * @param threads Type: Array<ICommentThreads> - comment threads to sort
+   * @param target Type: string - path of file threads relate to
+   */
+  sortByDateCreated(
+    threads: Array<ICommentThread>,
+    target: string
+  ): Array<ICommentThread> {
+    let sorted = new Array<ICommentThread>();
+    let dateIdPair: { [key: string]: string } = {};
+
+    threads.forEach(thread => {
+      dateIdPair[thread.body[0].created] = thread.id;
+    });
+
+    Object.keys(dateIdPair)
+      .sort((a, b) => {
+        return new Date(a).getTime() - new Date(b).getTime();
+      })
+      .forEach(date => {
+        sorted.push(this.getThread(target, dateIdPair[date]));
+      });
+
+    return sorted;
+  }
+
+  /**
+   * Returns an array of comment threads sorted by most replies in a thread
+   *
+   * @param threads Type: Array<ICommentThreads> - comment threads to sort
+   * @param target Type: string - path of file threads relate to
+   */
+  sortByMostReplies(
+    threads: Array<ICommentThread>,
+    target: string
+  ): Array<ICommentThread> {
+    let sorted = new Array<ICommentThread>();
+
+    sorted = threads.sort((a, b) => {
+      return a.total - b.total;
+    });
+
+    return sorted;
   }
 
   /**

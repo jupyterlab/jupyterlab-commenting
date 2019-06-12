@@ -9,9 +9,9 @@ import { UseSignal } from '@jupyterlab/apputils';
 import { Signal, ISignal } from '@phosphor/signaling';
 
 import { IPerson } from './service';
-
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
+import { indicatorHandler } from '..';
 
 // Components
 import { App } from './components/App';
@@ -21,7 +21,6 @@ import { AppHeader } from './components/AppHeader';
 import { AppHeaderOptions } from './components/AppHeaderOptions';
 import { NewThreadCard } from './components/NewThreadCard';
 import { UserSet } from './components/UserSet';
-import { indicatorHandler } from '..';
 
 /**
  * CommentingUI React Widget

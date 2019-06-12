@@ -12,23 +12,6 @@ import { CommentsService } from './service';
  * and sets values accordingly.
  */
 export class CommentingDataReceiver {
-  // CommentingStates object
-  private _states: CommentingStates;
-
-  // Signal when active target is updated
-  private _activeTarget: ISignal<ActiveDataset, URL | null>;
-
-  // Signal when new data is received and needs to be updated
-  private _newDataReceived = new Signal<this, void>(this);
-
-  // Signal when new target is set
-  private _targetSet = new Signal<this, void>(this);
-
-  // Signal when new comments are queried
-  private _commentsQueried = new Signal<this, void>(this);
-
-  private _commentService: CommentsService;
-
   constructor(
     states: CommentingStates,
     activeDataset: IActiveDataset,
@@ -37,6 +20,7 @@ export class CommentingDataReceiver {
     this._states = states;
     this._activeTarget = activeDataset.signal;
 
+    // Create CommentsService object
     this._commentService = new CommentsService(browserFactory);
 
     // Initial states
@@ -71,7 +55,7 @@ export class CommentingDataReceiver {
   /**
    * Sets / Updates / Creates states in the CommentingStates Object
    *
-   * @param values Type: JSONObject - values that need to be set / updated / created
+   * @param values Type: ICommentStates - values that need to be set / updated / created
    * in CommentingStates Object
    */
   setState(values: ICommentStates): void {
@@ -79,16 +63,18 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Handles querying data from comments GraphQL service
+   * Handles getting all comments from comments service that relate to the current target
    */
   getAllComments(): void {
-    if (this._states.getState('target') === undefined) {
+    let target = this._states.getState('target') as string;
+    let sortBy = this._states.getState('sortState') as string;
+
+    if (!target) {
       this._states.setState({ response: {}, curTargetHasThreads: false });
       return;
     }
-    let threads = this._commentService.getThreadsByTarget(this._states.getState(
-      'target'
-    ) as string);
+
+    let threads = this._commentService.getThreadsByTarget(target, sortBy);
 
     if (threads) {
       this._states.setState({
@@ -106,10 +92,10 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Pushes comment back to MetadataCommentsService
+   * Creates a new comment on a thread
    *
    * @param value Type: string - comment message
-   * @param threadId Type: string - commend card / thread the comment applies to
+   * @param threadId Type: string - thread the comment applies to
    */
   putComment(target: string, threadId: string, value: string): void {
     this._commentService.createComment(
@@ -122,6 +108,14 @@ export class CommentingDataReceiver {
     this._newDataReceived.emit(void 0);
   }
 
+  /**
+   * Edits the contents of a comment
+   *
+   * @param target Type: string - path of file comment relates to
+   * @param threadId Type: string - id of thread comment is in
+   * @param value Type: string - new value of the comment
+   * @param index Type: number - index of the comment to edit
+   */
   putCommentEdit(
     target: string,
     threadId: string,
@@ -133,6 +127,12 @@ export class CommentingDataReceiver {
     this._newDataReceived.emit(void 0);
   }
 
+  /**
+   * Update the content of a thread
+   *
+   * @param threadId Type: string - id of thread that edit applies to
+   * @param value Type: string - new value to set
+   */
   putThreadEdit(threadId: string, value: string): void {
     this._commentService.editThread(
       this._states.getState('target') as string,
@@ -144,7 +144,7 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Pushes new thread to GraphQL server
+   * Creates and saves new thread
    *
    * @param value Type: string - comment message
    */
@@ -181,6 +181,12 @@ export class CommentingDataReceiver {
     this._newDataReceived.emit(void 0);
   }
 
+  /**
+   * Permanently deletes a comment from a thread
+   *
+   * @param threadId Type: string - id of thread with comment that needs removal
+   * @param index Type: number - index of comment to delete from thread
+   */
   deleteComment(threadId: string, index: number): void {
     this._commentService.deleteComment(
       this._states.getState('target') as string,
@@ -266,16 +272,34 @@ export class CommentingDataReceiver {
   }
 
   /**
-   * Signal when new data is received from Metadata Services
+   * Signal when new data is received from CommentsService
    */
   get newDataReceived(): ISignal<this, void> {
     return this._newDataReceived;
   }
 
   /**
-   * Signal when comments are queried
+   * Signal when 'response' state is updated in CommentingStates
    */
   get commentsQueried(): ISignal<this, void> {
     return this._commentsQueried;
   }
+
+  // CommentingStates object
+  private _states: CommentingStates;
+
+  // Service for handling comments
+  private _commentService: CommentsService;
+
+  // Signal when active target is updated
+  private _activeTarget: ISignal<ActiveDataset, URL | null>;
+
+  // Signal when new data is received and needs to be updated
+  private _newDataReceived = new Signal<this, void>(this);
+
+  // Signal when new target is set
+  private _targetSet = new Signal<this, void>(this);
+
+  // Signal when new comments are queried
+  private _commentsQueried = new Signal<this, void>(this);
 }

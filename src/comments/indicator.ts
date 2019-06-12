@@ -65,7 +65,8 @@ export class CommentingIndicatorHandler {
           .then(() => {
             if (
               context.contentsModel.type === 'file' &&
-              context.contentsModel.mimetype
+              context.contentsModel.mimetype &&
+              context.contentsModel.mimetype.indexOf('text') > -1
             ) {
               this.addTextEditorIndicatorWidget();
             } else if (context.contentsModel.type === 'notebook') {
