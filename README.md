@@ -6,6 +6,9 @@
 # JupyterLab Commenting and Annotation
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 
+## Project Vision
+
+We have articulated our vision for this project as a ["Press Release from the Future"](./press_release.md). We are now pursing that vision to make it a _reality_. Have feedback or want to get involved? [Post an issue!](https://github.com/jupyterlab/jupyterlab-commenting/issues/new)
 
 ## Prerequisites
 
@@ -48,7 +51,7 @@ jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
 jlpm run build
 ```
 
-Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the 
+Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the
 top level directory to run JupyterLab with this package enabled.
 
 ### Contributing
@@ -80,6 +83,7 @@ Current maintainers of this project are listed in alphabetical order, with affil
 - Tim George, Cal Poly (UI/UX design, strategy, management, user needs analysis)
 
 ---
+
 
 ## Getting help
 
