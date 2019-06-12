@@ -1,4 +1,4 @@
-[back to project](./)
+[back to project](./..)
 
 # Press Release from the Future
 
