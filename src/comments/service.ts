@@ -195,15 +195,38 @@ export class CommentsService {
   ): Array<ICommentThread> {
     let sorted = new Array<ICommentThread>();
     let latestPair: { [key: string]: string } = {};
+    let dates: { [key: string]: Array<string> } = {};
 
+    /**
+     * Creates an object that has the threadId as the key and an
+     * Array of all the dates in a thread as strings.
+     */
     threads.forEach(thread => {
-      let sort = thread.body.sort((a, b) => {
-        return new Date(a.created).getTime() - new Date(b.created).getTime();
+      dates[thread.id] = [];
+      thread.body.forEach(item => {
+        dates[thread.id].push(item.created);
       });
-      let latest = sort[sort.length - 1];
-      latestPair[latest.created] = thread.id;
     });
 
+    /**
+     * Sorts the array of dates in the 'dates' object and creates
+     * the 'latestPair' object which holds the newest date as the key
+     * and the related threadId as the value.
+     */
+    Object.keys(dates).forEach(key => {
+      dates[key].sort((a, b) => {
+        return new Date(a).getTime() - new Date(b).getTime();
+      });
+      let latest = dates[key][dates[key].length - 1];
+      latestPair[latest] = key;
+    });
+
+    /**
+     * Sorts the keys of 'latestPair' which is an array of the newest date
+     * of each thread. Once the array is sorted by date, the value of 'latestPair'
+     * which is the threadId is used to get the thread to add to the return object
+     * 'sorted'.
+     */
     Object.keys(latestPair)
       .sort((a, b) => {
         return new Date(a).getTime() - new Date(b).getTime();
@@ -228,10 +251,19 @@ export class CommentsService {
     let sorted = new Array<ICommentThread>();
     let dateIdPair: { [key: string]: string } = {};
 
+    /**
+     * Creates a key value pair of the key as the date the thread was created,
+     * and the related value as the threadId.
+     */
     threads.forEach(thread => {
       dateIdPair[thread.body[0].created] = thread.id;
     });
 
+    /**
+     * Sorts the array of keys, which are dates, and then gets threads by using
+     * the sorted array of dates as keys to get the id of the thread which is used to
+     * get the thread from the comments store.
+     */
     Object.keys(dateIdPair)
       .sort((a, b) => {
         return new Date(a).getTime() - new Date(b).getTime();
@@ -255,6 +287,9 @@ export class CommentsService {
   ): Array<ICommentThread> {
     let sorted = new Array<ICommentThread>();
 
+    /**
+     * Creates an Array of comment threads sorted by their total amount of threads
+     */
     sorted = threads.sort((a, b) => {
       return a.total - b.total;
     });

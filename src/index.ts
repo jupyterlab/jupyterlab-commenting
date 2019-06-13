@@ -96,7 +96,7 @@ export function activate(
     }
   });
 
-  // Called when new data is received from a metadata service
+  // Called when new data is received from comments service
   receiver.newDataReceived.connect(() => {
     receiver.getAllComments();
   });

@@ -339,7 +339,7 @@ export class CommentCard extends React.Component<
   getAllComments(): React.ReactNode[] {
     let comments: React.ReactNode[] = [];
 
-    if (this.props.data !== undefined) {
+    if (this.props.data) {
       for (let key: number = 1; key < this.props.data.body.length; key++) {
         comments.push(
           <Comment
