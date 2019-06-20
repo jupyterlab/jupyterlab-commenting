@@ -1,6 +1,6 @@
 import { JupyterFrontEnd, ILabShell } from '@jupyterlab/application';
 
-import { IEditorTracker, FileEditor } from '@jupyterlab/fileeditor';
+import { FileEditor } from '@jupyterlab/fileeditor';
 
 import { CodeMirrorEditor } from '@jupyterlab/codemirror';
 
@@ -12,48 +12,23 @@ import { Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
-import { JSONValue } from '@phosphor/coreutils';
+import { TextMarker, Editor } from 'codemirror';
 
-import { TextMarker } from 'codemirror';
-
-import { ITextIndicator } from '../types';
+import { ITextIndicator, CommentIndicator } from './service';
 import { commentingUI, indicatorHandler } from '../index';
 import { CommentingDataProvider } from './provider';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataReceiver } from './receiver';
 import { CommentingWidget } from './commenting';
+import { IDisposable } from '@phosphor/disposable';
 
 /**
  * Indicator widget for the text editor viewer / widget
  */
 export class TextEditorIndicator extends Widget implements IndicatorWidget {
-  private _app: JupyterFrontEnd;
-  private _labShell: ILabShell;
-  private _tracker: IEditorTracker;
-  private _docManager: IDocumentManager;
-  private _path: string;
-
-  // Commenting Data receiver
-  private _receiver: CommentingDataReceiver;
-
-  // Commenting Data provider
-  private _provider: CommentingDataProvider;
-
-  // Indicators
-  private _indicators: { [key: string]: TextMarker };
-
-  // Code editor widget
-  private _editorWidget: IDocumentWidget<FileEditor, DocumentRegistry.IModel>;
-
-  // Code mirror editor
-  private _editor: CodeMirrorEditor;
-
-  private _commentingUIOpened: boolean;
-
   constructor(
     app: JupyterFrontEnd,
     labShell: ILabShell,
-    tracker: IEditorTracker,
     provider: CommentingDataProvider,
     receiver: CommentingDataReceiver,
     docManager: IDocumentManager,
@@ -62,22 +37,46 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     super();
     this._app = app;
     this._labShell = labShell;
-    this._tracker = tracker;
     this._provider = provider;
     this._receiver = receiver;
     this._docManager = docManager;
     this._path = path;
 
+    // TextEditorIndicator object store, the CodeMirrorEditor markers
     this._indicators = {};
+
+    // An ordered list of
+    this._markerIdOrdered = [];
+
+    // Load in indicator values from the comment service
+    let loadIndicators = this._receiver.getAllIndicatorValues();
+
+    if (loadIndicators) {
+      this._indicatorValues = loadIndicators;
+    } else {
+      this._indicatorValues = {};
+    }
+
+    // Sets the initial state of commenting UI opened
     this._commentingUIOpened = commentingUI.isVisible;
 
+    // The widget that contains the text editor
     this._editorWidget = this._docManager.findWidget(
       this._path
     ) as IDocumentWidget<FileEditor, DocumentRegistry.IModel>;
 
+    // The CodeMirrorEditor object
     this._editor = this._editorWidget.content.editor as CodeMirrorEditor;
 
-    // this._editor.editor.on('change', (instance, change) => {});
+    // If no editor dispose of this
+    if (!this._editor) {
+      this.dispose();
+    }
+
+    this.handleEditorBeforeChange = this.handleEditorBeforeChange.bind(this);
+    this.handleEditorOnChange = this.handleEditorOnChange.bind(this);
+    this.handleNewThreadCreated = this.handleNewThreadCreated.bind(this);
+    this.updateMarkerIdOrdered = this.updateMarkerIdOrdered.bind(this);
   }
 
   /**
@@ -98,16 +97,20 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     commentingUI.newThreadCreated.connect(this.handleNewThreadCreated, this);
 
     // Called when comments are queried
-    this._receiver.commentsQueried.connect(this.putIndicators, this);
+    // this._receiver.commentsQueried.connect(this.putIndicators, this);
 
     // Called when new data is received from a metadata service
-    this._receiver.newDataReceived.connect(this.putIndicators, this);
+    // this._receiver.newDataReceived.connect(this.putIndicators, this);
+
+    this._editor.editor.on('beforeChange', this.handleEditorBeforeChange);
+    this._editor.editor.on('change', this.handleEditorOnChange);
   }
 
   /**
    * Called when the close message is sent to the widget
    */
   protected onCloseRequest(msg: Message): void {
+    this._receiver.setAllIndicatorValues(this._path, this._indicatorValues);
     this.dispose();
   }
 
@@ -115,11 +118,23 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     // Disconnect signals
     commentingUI.newThreadCreated.disconnect(this.handleNewThreadCreated, this);
     commentingUI.showSignal.disconnect(this.handleCommentingUIShow, this);
-    this._receiver.commentsQueried.disconnect(this.putIndicators, this);
-    this._receiver.newDataReceived.disconnect(this.putIndicators, this);
+    // this._receiver.commentsQueried.disconnect(this.putIndicators, this);
+    // this._receiver.newDataReceived.disconnect(this.putIndicators, this);
+
+    this._editor.editor.off('beforeChange', this.handleEditorBeforeChange);
+    this._editor.editor.off('change', this.handleEditorOnChange);
+
+    if (this._createCommentCommand) {
+      this._createCommentCommand.dispose();
+    }
+
+    if (this._commentCommandMenuItem) {
+      this._commentCommandMenuItem.dispose();
+    }
 
     this.clearAllIndicators();
     this._indicators = {};
+    this._indicatorValues = {};
     super.dispose();
   }
 
@@ -181,45 +196,33 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       return;
     }
 
-    if (!this._commentingUIOpened) {
-      return;
-    }
-
     console.log('put', this.id);
 
-    const response = this._provider.getState('response') as any;
     const expandedCard = this._provider.getState('expandedCard') as string;
 
-    if (response && response.data && response.data.annotationsByTarget) {
-      const annotations = response.data.annotationsByTarget;
+    // If the new thread card is not active
+    if (!this._provider.getState('newThreadActive')) {
+      this._editor.doc.getAllMarks().forEach(mark => {
+        mark.clear();
+      });
 
-      // If the new thread card is not active
-      if (!this._provider.getState('newThreadActive')) {
-        this._editor.doc.getAllMarks().forEach(mark => {
-          mark.clear();
-        });
-      }
+      Object.keys(this._indicatorValues).forEach(key => {
+        let indicator = this._indicatorValues[key] as ITextIndicator;
+        let id = key;
 
-      for (let index in annotations) {
-        let indicator = annotations[index].indicator;
-        let resolved = annotations[index].resolved;
-        let id = annotations[index].id;
-
-        if (indicator !== null && indicator) {
-          if (id !== expandedCard && !resolved) {
-            this.createIndicator(indicator, id, 'highlight');
-          } else if (id !== expandedCard && resolved) {
-            this.createIndicator(indicator, id, 'clear');
-          } else if (id === expandedCard) {
-            this.createIndicator(
-              indicator,
-              id,
-              'highlight',
-              'rgba(255, 255, 0, 0.7)'
-            );
-          }
+        if (id !== expandedCard && this._commentingUIOpened) {
+          this.createIndicator(indicator, id, 'highlight');
+        } else if (!this._commentingUIOpened) {
+          this.createIndicator(indicator, id, 'clear');
+        } else if (id === expandedCard) {
+          this.createIndicator(
+            indicator,
+            id,
+            'highlight',
+            'rgba(255, 0, 0, 0.7)'
+          );
         }
-      }
+      });
     }
   }
 
@@ -270,16 +273,13 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
           ch: selection.current.start.column
         },
         { line: selection.current.end.line, ch: selection.current.end.column },
-        { css: 'background-color: transparent; border-bottom: 0;' }
+        { css: 'background-color: orange; border-bottom: 0;' }
       );
 
       // Override past beforeCursorEnter functions if any exist
       this._indicators[threadId].on('beforeCursorEnter', () => {
         return;
       });
-
-      // Clear the indicator
-      this._indicators[threadId].clear();
     }
   }
 
@@ -296,44 +296,136 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * Creates the context menu button "Comment"
    */
   createContextMenu(): void {
-    this._app.commands.addCommand('jupyterlab-commenting:createComment', {
-      label: 'Comment',
-      isVisible: () => {
-        return true;
-      },
-      execute: () => {
-        const widget = this._tracker.currentWidget;
-        const editor = widget.content.editor as CodeMirrorEditor;
+    this._createCommentCommand = this._app.commands.addCommand(
+      'jupyterlab-commenting:createComment',
+      {
+        label: 'Comment',
+        isVisible: () => {
+          return true;
+        },
+        execute: () => {
+          let selection = this.getSelection();
 
-        const selection = this.getSelection();
+          let nextId = this._receiver.getLatestCommentId();
 
-        this._receiver.setState({
-          latestIndicatorInfo: (selection as object) as JSONValue
-        });
+          this._indicatorValues[nextId] = selection;
 
-        const from = {
-          line: selection.current.start.line,
-          ch: selection.current.start.column
-        };
+          const from = {
+            line: selection.current.start.line,
+            ch: selection.current.start.column
+          };
 
-        const to = {
-          line: selection.current.end.line,
-          ch: selection.current.end.column
-        };
+          const to = {
+            line: selection.current.end.line,
+            ch: selection.current.end.column
+          };
 
-        editor.doc.markText(from, to, {
-          css: `border-bottom: 2px solid rgba(0, 0, 255, 0.5);`
-        });
+          this._editor.doc.markText(from, to, {
+            css: `border-bottom: 2px solid rgba(0, 0, 255, 0.5);`
+          });
 
-        this.openNewThread();
+          this.openNewThread();
+        }
       }
-    });
+    );
 
-    this._app.contextMenu.addItem({
+    this._commentCommandMenuItem = this._app.contextMenu.addItem({
       command: 'jupyterlab-commenting:createComment',
       selector: 'body',
       rank: Infinity
     });
+  }
+
+  /**
+   * Called before a change is applied on the text editor
+   *
+   * @param instance Type: Editor - instance of the text editor
+   */
+  handleEditorBeforeChange(instance: Editor): void {
+    this.updateMarkerIdOrdered(instance);
+  }
+
+  /**
+   * Called on the change of the text editor. Updates indicator
+   * positioning and context based on the new changes to the editor
+   *
+   * ### Notes
+   *
+   * How this works is that the CodeMirrorEditor's text marker functionality already
+   * handles the changes to the marks made in the editor so this function gets the markers
+   * from top to bottom of the page in an array and uses another array, that gets updated
+   * before change, that contains id's (this._markerIdOrdered) that stores threadId's in
+   * the same order the marks are gathered. So the Id is matched with the position related
+   * marker and the new (current) value is updated.
+   *
+   * @param instance Type: Editor - instance of the text editor
+   */
+  handleEditorOnChange(instance: Editor): void {
+    const doc = instance.getDoc();
+    const allMarks = doc.getAllMarks();
+
+    for (let index in allMarks) {
+      // Range of marker
+      let mark = allMarks[index].find();
+
+      // Id matches index. Explained in notes.
+      let id = this._markerIdOrdered[index];
+
+      // The updated contents from the text editor
+      let newContext = doc.getRange(mark.from, mark.to);
+
+      let indicator = this._indicatorValues[id] as ITextIndicator;
+
+      // Apply new value
+      indicator.current = {
+        end: {
+          line: mark.to.line,
+          column: mark.to.ch
+        },
+        start: {
+          line: mark.from.line,
+          column: mark.from.ch
+        },
+        context: newContext
+      };
+    }
+    this.putIndicators();
+  }
+
+  /**
+   * Creates an array of thread Ids in related to the text markers in the
+   * editor from top to bottom. This array is used to relate a marker to
+   * a thread in handleEditorOnChange.
+   *
+   * @param instance Type: Editor - instance of the text editor
+   */
+  updateMarkerIdOrdered(instance: Editor): void {
+    this._markerIdOrdered = [];
+    instance
+      .getDoc()
+      .getAllMarks()
+      .forEach(mark => {
+        /**
+         * Compares values of the stored marker with the marker on the page,
+         * and checks if they are the same. Then the thread id is added to
+         * the array in the order they are matched.
+         */
+        for (let id in this._indicators) {
+          let storedRange = this._indicators[id].find();
+          let currentRange = mark.find();
+
+          if (
+            storedRange &&
+            currentRange &&
+            storedRange.from.line === currentRange.from.line &&
+            storedRange.from.ch === currentRange.from.ch &&
+            storedRange.to.line === currentRange.to.line &&
+            storedRange.to.ch === currentRange.to.ch
+          ) {
+            this._markerIdOrdered.push(id);
+          }
+        }
+      });
   }
 
   /**
@@ -343,16 +435,17 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @param args - true if new thread created, false if canceled
    */
   handleNewThreadCreated(sender: CommentingWidget, args: boolean) {
-    this._receiver.setState({
-      latestIndicatorInfo: undefined
-    });
+    if (!args) {
+      let nextId = this._receiver.getLatestCommentId();
+      delete this._indicatorValues[nextId];
+    }
     this.putIndicators();
   }
 
   /**
    * Called when the commentingUI is opened
    *
-   * @param sender CommentindWidget - the commentingUI
+   * @param sender CommentingWidget - the commentingUI
    * @param args - true if commentingUI is opened, false if closed
    */
   handleCommentingUIShow(sender: CommentingWidget, args: boolean) {
@@ -361,7 +454,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       this.putIndicators();
     } else {
       this._commentingUIOpened = false;
-      this.clearAllIndicators();
+      this.putIndicators();
     }
   }
 
@@ -373,14 +466,11 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @return Type: ITextIndicator
    */
   getSelection(): ITextIndicator {
-    const widget = this._tracker.currentWidget;
-    const editor = widget.content.editor as CodeMirrorEditor;
-
     // Selection start and end range, start relative to where the user starts the selection
-    let selection = editor.getSelection();
+    let selection = this._editor.getSelection();
 
     // Context that is selected
-    let context = editor.doc.getSelection();
+    let context = this._editor.doc.getSelection();
 
     let indicator: ITextIndicator;
     let selected;
@@ -405,11 +495,11 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
     // If start position is same as end position, mark entire line
     if (startLine === endLine && startCol === endCol) {
-      context = editor.getLine(selection.start.line);
+      context = this._editor.getLine(selection.start.line);
       selected = {
         end: {
           line: endLine,
-          column: editor.getLine(selection.start.line).length
+          column: this._editor.getLine(selection.start.line).length
         },
         start: { line: startLine, column: 0 },
         context: context
@@ -435,4 +525,19 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
 
     return indicator;
   }
+
+  private _app: JupyterFrontEnd;
+  private _labShell: ILabShell;
+  private _docManager: IDocumentManager;
+  private _path: string;
+  private _receiver: CommentingDataReceiver;
+  private _provider: CommentingDataProvider;
+  private _indicators: { [key: string]: TextMarker };
+  private _indicatorValues: { [key: string]: CommentIndicator };
+  private _editorWidget: IDocumentWidget<FileEditor, DocumentRegistry.IModel>;
+  private _editor: CodeMirrorEditor;
+  private _commentingUIOpened: boolean;
+  private _markerIdOrdered: string[];
+  private _createCommentCommand: IDisposable;
+  private _commentCommandMenuItem: IDisposable;
 }

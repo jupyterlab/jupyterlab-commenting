@@ -1,6 +1,6 @@
 import { ISignal } from '@phosphor/signaling';
 
-import { CommentingStates, ICommentStateValue } from './states';
+import { CommentingStates, CommentStateValue } from './states';
 
 /**
  * Simple interface for providing data to extension from CommentingStates Object
@@ -17,7 +17,7 @@ export class CommentingDataProvider {
    *
    * @param key Type: string - key value for data needed
    */
-  getState(key: ICommentingStateKeys): ICommentStateValue {
+  getState(key: CommentingStateKeys): CommentStateValue {
     return this._states.getState(key);
   }
 
@@ -32,7 +32,7 @@ export class CommentingDataProvider {
 /**
  * Key values for commenting states
  */
-export type ICommentingStateKeys =
+export type CommentingStateKeys =
   | 'creator'
   | 'curTargetHasThreads'
   | 'expandedCard'

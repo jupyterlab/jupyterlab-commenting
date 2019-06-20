@@ -2,8 +2,6 @@ import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { IEditorTracker } from '@jupyterlab/fileeditor';
-
 import { Widget } from '@phosphor/widgets';
 
 import { CommentingDataProvider } from './provider';
@@ -16,7 +14,6 @@ import { CommentingDataReceiver } from './receiver';
  */
 export class CommentingIndicatorHandler {
   private _app: JupyterFrontEnd;
-  private _tracker: IEditorTracker;
   private _provider: CommentingDataProvider;
   private _receiver: CommentingDataReceiver;
   private _labShell: ILabShell;
@@ -26,7 +23,6 @@ export class CommentingIndicatorHandler {
 
   constructor(
     app: JupyterFrontEnd,
-    tracker: IEditorTracker,
     provider: CommentingDataProvider,
     receiver: CommentingDataReceiver,
     labShell: ILabShell,
@@ -35,7 +31,6 @@ export class CommentingIndicatorHandler {
     this._app = app;
     this._provider = provider;
     this._labShell = labShell;
-    this._tracker = tracker;
     this._receiver = receiver;
     this._docManager = docManager;
 
@@ -94,7 +89,6 @@ export class CommentingIndicatorHandler {
       this._activeIndicatorWidget = new TextEditorIndicator(
         this._app,
         this._labShell,
-        this._tracker,
         this._provider,
         this._receiver,
         this._docManager,
@@ -141,6 +135,7 @@ export class CommentingIndicatorHandler {
    */
   handleTargetChanged() {
     // Clear past widget
+    this.clearIndicatorWidget();
     this.setIndicatorWidget();
   }
 

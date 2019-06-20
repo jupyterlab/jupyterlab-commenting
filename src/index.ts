@@ -78,7 +78,6 @@ export function activate(
   // Create CommentingIndicatorHandler
   indicatorHandler = new CommentingIndicatorHandler(
     app,
-    tracker,
     provider,
     receiver,
     labShell,

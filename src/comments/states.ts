@@ -1,5 +1,5 @@
 import { Signal, ISignal } from '@phosphor/signaling';
-import { ICommentThread, IPerson } from './service';
+import { ICommentThread, IPerson, CommentIndicator } from './service';
 
 /**
  * CommentingStates is used as a state holder and handler for the extension
@@ -23,7 +23,7 @@ export class CommentingStates {
    * @param key Type: string - key value for data
    * @param value Type: JSONValue - data to store
    */
-  protected set(key: string, value: ICommentStateValue): void {
+  protected set(key: string, value: CommentStateValue): void {
     if (this._state[key] === value) {
       return;
     }
@@ -48,7 +48,7 @@ export class CommentingStates {
    *
    * @param key Type: string - key of data to access
    */
-  getState(key: string): ICommentStateValue {
+  getState(key: string): CommentStateValue {
     return this._state[key];
   }
 
@@ -68,13 +68,14 @@ export class CommentingStates {
 }
 
 export interface ICommentStates {
-  [key: string]: ICommentStateValue;
+  [key: string]: CommentStateValue;
 }
 
-export declare type ICommentStateValue =
+export type CommentStateValue =
   | string
   | boolean
   | number
   | ICommentThread
   | IPerson
-  | Object;
+  | Object
+  | CommentIndicator;

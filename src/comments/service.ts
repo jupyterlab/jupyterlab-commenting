@@ -32,7 +32,12 @@ export class CommentsService {
    * @param value Type: string - initial value of the top comment in the thread
    * @param creator Type: IPerson - object of the creator of the thread
    */
-  createThread(target: string, value: string, creator: IPerson): void {
+  createThread(
+    target: string,
+    value: string,
+    creator: IPerson,
+    indicator?: CommentIndicator
+  ): void {
     // Create a new key value pair for the target if it is undefined
     if (!this._commentsStore[target]) {
       this._commentsStore[target] = [];
@@ -44,6 +49,7 @@ export class CommentsService {
       id: 'anno/' + this._nextCommentId,
       total: 1,
       resolved: false,
+      indicator: indicator || undefined,
       body: [
         { value: value, created: created, creator: creator, edited: false }
       ]
@@ -154,6 +160,49 @@ export class CommentsService {
     let thread = this.getThread(target, threadId);
 
     thread.resolved = state;
+
+    this.writeJSON();
+  }
+
+  /**
+   * Returns all indicator values in a key value pair.
+   * key: threadId, value CommentIndicator
+   *
+   * @param target Type: string - path of file indicators relate to
+   */
+  getAllIndicatorValues(target: string): { [key: string]: CommentIndicator } {
+    let threads = this._commentsStore[target];
+    let indicators: { [key: string]: CommentIndicator } = {};
+
+    if (threads) {
+      threads.forEach(thread => {
+        if (thread.indicator && !thread.resolved) {
+          indicators[thread.id] = thread.indicator;
+        }
+      });
+    }
+
+    return indicators;
+  }
+
+  /**
+   * Saves all the given text indicators into the correct place in comments.json file
+   *
+   * @param target Type: string - path of file indicators are being saved for
+   * @param indicators Type: { [key: string]: CommentIndicator } - key value pair of indicators to save
+   */
+  setAllIndicatorValues(
+    target: string,
+    indicators: { [key: string]: CommentIndicator }
+  ): void {
+    Object.keys(indicators).forEach(key => {
+      let thread = this.getThread(target, key);
+      if (thread.indicator) {
+        thread.indicator = indicators[key];
+      } else {
+        thread['indicator'] = indicators[key];
+      }
+    });
 
     this.writeJSON();
   }
@@ -288,7 +337,7 @@ export class CommentsService {
     let sorted = new Array<ICommentThread>();
 
     /**
-     * Creates an Array of comment threads sorted by their total amount of threads
+     * Creates an Array of threads sorted by their total amount of comments
      */
     sorted = threads.sort((a, b) => {
       return a.total - b.total;
@@ -396,6 +445,13 @@ export class CommentsService {
   }
 
   /**
+   * @returns Type: string - returns the id of the newest comment thread
+   */
+  getLatestCommentId(): string {
+    return 'anno/' + this._nextCommentId;
+  }
+
+  /**
    * Returns thread based on target and threadId
    *
    * @param target Type: string - path of file thread relates to
@@ -445,7 +501,7 @@ export interface ICommentThread {
   /**
    * Thread indicator
    */
-  indicator?: ITextIndicator;
+  indicator?: CommentIndicator;
   /**
    * Array of all comments
    */
@@ -495,7 +551,12 @@ export interface IPerson {
   image: string;
 }
 
+export type CommentIndicator = ITextIndicator | INotebookIndicator;
+
 export interface ITextIndicator {
+  /**
+   * Initial value, the very first indicator values and context
+   */
   initial: {
     end: {
       line: number;
@@ -507,6 +568,10 @@ export interface ITextIndicator {
     };
     context: string;
   };
+
+  /**
+   * The most recent positioning and context of the indicator
+   */
   current: {
     end: {
       line: number;

@@ -4,7 +4,7 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 import { ISignal, Signal } from '@phosphor/signaling';
 
 import { CommentingStates, ICommentStates } from './states';
-import { IPerson } from './service';
+import { IPerson, CommentIndicator } from './service';
 import { CommentsService } from './service';
 
 /**
@@ -173,12 +173,21 @@ export class CommentingDataReceiver {
     this._newDataReceived.emit(void 0);
   }
 
-  setCurrentTextIndicatorValue(
+  setAllIndicatorValues(
     target: string,
-    threadId: string,
-    value: object
+    values: { [key: string]: CommentIndicator }
   ): void {
-    this._newDataReceived.emit(void 0);
+    this._commentService.setAllIndicatorValues(target, values);
+    // this._newDataReceived.emit(void 0);
+  }
+
+  getAllIndicatorValues(): { [key: string]: CommentIndicator } {
+    let target = this._states.getState('target') as string;
+    return this._commentService.getAllIndicatorValues(target);
+  }
+
+  getLatestCommentId(): string {
+    return this._commentService.getLatestCommentId();
   }
 
   /**
