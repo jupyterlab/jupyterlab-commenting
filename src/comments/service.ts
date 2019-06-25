@@ -12,14 +12,8 @@ export class CommentsService {
     // Stores comments in memory
     this._commentsStore = {};
 
-    // Stores people in memory
-    this._personStore = {};
-
     // Next comment id
     this._nextCommentId = 0;
-
-    // Next person id
-    this._nextPersonId = 0;
 
     this.createJSONFile();
     this.loadJSON();
@@ -51,7 +45,12 @@ export class CommentsService {
       resolved: false,
       indicator: indicator || undefined,
       body: [
-        { value: value, created: created, creator: creator, edited: false }
+        {
+          value: value,
+          created: created,
+          creator: creator,
+          edited: false
+        }
       ]
     });
 
@@ -347,29 +346,6 @@ export class CommentsService {
   }
 
   /**
-   * Creates a new person entry in comments.json
-   *
-   * @param name Type: string - name of person to create
-   * @param image Type: string - URL of person GitHub profile picture
-   */
-  createPerson(name: string, image: string): string {
-    let id = 'person/' + this._nextPersonId;
-
-    this._personStore[id] = { name: name, image: image };
-    this._nextPersonId++;
-    this.writeJSON();
-
-    return id;
-  }
-
-  /**
-   * Returns all person objects in comments.json
-   */
-  getAllPersons(): IPersonStore {
-    return this._personStore;
-  }
-
-  /**
    * Creates comments.json
    */
   createJSONFile(): void {
@@ -378,12 +354,7 @@ export class CommentsService {
 
     // Attempt to get 'comments.json', if failure, create it
     contents.get(this._storePath).catch(err => {
-      let initialData = {
-        comments: this._commentsStore,
-        persons: this._personStore
-      };
-
-      let initial = JSON.stringify(initialData);
+      let initial = JSON.stringify(this._commentsStore);
 
       contents
         .save(this._storePath, {
@@ -410,14 +381,10 @@ export class CommentsService {
       .then(file => {
         let data = JSON.parse(file.content);
 
-        this._commentsStore = data.comments;
-        this._personStore = data.persons;
+        this._commentsStore = data;
 
-        // Sets next id to correct value
-        this._nextPersonId = Object.keys(data.persons).length;
-
-        Object.keys(data.comments).forEach(key => {
-          this._nextCommentId += data.comments[key].length;
+        Object.keys(data).forEach(key => {
+          this._nextCommentId += data[key].length;
         });
       })
       .catch(err => console.error('Error parsing comments.json', err));
@@ -430,9 +397,7 @@ export class CommentsService {
     let contents = this._browserFactory.defaultBrowser.model.manager.services
       .contents;
 
-    let allData = { comments: this._commentsStore, persons: this._personStore };
-
-    let newData = JSON.stringify(allData);
+    let newData = JSON.stringify(this._commentsStore);
 
     contents
       .save(this._storePath, {
@@ -469,9 +434,7 @@ export class CommentsService {
 
   private _browserFactory: IFileBrowserFactory;
   private _commentsStore: ICommentsStore;
-  private _personStore: IPersonStore;
   private _nextCommentId: number;
-  private _nextPersonId: number;
   private readonly _storePath = 'comments.json';
 }
 
@@ -531,13 +494,6 @@ export interface ICommentBody {
 }
 
 /**
- * Person store type
- */
-export interface IPersonStore {
-  [id: string]: IPerson;
-}
-
-/**
  * Person object
  */
 export interface IPerson {
@@ -549,6 +505,10 @@ export interface IPerson {
    * Person image URL
    */
   image: string;
+  /**
+   * GitHub username
+   */
+  user: string;
 }
 
 export type CommentIndicator = ITextIndicator | INotebookIndicator;

@@ -234,29 +234,12 @@ export class CommentingDataReceiver {
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
     if (myJSON.message !== 'Not Found') {
-      let persons = this._commentService.getAllPersons();
-
-      if (persons) {
-        for (let key in persons) {
-          if (persons[key].name === name && !this._states.getState('userSet')) {
-            this._states.setState({
-              creator: {
-                id: key,
-                name: name,
-                image: myJSON.avatar_url
-              },
-              userSet: true
-            });
-          }
-        }
-      }
       if (!this._states.getState('userSet')) {
-        let id = this._commentService.createPerson(name, myJSON.avatar_url);
         this._states.setState({
           creator: {
-            id: id,
             name: name,
-            image: myJSON.avatar_url
+            image: myJSON.avatar_url,
+            user: user
           },
           userSet: true
         });
