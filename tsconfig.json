@@ -38,16 +38,13 @@
       "path": "../codemirror"
     },
     {
-      "path": "../dataregistry"
+      "path": "../dataregistry-extension"
     },
     {
       "path": "../docregistry"
     },
     {
       "path": "../notebook"
-    },
-    {
-      "path": "../frontend"
     }
   ]
 }
