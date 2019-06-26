@@ -87,8 +87,6 @@ export class CommentingDataReceiver {
         response: threads
       });
     }
-
-    this._commentsQueried.emit(void 0);
   }
 
   /**
@@ -171,21 +169,38 @@ export class CommentingDataReceiver {
   setResolvedValue(target: string, threadId: string, value: boolean): void {
     this._commentService.setResolvedValue(target, threadId, value);
     this._newDataReceived.emit(void 0);
+    this._threadResolved.emit({
+      value: value,
+      target: target,
+      threadId: threadId
+    });
   }
 
+  /**
+   * Saves all the given text indicators into the correct place in comments.json file
+   *
+   * @param target Type: string - path of file indicators are being saved for
+   * @param indicators Type: { [key: string]: CommentIndicator } - key value pair of indicators to save
+   */
   setAllIndicatorValues(
     target: string,
     values: { [key: string]: CommentIndicator }
   ): void {
     this._commentService.setAllIndicatorValues(target, values);
-    // this._newDataReceived.emit(void 0);
   }
 
+  /**
+   * Returns all indicator values in a key value pair.
+   * key: threadId, value CommentIndicator
+   */
   getAllIndicatorValues(): { [key: string]: CommentIndicator } {
     let target = this._states.getState('target') as string;
     return this._commentService.getAllIndicatorValues(target);
   }
 
+  /**
+   * @returns Type: string - returns the id of the newest comment thread
+   */
   getLatestCommentId(): string {
     return this._commentService.getLatestCommentId();
   }
@@ -264,17 +279,17 @@ export class CommentingDataReceiver {
   }
 
   /**
+   * Signal when thread is resolved with resolve value
+   */
+  get threadResolved(): ISignal<this, any> {
+    return this._threadResolved;
+  }
+
+  /**
    * Signal when new data is received from CommentsService
    */
   get newDataReceived(): ISignal<this, void> {
     return this._newDataReceived;
-  }
-
-  /**
-   * Signal when 'response' state is updated in CommentingStates
-   */
-  get commentsQueried(): ISignal<this, void> {
-    return this._commentsQueried;
   }
 
   // CommentingStates object
@@ -289,9 +304,9 @@ export class CommentingDataReceiver {
   // Signal when new data is received and needs to be updated
   private _newDataReceived = new Signal<this, void>(this);
 
+  // Signal when thread is resolved with resolve value
+  private _threadResolved = new Signal<this, any>(this);
+
   // Signal when new target is set
   private _targetSet = new Signal<this, void>(this);
-
-  // Signal when new comments are queried
-  private _commentsQueried = new Signal<this, void>(this);
 }

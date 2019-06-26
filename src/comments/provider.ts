@@ -6,8 +6,6 @@ import { CommentingStates, CommentStateValue } from './states';
  * Simple interface for providing data to extension from CommentingStates Object
  */
 export class CommentingDataProvider {
-  private _states: CommentingStates;
-
   constructor(states: CommentingStates) {
     this._states = states;
   }
@@ -27,6 +25,8 @@ export class CommentingDataProvider {
   get stateUpdateSignal(): ISignal<CommentingStates, void> {
     return this._states.stateUpdatedSignal;
   }
+
+  private _states: CommentingStates;
 }
 
 /**

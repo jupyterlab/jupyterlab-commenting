@@ -7,12 +7,6 @@ import { ICommentThread, IPerson, CommentIndicator } from './service';
  * interactions with this class
  */
 export class CommentingStates {
-  // JSONObject to hold all states
-  private _state: ICommentStates;
-
-  // Signal when states update
-  private _stateUpdated = new Signal<this, void>(this);
-
   constructor() {
     this._state = {};
   }
@@ -65,6 +59,12 @@ export class CommentingStates {
   get stateUpdatedSignal(): ISignal<this, void> {
     return this._stateUpdated;
   }
+
+  // JSONObject to hold all states
+  private _state: ICommentStates;
+
+  // Signal when states update
+  private _stateUpdated = new Signal<this, void>(this);
 }
 
 export interface ICommentStates {

@@ -12,7 +12,9 @@ import { Widget } from '@phosphor/widgets';
 
 import { Message } from '@phosphor/messaging';
 
-import { TextMarker, Editor } from 'codemirror';
+import { IDisposable } from '@phosphor/disposable';
+
+import { TextMarker, Editor, EditorChangeLinkedList } from 'codemirror';
 
 import { ITextIndicator, CommentIndicator } from './service';
 import { commentingUI, indicatorHandler } from '../index';
@@ -20,7 +22,6 @@ import { CommentingDataProvider } from './provider';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataReceiver } from './receiver';
 import { CommentingWidget } from './commenting';
-import { IDisposable } from '@phosphor/disposable';
 
 /**
  * Indicator widget for the text editor viewer / widget
@@ -51,11 +52,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     // Load in indicator values from the comment service
     let loadIndicators = this._receiver.getAllIndicatorValues();
 
-    if (loadIndicators) {
-      this._indicatorValues = loadIndicators;
-    } else {
-      this._indicatorValues = {};
-    }
+    this._indicatorValues = loadIndicators ? loadIndicators : {};
 
     // Sets the initial state of commenting UI opened
     this._commentingUIOpened = commentingUI.isVisible;
@@ -88,6 +85,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     if (!this._app.commands.hasCommand('jupyterlab-commenting:createComment')) {
       this.createContextMenu();
     }
+
     this.putIndicators();
 
     // Called when commenting is opened or closed
@@ -96,11 +94,11 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     // Handles indicator when a new thread is created or canceled
     commentingUI.newThreadCreated.connect(this.handleNewThreadCreated, this);
 
-    // Called when comments are queried
-    // this._receiver.commentsQueried.connect(this.putIndicators, this);
+    // Updates indicators when the back button is pressed
+    commentingUI.backPressed.connect(this.putIndicators, this);
 
-    // Called when new data is received from a metadata service
-    // this._receiver.newDataReceived.connect(this.putIndicators, this);
+    // Handler for updating when new commenting values are received
+    this._receiver.threadResolved.connect(this.handleThreadResolved, this);
 
     this._editor.editor.on('beforeChange', this.handleEditorBeforeChange);
     this._editor.editor.on('change', this.handleEditorOnChange);
@@ -118,8 +116,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     // Disconnect signals
     commentingUI.newThreadCreated.disconnect(this.handleNewThreadCreated, this);
     commentingUI.showSignal.disconnect(this.handleCommentingUIShow, this);
-    // this._receiver.commentsQueried.disconnect(this.putIndicators, this);
-    // this._receiver.newDataReceived.disconnect(this.putIndicators, this);
+    commentingUI.backPressed.disconnect(this.putIndicators, this);
+
+    this._receiver.threadResolved.disconnect(this.handleThreadResolved, this);
 
     this._editor.editor.off('beforeChange', this.handleEditorBeforeChange);
     this._editor.editor.off('change', this.handleEditorOnChange);
@@ -181,6 +180,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         this._editor.editor.scrollIntoView(position.from, 500);
       }
     }
+    this.putIndicators();
   }
 
   /**
@@ -195,8 +195,6 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
       indicatorHandler.handleTargetChanged();
       return;
     }
-
-    console.log('put', this.id);
 
     const expandedCard = this._provider.getState('expandedCard') as string;
 
@@ -219,7 +217,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
             indicator,
             id,
             'highlight',
-            'rgba(255, 0, 0, 0.7)'
+            'rgba(255, 255, 0, 0.7)'
           );
         }
       });
@@ -227,7 +225,6 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   }
 
   /**
-   *
    * Adds indicators to text editor
    *
    * @param selection - Type: ITextIndicator - selection to highlight
@@ -260,6 +257,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
         if (threadId && this._editor.doc.getSelection().length <= 1) {
           if (!commentingUI.getExpandedCard(threadId)) {
             this.focusThread(threadId);
+            this.putIndicators();
           }
         }
       });
@@ -273,7 +271,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
           ch: selection.current.start.column
         },
         { line: selection.current.end.line, ch: selection.current.end.column },
-        { css: 'background-color: orange; border-bottom: 0;' }
+        { css: 'background-color: clear; border-bottom: 0;' }
       );
 
       // Override past beforeCursorEnter functions if any exist
@@ -299,9 +297,9 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     this._createCommentCommand = this._app.commands.addCommand(
       'jupyterlab-commenting:createComment',
       {
-        label: 'Comment',
+        label: 'Create New Comment',
         isVisible: () => {
-          return true;
+          return this._provider.getState('userSet') as boolean;
         },
         execute: () => {
           let selection = this.getSelection();
@@ -337,12 +335,48 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   }
 
   /**
+   * Called when a thread is resolved
+   *
+   * @param sender Type: CommentingDataReceiver - sender of signal
+   * @param args Type: {value: boolean, threadId: string, target: string}
+   *
+   * value - resolve value
+   * threadId - id of thread being resolved
+   * target - file path thread is related to
+   */
+  handleThreadResolved(sender: CommentingDataReceiver, args: any): void {
+    if (args.value) {
+      let indicator = this._indicatorValues[args.threadId] as ITextIndicator;
+
+      // Clear indicator's current value to all zeros
+      indicator.current = {
+        end: {
+          line: 0,
+          column: 0
+        },
+        start: {
+          line: 0,
+          column: 0
+        },
+        context: ''
+      };
+
+      this._receiver.setAllIndicatorValues(this._path, this._indicatorValues);
+      this._indicatorValues = this._receiver.getAllIndicatorValues();
+      this.putIndicators();
+    }
+  }
+
+  /**
    * Called before a change is applied on the text editor
    *
    * @param instance Type: Editor - instance of the text editor
    */
-  handleEditorBeforeChange(instance: Editor): void {
-    this.updateMarkerIdOrdered(instance);
+  handleEditorBeforeChange(
+    instance: Editor,
+    change: EditorChangeLinkedList
+  ): void {
+    this.updateMarkerIdOrdered(instance, change);
   }
 
   /**
@@ -399,7 +433,10 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    *
    * @param instance Type: Editor - instance of the text editor
    */
-  updateMarkerIdOrdered(instance: Editor): void {
+  updateMarkerIdOrdered(
+    instance: Editor,
+    change: EditorChangeLinkedList
+  ): void {
     this._markerIdOrdered = [];
     instance
       .getDoc()
@@ -415,6 +452,14 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
           let currentRange = mark.find();
 
           if (
+            storedRange &&
+            change.from.line === storedRange.from.line &&
+            change.from.ch === storedRange.from.ch &&
+            change.to.line === storedRange.to.line &&
+            change.to.ch === storedRange.to.ch
+          ) {
+            this._receiver.setResolvedValue(this._path, id, true);
+          } else if (
             storedRange &&
             currentRange &&
             storedRange.from.line === currentRange.from.line &&
@@ -451,11 +496,10 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   handleCommentingUIShow(sender: CommentingWidget, args: boolean) {
     if (args) {
       this._commentingUIOpened = true;
-      this.putIndicators();
     } else {
       this._commentingUIOpened = false;
-      this.putIndicators();
     }
+    this.putIndicators();
   }
 
   /**

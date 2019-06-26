@@ -13,14 +13,6 @@ import { CommentingDataReceiver } from './receiver';
  * This class handles setting and clearing indicator widgets
  */
 export class CommentingIndicatorHandler {
-  private _app: JupyterFrontEnd;
-  private _provider: CommentingDataProvider;
-  private _receiver: CommentingDataReceiver;
-  private _labShell: ILabShell;
-  private _docManager: IDocumentManager;
-
-  private _activeIndicatorWidget: Widget & IndicatorWidget;
-
   constructor(
     app: JupyterFrontEnd,
     provider: CommentingDataProvider,
@@ -42,7 +34,7 @@ export class CommentingIndicatorHandler {
    * Handles determining which indicator widget to add to the opened widget
    */
   setIndicatorWidget(): void {
-    const path = this._provider.getState('target') as string;
+    let path = this._provider.getState('target') as string;
 
     if (!path) {
       return;
@@ -145,6 +137,13 @@ export class CommentingIndicatorHandler {
   get activeIndicatorWidget() {
     return this._activeIndicatorWidget;
   }
+
+  private _app: JupyterFrontEnd;
+  private _provider: CommentingDataProvider;
+  private _receiver: CommentingDataReceiver;
+  private _labShell: ILabShell;
+  private _docManager: IDocumentManager;
+  private _activeIndicatorWidget: Widget & IndicatorWidget;
 }
 
 /**

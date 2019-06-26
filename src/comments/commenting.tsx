@@ -8,7 +8,7 @@ import { UseSignal } from '@jupyterlab/apputils';
 
 import { Signal, ISignal } from '@phosphor/signaling';
 
-import { IPerson } from './service';
+import { IPerson, ICommentThread } from './service';
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
 import { indicatorHandler } from '..';
@@ -26,21 +26,6 @@ import { UserSet } from './components/UserSet';
  * CommentingUI React Widget
  */
 export class CommentingWidget extends ReactWidget {
-  // CommentingDataProvider to get data from CommentingStates
-  private _provider: CommentingDataProvider;
-
-  // CommentingDataReceiver to pass data to CommentingStates
-  private _receiver: CommentingDataReceiver;
-
-  // setInterval of when to poll new data
-  private _periodicUpdate: number;
-
-  // Signal when commenting UI is shown or hidden
-  private _showSignal = new Signal<this, boolean>(this);
-
-  // Signal when new thread is created or canceled
-  private _newThreadCreated = new Signal<this, boolean>(this);
-
   constructor(
     provider: CommentingDataProvider,
     receiver: CommentingDataReceiver
@@ -203,7 +188,9 @@ export class CommentingWidget extends ReactWidget {
    * @return Type: React.ReactNode[] - List of CommentCard Components / ReactNodes
    */
   getAllCommentCards(): React.ReactNode[] {
-    const threads = this._provider.getState('response') as any;
+    const threads = this._provider.getState('response') as Array<
+      ICommentThread
+    >;
     try {
       let cards: React.ReactNode[] = [];
       for (let index in threads) {
@@ -292,6 +279,7 @@ export class CommentingWidget extends ReactWidget {
 
     if (threadId === ' ') {
       this.setIsEditing('');
+      this._backPressed.emit(void 0);
     }
 
     indicatorHandler.activeIndicatorWidget.scrollIntoView(threadId);
@@ -372,4 +360,29 @@ export class CommentingWidget extends ReactWidget {
   get newThreadCreated(): ISignal<this, boolean> {
     return this._newThreadCreated;
   }
+
+  /**
+   * Signal when the back button is pressed
+   */
+  get backPressed(): ISignal<this, void> {
+    return this._backPressed;
+  }
+
+  // CommentingDataProvider to get data from CommentingStates
+  private _provider: CommentingDataProvider;
+
+  // CommentingDataReceiver to pass data to CommentingStates
+  private _receiver: CommentingDataReceiver;
+
+  // setInterval of when to poll new data
+  private _periodicUpdate: number;
+
+  // Signal when commenting UI is shown or hidden
+  private _showSignal = new Signal<this, boolean>(this);
+
+  // Signal emitted when back button is pressed
+  private _backPressed = new Signal<this, void>(this);
+
+  // Signal when new thread is created or canceled
+  private _newThreadCreated = new Signal<this, boolean>(this);
 }
