@@ -87,7 +87,7 @@ export class CommentFooter extends React.Component<
     };
 
     this.handleChangeCommentBox = this.handleChangeCommentBox.bind(this);
-    this.handleCommentButton = this.handleCommentButton.bind(this);
+    this.handleReplyButton = this.handleReplyButton.bind(this);
     this.handleCancelButton = this.handleCancelButton.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
@@ -139,7 +139,7 @@ export class CommentFooter extends React.Component<
       e.key === 'Enter' &&
       !e.shiftKey
     ) {
-      this.handleCommentButton();
+      this.handleReplyButton();
       document.getElementById('commentBox').blur();
     }
   }
@@ -156,7 +156,7 @@ export class CommentFooter extends React.Component<
   /**
    * Handles clicking the comment button
    */
-  handleCommentButton(): void {
+  handleReplyButton(): void {
     this.props.getInput(this.state.commentBox);
     this.setState({ commentBox: '' });
     this.props.handleReplyClose();
@@ -179,7 +179,7 @@ export class CommentFooter extends React.Component<
     if (this.props.replyActive) {
       return (
         <div>
-          {this.getCommentButton()}
+          {this.getReplyButton()}
           {this.getCancelButton()}
         </div>
       );
@@ -191,15 +191,15 @@ export class CommentFooter extends React.Component<
    *
    * @return Type: React.ReactNode
    */
-  getCommentButton(): React.ReactNode {
+  getReplyButton(): React.ReactNode {
     return (
       <button
-        onClick={this.handleCommentButton}
+        onClick={this.handleReplyButton}
         className="jp-commenting-button-blue"
         type="button"
         disabled={this.state.commentBox.trim() === ''}
       >
-        Comment
+        Reply
       </button>
     );
   }

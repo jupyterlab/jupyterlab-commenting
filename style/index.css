@@ -1,3 +1,7 @@
+:root {
+    --jp-image-back-arrow: url('images/backButton.png');
+}
+
 .jp-commenting-window {
     background: var(--jp-layout-color1);
     font-family: var(--jp-content-font-family);
