@@ -1,5 +1,10 @@
 :root {
     --jp-image-back-arrow: url('images/backButton.png');
+    --jp-image-chat-icon: url('images/chatIcon.png');
+}
+
+.jp-ChatIcon {
+    background-image: var(--jp-image-chat-icon);
 }
 
 .jp-commenting-window {
