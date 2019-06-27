@@ -1,4 +1,4 @@
-import { IActiveDataset, ActiveDataset } from '@jupyterlab/dataregistry';
+import { IActiveDataset } from '@jupyterlab/dataregistry-extension';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { ISignal, Signal } from '@phosphor/signaling';
@@ -18,7 +18,9 @@ export class CommentingDataReceiver {
     browserFactory: IFileBrowserFactory
   ) {
     this._states = states;
-    this._activeTarget = activeDataset.signal;
+
+    activeDataset.next(activeDataset.value);
+    activeDataset.subscribe(console.log);
 
     // Create CommentsService object
     this._commentService = new CommentsService(browserFactory);
@@ -267,9 +269,9 @@ export class CommentingDataReceiver {
   /**
    * Signal when active is set
    */
-  get activeUpdated(): ISignal<ActiveDataset, URL | null> {
-    return this._activeTarget;
-  }
+  // get activeUpdated(): ISignal<ActiveDataset, URL | null> {
+  //   return this._activeTarget;
+  // }
 
   /**
    * Signal when new target is set
@@ -299,7 +301,7 @@ export class CommentingDataReceiver {
   private _commentService: CommentsService;
 
   // Signal when active target is updated
-  private _activeTarget: ISignal<ActiveDataset, URL | null>;
+  // private _activeTarget: ISignal<ActiveDataset, URL | null>;
 
   // Signal when new data is received and needs to be updated
   private _newDataReceived = new Signal<this, void>(this);

@@ -12,11 +12,7 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
-import {
-  IActiveDataset,
-  IConverterRegistry,
-  ActiveDataset
-} from '@jupyterlab/dataregistry';
+import { IActiveDataset } from '@jupyterlab/dataregistry-extension';
 
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
@@ -58,7 +54,6 @@ export function activate(
   app: JupyterFrontEnd,
   activeDataset: IActiveDataset,
   labShell: ILabShell,
-  converters: IConverterRegistry,
   tracker: IEditorTracker,
   docManager: IDocumentManager,
   browserFactory: IFileBrowserFactory
@@ -85,15 +80,15 @@ export function activate(
   );
 
   // Called when ActiveDataset signal is emitted
-  receiver.activeUpdated.connect((sender: ActiveDataset, value: URL) => {
-    if (value !== null && value.pathname) {
-      receiver.setTarget(value.pathname);
-      receiver.getAllComments();
-    } else {
-      receiver.setTarget(undefined);
-      receiver.getAllComments();
-    }
-  });
+  // receiver.activeUpdated.connect((sender: ActiveDataset, value: URL) => {
+  //   if (value !== null && value.pathname) {
+  //     receiver.setTarget(value.pathname);
+  //     receiver.getAllComments();
+  //   } else {
+  //     receiver.setTarget(undefined);
+  //     receiver.getAllComments();
+  //   }
+  // });
 
   // Called when new data is received from comments service
   receiver.newDataReceived.connect(() => {
@@ -108,7 +103,6 @@ const commentingExtension: JupyterFrontEndPlugin<void> = {
   requires: [
     IActiveDataset,
     ILabShell,
-    IConverterRegistry,
     IEditorTracker,
     IDocumentManager,
     IFileBrowserFactory
