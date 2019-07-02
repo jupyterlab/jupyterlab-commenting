@@ -1,0 +1,17 @@
+#!/bin/bash
+set -o errexit
+set -o xtrace
+
+mkdir build
+cd build
+
+git clone --single-branch --branch master https://github.com/jupyterlab/jupyterlab.git
+
+git clone --single-branch --branch add_annotations https://github.com/jupyterlab/jupyterlab-commenting.git
+
+cd jupyterlab
+pip install -e .
+jlpm run add:sibling ../jupyterlab-commenting
+jlpm build:dev
+jupyter lab build --dev-build=True
+cd ../..
