@@ -9,9 +9,12 @@
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting.git/master)
 
-## Usage
+## Project Vision
+We have articulated our vision for this project as a ["Press Release from the Future"](./press_release.md). We are now pursing that vision to make it a _reality_. Have feedback or want to get involved? [Post an issue!](https://github.com/jupyterlab/jupyterlab-commenting/issues/new)
 
+## Usage
 Check out the [Usage Guide](./USAGE.md) to learn about the features this extension offers.
+
 
 ## Prerequisites
 
@@ -90,6 +93,7 @@ Current maintainers of this project are listed in alphabetical order, with affil
 - Tim George, Cal Poly (UI/UX design, strategy, management, user needs analysis)
 
 ---
+
 
 ## Getting help
 
