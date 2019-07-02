@@ -1,45 +1,59 @@
 {
-    "name": "jupyterlab-commenting",
-    "version": "0.1.0",
-    "description": "Commenting and annotation for JupyterLab",
-    "keywords": [
-        "jupyter",
-        "jupyterlab",
-        "jupyterlab-extension"
-    ],
-    "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
-    "bugs": {
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
-    },
-    "license": "BSD-3-Clause",
-    "author": "",
-    "files": [
-        "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-        "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
-    ],
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
-    },
-    "scripts": {
-        "build": "tsc",
-        "clean": "rimraf lib",
-        "prepare": "npm run clean && npm run build",
-        "watch": "tsc -w"
-    },
-    "dependencies": {
-        "react": "~16.4.2"
-    },
-    "devDependencies": {
-        "rimraf": "~2.6.2",
-        "typescript": "~3.3.1"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "jupyterlab": {
-        "extension": true
-    }
+  "name": "jupyterlab-commenting",
+  "version": "0.1.0",
+  "description": "Commenting and annotation for JupyterLab",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
+  "bugs": {
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "",
+  "files": [
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib",
+    "prepare": "npm run clean && npm run build",
+    "prepublishOnly": "npm run build",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^1.0.0",
+    "@jupyterlab/apputils": "^1.0.0",
+    "@jupyterlab/codemirror": "^1.0.0",
+    "@jupyterlab/docmanager": "^1.0.0",
+    "@jupyterlab/docregistry": "^1.0.0",
+    "@jupyterlab/filebrowser": "^1.0.0",
+    "@jupyterlab/fileeditor": "^1.0.0",
+    "@phosphor/disposable": "^1.2.0",
+    "@phosphor/messaging": "^1.2.3",
+    "@phosphor/signaling": "^1.2.3",
+    "@phosphor/widgets": "^1.8.0",
+    "codemirror": "~5.47.0",
+    "react": "~16.8.4"
+  },
+  "devDependencies": {
+    "rimraf": "~2.6.2",
+    "typescript": "~3.5.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true
+  }
 }

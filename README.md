@@ -4,12 +4,12 @@
 **[Getting help](#getting-help)** |
 
 # JupyterLab Commenting and Annotation
-[![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 
+[![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
 
 ## Prerequisites
 
-* JupyterLab
+- JupyterLab
 
 ## Installation
 
@@ -35,20 +35,25 @@ jupyter lab build
 ```
 
 ### JupyterLab master
+
 To develop against an unreleased version of `JupyterLab` requires that you add this extension
 as a package inside the `jupyterlab` repo:
 
 ```bash
-conda create -n jupyterlab-commenting -c conda-forge notebook
+conda create -n jupyterlab-commenting -c conda-forge jupyterlab nodejs
+
 git clone https://github.com/jupyterlab/jupyterlab.git jupyterlab-commenting
+
 cd jupyterlab-commenting
+
 conda activate jupyterlab-commenting
 pip install -e .
+
 jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
 jlpm run build
 ```
 
-Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the 
+Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the
 top level directory to run JupyterLab with this package enabled.
 
 ### Contributing
@@ -56,7 +61,6 @@ top level directory to run JupyterLab with this package enabled.
 To contribute to the project, please read the [contributor documentation](CONTRIBUTING.md).
 
 JupyterLab Commenting and Annotation follows the Jupyter [Community Guides](https://jupyter.readthedocs.io/en/latest/community/content-community.html).
-
 
 ### License
 

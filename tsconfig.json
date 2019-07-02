@@ -25,23 +25,27 @@
     "src/comments/*",
     "src/comments/components/*"
   ],
-  "references": [{
+  "references": [
+    {
       "path": "../application"
     },
     {
       "path": "../apputils"
     },
     {
-      "path": "../codeeditor"
+      "path": "../codemirror"
     },
     {
-      "path": "../codemirror"
+      "path": "../docmanager"
     },
     {
       "path": "../docregistry"
     },
     {
-      "path": "../notebook"
+      "path": "../filebrowser"
+    },
+    {
+      "path": "../fileeditor"
     }
   ]
 }
