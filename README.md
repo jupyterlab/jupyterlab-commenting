@@ -1,4 +1,5 @@
 **[Installation](#installation)** |
+**[Development](#development)** |
 **[License](#license)** |
 **[Team](#team)** |
 **[Getting help](#getting-help)** |
@@ -6,6 +7,10 @@
 # JupyterLab Commenting and Annotation
 
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
+
+## Usage
+
+Check out the [Usage Guide](./USAGE.md) to learn about the features this extension offers.
 
 ## Prerequisites
 
@@ -88,4 +93,4 @@ Current maintainers of this project are listed in alphabetical order, with affil
 ## Getting help
 
 We encourage you to ask questions on the [mailing list](https://groups.google.com/forum/#!forum/jupyter),
-and participate in development discussions or get live help on [Gitter](https://gitter.im/jupyterlab/jupyterlab). Please use the [issues page](https://github.com/jupyterlab/jupyterlab/issues) to provide feedback or submit a bug report.
+and participate in development discussions or get live help on [Gitter](https://gitter.im/jupyterlab/jupyterlab). Please use the [issues page](https://github.com/jupyterlab/jupyterlab-commenting/issues) to provide feedback or submit a bug report.
