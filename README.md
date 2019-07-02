@@ -7,7 +7,7 @@
 # JupyterLab Commenting and Annotation
 
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting.git/master?filepath=.%2Fbinder%2FUSAGE.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting.git/master)
 
 ## Project Vision
 
