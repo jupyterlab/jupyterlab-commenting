@@ -267,9 +267,10 @@ export class AppHeaderOptions extends React.Component<
    * Sets the "isOpen" state to control the dropdown menu
    */
   toggleOpen(): void {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    (!this.props.target === undefined || this.props.hasThreads) &&
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
   }
 
   /**
@@ -289,8 +290,7 @@ export class AppHeaderOptions extends React.Component<
   sortItems = [
     { name: 'Latest Reply', state: 'latest' },
     { name: 'Date Created', state: 'date' },
-    { name: 'Most Replies', state: 'mostReplies' },
-    { name: 'Position', state: 'position' }
+    { name: 'Most Replies', state: 'mostReplies' }
   ];
 
   /**

@@ -1,18 +1,24 @@
 **[Installation](#installation)** |
+**[Development](#development)** |
 **[License](#license)** |
 **[Team](#team)** |
 **[Getting help](#getting-help)** |
 
 # JupyterLab Commenting and Annotation
+
 [![Stability Experimental](https://img.shields.io/badge/stability-experimental-red.svg)](https://img.shields.io/badge/stability-experimental-red.svg)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting.git/master)
 
 ## Project Vision
-
 We have articulated our vision for this project as a ["Press Release from the Future"](./press_release.md). We are now pursing that vision to make it a _reality_. Have feedback or want to get involved? [Post an issue!](https://github.com/jupyterlab/jupyterlab-commenting/issues/new)
+
+## Usage
+Check out the [Usage Guide](./USAGE.md) to learn about the features this extension offers.
+
 
 ## Prerequisites
 
-* JupyterLab
+- JupyterLab
 
 ## Installation
 
@@ -38,15 +44,20 @@ jupyter lab build
 ```
 
 ### JupyterLab master
+
 To develop against an unreleased version of `JupyterLab` requires that you add this extension
 as a package inside the `jupyterlab` repo:
 
 ```bash
-conda create -n jupyterlab-commenting -c conda-forge notebook
+conda create -n jupyterlab-commenting -c conda-forge jupyterlab nodejs
+
 git clone https://github.com/jupyterlab/jupyterlab.git jupyterlab-commenting
+
 cd jupyterlab-commenting
+
 conda activate jupyterlab-commenting
 pip install -e .
+
 jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
 jlpm run build
 ```
@@ -59,7 +70,6 @@ top level directory to run JupyterLab with this package enabled.
 To contribute to the project, please read the [contributor documentation](CONTRIBUTING.md).
 
 JupyterLab Commenting and Annotation follows the Jupyter [Community Guides](https://jupyter.readthedocs.io/en/latest/community/content-community.html).
-
 
 ### License
 
@@ -88,4 +98,4 @@ Current maintainers of this project are listed in alphabetical order, with affil
 ## Getting help
 
 We encourage you to ask questions on the [mailing list](https://groups.google.com/forum/#!forum/jupyter),
-and participate in development discussions or get live help on [Gitter](https://gitter.im/jupyterlab/jupyterlab). Please use the [issues page](https://github.com/jupyterlab/jupyterlab/issues) to provide feedback or submit a bug report.
+and participate in development discussions or get live help on [Gitter](https://gitter.im/jupyterlab/jupyterlab). Please use the [issues page](https://github.com/jupyterlab/jupyterlab-commenting/issues) to provide feedback or submit a bug report.

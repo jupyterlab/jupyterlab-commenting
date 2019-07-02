@@ -160,10 +160,8 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
    */
   getBackButton(): React.ReactNode {
     return (
-      <input
-        type="image"
+      <div
         style={this.styles['jp-commenting-header-back-arrow']}
-        src={'https://i.ibb.co/xg3hwy8/Vector.png'}
         onClick={this.setShrink}
       />
     );
@@ -273,7 +271,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     },
     'jp-commenting-header-back-arrow': {
       width: '12px',
-      height: '12px'
+      height: '12px',
+      backgroundImage: 'var(--jp-image-back-arrow)',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+      cursor: 'pointer'
     },
     'jp-commenting-header-target-area': {
       display: 'flex',

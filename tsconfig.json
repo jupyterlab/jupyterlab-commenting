@@ -14,13 +14,16 @@
     "rootDir": "src",
     "strict": true,
     "strictNullChecks": false,
+    "allowSyntheticDefaultImports": true,
     "target": "es2015",
     "jsx": "react",
     "types": [],
     "composite": true
   },
   "include": [
-    "src/*"
+    "src/*",
+    "src/comments/*",
+    "src/comments/components/*"
   ],
   "references": [
     {
@@ -30,13 +33,19 @@
       "path": "../apputils"
     },
     {
-      "path": "../databus"
+      "path": "../codemirror"
+    },
+    {
+      "path": "../docmanager"
     },
     {
       "path": "../docregistry"
     },
     {
-      "path": "../frontend"
+      "path": "../filebrowser"
+    },
+    {
+      "path": "../fileeditor"
     }
   ]
 }

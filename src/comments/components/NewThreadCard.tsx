@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import { IPerson } from './app';
+import { IPerson } from '../service';
+import { CommentingWidget } from '../commenting';
+import { Signal } from '@phosphor/signaling';
 
 interface INewThreadCardProps {
   /**
@@ -10,22 +12,21 @@ interface INewThreadCardProps {
    */
   creator: IPerson;
   /**
-   * Function to put comment back to server
+   * New thread created signal
+   */
+  newThreadCreated: Signal<CommentingWidget, boolean>;
+  /**
+   * Creates new thread
    *
    * @param comment Type: string -  the comment to be added
-   * @param tag Type: string - category tag / label for thread
-   *
-   * @type void function
    */
-  putThread: (comment?: string) => void;
+  putThread(comment: string): void;
   /**
-   * Sets the state if a new thread is to be created
+   * Sets the state if this component is visible
    *
    * @param state Type: boolean - state to set to
-   *
-   * @type void function
    */
-  setNewThreadActive: (state: boolean) => void;
+  setNewThreadActive(state: boolean): void;
 }
 
 interface INewThreadCardStates {
@@ -122,14 +123,22 @@ export class NewThreadCard extends React.Component<
     this.setState({ inputBox: e.target.value });
   }
 
+  /**
+   * Handles comment button
+   */
   handleCreateNewThread(): void {
     this.props.setNewThreadActive(false);
     this.props.putThread(this.state.inputBox);
+    this.props.newThreadCreated.emit(true);
   }
 
+  /**
+   * Handles cancel button
+   */
   handleCancelThread(): void {
     this.setState({ inputBox: '' });
     this.props.setNewThreadActive(false);
+    this.props.newThreadCreated.emit(false);
   }
 
   /**
@@ -170,7 +179,8 @@ export class NewThreadCard extends React.Component<
       flexDirection: 'column' as 'column',
       borderRadius: 'var(--jp-border-radius)',
       border: '1px solid var(--jp-border-color2)',
-      boxSizing: 'border-box' as 'border-box'
+      boxSizing: 'border-box' as 'border-box',
+      background: 'var(--jp-layout-color1)'
     },
     'jp-commenting-text-input-area': {
       display: 'flex',
