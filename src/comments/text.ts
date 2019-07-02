@@ -177,7 +177,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
     if (indicator) {
       const position = indicator.find();
       if (position) {
-        this._editor.editor.scrollIntoView(position.from, 500);
+        this._editor.editor.scrollIntoView(position.to, 500);
       }
     }
     this.putIndicators();

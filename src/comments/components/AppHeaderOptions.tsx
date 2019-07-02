@@ -285,8 +285,7 @@ export class AppHeaderOptions extends React.Component<
   sortItems = [
     { name: 'Latest Reply', state: 'latest' },
     { name: 'Date Created', state: 'date' },
-    { name: 'Most Replies', state: 'mostReplies' },
-    { name: 'Position', state: 'position' }
+    { name: 'Most Replies', state: 'mostReplies' }
   ];
 
   /**
