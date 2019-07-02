@@ -1,4 +1,3 @@
-import { IActiveDataset } from '@jupyterlab/dataregistry-extension';
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { ISignal, Signal } from '@phosphor/signaling';
@@ -12,15 +11,8 @@ import { CommentsService } from './service';
  * and sets values accordingly.
  */
 export class CommentingDataReceiver {
-  constructor(
-    states: CommentingStates,
-    activeDataset: IActiveDataset,
-    browserFactory: IFileBrowserFactory
-  ) {
+  constructor(states: CommentingStates, browserFactory: IFileBrowserFactory) {
     this._states = states;
-
-    activeDataset.next(activeDataset.value);
-    activeDataset.subscribe(console.log);
 
     // Create CommentsService object
     this._commentService = new CommentsService(browserFactory);

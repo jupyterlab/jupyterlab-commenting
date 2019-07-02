@@ -12,8 +12,6 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
-import { IActiveDataset } from '@jupyterlab/dataregistry-extension';
-
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
 import { CommentingDataProvider } from './comments/provider';
@@ -52,14 +50,13 @@ export const provider: CommentingDataProvider = new CommentingDataProvider(
  */
 export function activate(
   app: JupyterFrontEnd,
-  activeDataset: IActiveDataset,
   labShell: ILabShell,
   tracker: IEditorTracker,
   docManager: IDocumentManager,
   browserFactory: IFileBrowserFactory
 ) {
   // Create receiver object
-  receiver = new CommentingDataReceiver(states, activeDataset, browserFactory);
+  receiver = new CommentingDataReceiver(states, browserFactory);
 
   // Create CommentingUI React widget
   commentingUI = new CommentingWidget(provider, receiver);
@@ -79,16 +76,25 @@ export function activate(
     docManager
   );
 
-  // Called when ActiveDataset signal is emitted
-  // receiver.activeUpdated.connect((sender: ActiveDataset, value: URL) => {
-  //   if (value !== null && value.pathname) {
-  //     receiver.setTarget(value.pathname);
-  //     receiver.getAllComments();
-  //   } else {
-  //     receiver.setTarget(undefined);
-  //     receiver.getAllComments();
-  //   }
-  // });
+  // Tracks active file open
+  labShell.currentChanged.connect((sender, args) => {
+    const widget = args.newValue;
+
+    if (widget === null) {
+      receiver.setTarget(undefined);
+      receiver.getAllComments();
+    } else {
+      const context = docManager.contextForWidget(args.newValue);
+
+      if (!context) {
+        receiver.setTarget(undefined);
+        receiver.getAllComments();
+        return;
+      }
+      receiver.setTarget(context.path);
+      receiver.getAllComments();
+    }
+  });
 
   // Called when new data is received from comments service
   receiver.newDataReceived.connect(() => {
@@ -100,13 +106,7 @@ export function activate(
 const commentingExtension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting:commentsUI',
   autoStart: true,
-  requires: [
-    IActiveDataset,
-    ILabShell,
-    IEditorTracker,
-    IDocumentManager,
-    IFileBrowserFactory
-  ],
+  requires: [ILabShell, IEditorTracker, IDocumentManager, IFileBrowserFactory],
   activate
 };
 

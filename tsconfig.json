@@ -38,9 +38,6 @@
       "path": "../codemirror"
     },
     {
-      "path": "../dataregistry-extension"
-    },
-    {
       "path": "../docregistry"
     },
     {
