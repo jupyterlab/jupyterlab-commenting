@@ -23,6 +23,8 @@ Check out the [Usage Guide](./USAGE.md) to learn about the features this extensi
 
 ## Installation
 
+*This doesn't work yet, because we haven't published the package*
+
 ```bash
 jupyter labextension install jupyterlab-commenting
 ```
