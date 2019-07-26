@@ -23,50 +23,9 @@ Check out the [Usage Guide](./USAGE.md) to learn about the features this extensi
 
 ## Installation
 
-*This doesn't work yet, because we haven't published the package*
-
 ```bash
 jupyter labextension install jupyterlab-commenting
 ```
-
-## Development
-
-For a development install (requires npm version 4 or later), do the following in the repository directory:
-
-```bash
-npm install
-npm run build
-jupyter labextension link .
-```
-
-To rebuild the package and the JupyterLab app:
-
-```bash
-npm run build
-jupyter lab build
-```
-
-### JupyterLab master
-
-To develop against an unreleased version of `JupyterLab` requires that you add this extension
-as a package inside the `jupyterlab` repo:
-
-```bash
-conda create -n jupyterlab-commenting -c conda-forge jupyterlab nodejs
-
-git clone https://github.com/jupyterlab/jupyterlab.git jupyterlab-commenting
-
-cd jupyterlab-commenting
-
-conda activate jupyterlab-commenting
-pip install -e .
-
-jlpm run add:sibling https://github.com/jupyterlab/jupyterlab-commenting.git
-jlpm run build
-```
-
-Edit the files in the package in `./packages/jupterlab-commenting` and run `jupyter lab --watch --dev` in the
-top level directory to run JupyterLab with this package enabled.
 
 ### Contributing
 

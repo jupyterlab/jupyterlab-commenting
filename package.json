@@ -1,5 +1,5 @@
 {
-  "name": "jupyterlab-commenting",
+  "name": "@jupyterlab/commenting-extension",
   "version": "0.1.0",
   "description": "Commenting and annotation for JupyterLab",
   "keywords": [
@@ -18,17 +18,18 @@
   "license": "BSD-3-Clause",
   "author": "",
   "files": [
-    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+    "lib/**",
+    "style/**",
+    "*.md",
+    "gifs/**"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
     "prepare": "npm run clean && npm run build",
-    "prepublishOnly": "npm run build",
     "watch": "tsc -w"
   },
   "dependencies": {
