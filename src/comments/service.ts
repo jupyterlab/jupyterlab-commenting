@@ -545,4 +545,43 @@ export interface ITextIndicator {
   };
 }
 
-export interface INotebookIndicator {}
+export type INotebookIndicator =
+  | INotebookCellIndicator
+  | INotebookTextIndicator;
+
+export interface INotebookTextIndicator {
+  /**
+   * Initial value, the very first indicator values and context
+   */
+  initial: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
+  };
+
+  /**
+   * The most recent positioning and context of the indicator
+   */
+  current: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
+  };
+}
+
+export interface INotebookCellIndicator {
+  index: string;
+  type: 'input' | 'output';
+}

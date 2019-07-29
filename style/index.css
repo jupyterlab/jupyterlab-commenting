@@ -1,10 +1,20 @@
 :root {
     --jp-image-back-arrow: url('images/backButton.png');
     --jp-image-chat-icon: url('images/chatIcon.png');
+    --jp-image-nb-comment-icon: url('images/nbCommentIcon.png');
+    --ip-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
 }
 
 .jp-ChatIcon {
     background-image: var(--jp-image-chat-icon);
+}
+
+.jp-NbCommentIcon {
+    background-image: var(--jp-image-nb-comment-icon);
+}
+
+.jp-NbIndicatorIcon {
+    background-image: var(--ip-image-nb-comment-indicator-icon);
 }
 
 .jp-commenting-window {
