@@ -2,7 +2,8 @@
     --jp-image-back-arrow: url('images/backButton.png');
     --jp-image-chat-icon: url('images/chatIcon.png');
     --jp-image-nb-comment-icon: url('images/nbCommentIcon.png');
-    --ip-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
+    --jp-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
+    --jp-image-commenting-new-thread-icon: url('images/newThreadIcon.png');
 }
 
 .jp-ChatIcon {
@@ -14,7 +15,7 @@
 }
 
 .jp-NbIndicatorIcon {
-    background-image: var(--ip-image-nb-comment-indicator-icon);
+    background-image: var(--jp-image-nb-comment-indicator-icon);
 }
 
 .jp-commenting-window {
@@ -191,6 +192,16 @@
 
 /* New Thread */
 
+.jp-newThreadIcon {
+    background-image: var(--jp-image-commenting-new-thread-icon);
+    width: 10px;
+    height: 10px;
+    margin: 4px;
+    padding: 8px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
 .jp-commenting-new-thread-button {
     display: flex;
     justify-content: space-between;
@@ -211,8 +222,9 @@
     overflow: hidden;
     font-size: 13px;
     color: var(--jp-ui-font-color1);
+    font-weight: bold;
     text-overflow: ellipsis;
-    padding-left: 4px;
+    padding: 8px;
 }
 
 

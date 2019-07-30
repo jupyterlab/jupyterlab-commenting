@@ -241,10 +241,8 @@ export class CommentingWidget extends ReactWidget {
         className="jp-commenting-new-thread-button"
         onClick={() => this.setNewThreadActive(true)}
       >
-        <span className="jp-commenting-new-thread-label">
-          New Comment Thread
-        </span>
-        <span className="jp-AddIcon jp-Icon jp-ToolbarButtonComponent-icon jp-Icon-16" />
+        <span className="jp-newThreadIcon jp-Icon" />
+        <span className="jp-commenting-new-thread-label">Start New Thread</span>
       </div>
     );
   }
@@ -375,7 +373,7 @@ export class CommentingWidget extends ReactWidget {
   private _receiver: CommentingDataReceiver;
 
   // setInterval of when to poll new data
-  private _periodicUpdate: number;
+  private _periodicUpdate: any;
 
   // Signal when commenting UI is shown or hidden
   private _showSignal = new Signal<this, boolean>(this);
