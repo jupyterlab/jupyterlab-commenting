@@ -30,10 +30,9 @@ conda activate jupyterlab-commenting
 Run the following commands to install the initial project dependencies and install it in the JupyterLab environment.
 
 ```bash
-
 jlpm install
+jlpm watch
 jupyter labextension install . --no-build
-
 ```
 
 After the install completes, open a second terminal. Run these commands to activate the `jupyterlab-commenting`
@@ -41,8 +40,6 @@ environment and to start a JupyterLab instance in watch mode so that it will kee
 
 
 ```bash
-
-conda activate jupyterlab-ext
+conda activate jupyterlab-commenting
 jupyter lab --watch
-
 ```

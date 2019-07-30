@@ -1,51 +1,20 @@
 {
   "compilerOptions": {
+    "composite": true,
     "declaration": true,
-    "lib": [
-      "es2015",
-      "dom",
-      "esnext.asynciterable"
-    ],
-    "module": "commonjs",
+    "jsx": "react",
+    "module": "esnext",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "noUnusedLocals": true,
     "outDir": "lib",
     "rootDir": "src",
-    "strict": true,
-    "strictNullChecks": false,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2015",
-    "jsx": "react",
-    "types": [],
-    "composite": true
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "target": "es2017"
   },
   "include": [
     "src/*",
     "src/comments/*",
     "src/comments/components/*"
-  ],
-  "references": [
-    {
-      "path": "../application"
-    },
-    {
-      "path": "../apputils"
-    },
-    {
-      "path": "../codemirror"
-    },
-    {
-      "path": "../docmanager"
-    },
-    {
-      "path": "../docregistry"
-    },
-    {
-      "path": "../filebrowser"
-    },
-    {
-      "path": "../fileeditor"
-    }
   ]
 }
