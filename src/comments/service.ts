@@ -212,7 +212,11 @@ export class CommentsService {
    * @param target Type: string - path of file to get threads for
    * @param sortBy Type:
    */
-  getThreadsByTarget(target: string, sortBy?: string): Array<ICommentThread> {
+  getThreadsByTarget(
+    target: string,
+    sortBy?: string,
+    threadIdList?: string[]
+  ): Array<ICommentThread> {
     let threads = this._commentsStore[target];
 
     if (!threads) {
@@ -226,9 +230,28 @@ export class CommentsService {
         return this.sortByDateCreated(threads, target);
       case 'mostReplies':
         return this.sortByMostReplies(threads, target);
+      case 'idList':
+        return this.sortByIdList(threads, target, threadIdList);
       default:
         return this.sortByLatestReply(threads, target);
     }
+  }
+
+  sortByIdList(
+    threads: Array<ICommentThread>,
+    target: string,
+    threadIdList: Array<string>
+  ): Array<ICommentThread> {
+    let sorted = new Array<ICommentThread>();
+    threads.forEach(thread => {
+      threadIdList.forEach(id => {
+        if (thread.id === id) {
+          sorted.push(thread);
+        }
+      });
+    });
+    console.error(sorted, threadIdList, target);
+    return sorted;
   }
 
   /**

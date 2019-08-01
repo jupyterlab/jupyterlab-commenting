@@ -50,6 +50,7 @@ export class CommentingIndicatorHandler {
         const promise = context.ready;
         promise
           .then(() => {
+            this.clearIndicatorWidget();
             if (
               context.contentsModel.type === 'file' &&
               context.contentsModel.mimetype &&

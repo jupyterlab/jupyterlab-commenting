@@ -33,7 +33,8 @@ export class CommentingDataReceiver {
       userSet: false,
       target: ' ',
       widgetMatchTarget: false,
-      isEditing: ''
+      isEditing: '',
+      threadIdList: []
     });
 
     this.getAllComments = this.getAllComments.bind(this);
@@ -62,13 +63,18 @@ export class CommentingDataReceiver {
   getAllComments(): void {
     let target = this._states.getState('target') as string;
     let sortBy = this._states.getState('sortState') as string;
+    let idList = this._states.getState('threadIdList') as Array<string>;
 
     if (!target) {
       this._states.setState({ response: {}, curTargetHasThreads: false });
       return;
     }
 
-    let threads = this._commentService.getThreadsByTarget(target, sortBy);
+    let threads = this._commentService.getThreadsByTarget(
+      target,
+      sortBy,
+      idList
+    );
 
     if (threads) {
       this._states.setState({
