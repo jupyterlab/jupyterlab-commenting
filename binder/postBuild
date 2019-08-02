@@ -7,7 +7,13 @@ cd build
 
 git clone --single-branch --branch master https://github.com/jupyterlab/jupyterlab.git
 
-git clone --single-branch --branch master https://github.com/jupyterlab/jupyterlab-commenting.git
+git clone https://github.com/jupyterlab/jupyterlab-commenting.git
+
+cd jupyterlab-commenting
+
+git checkout b71548ce38dd9b43d51133392cb1ca272bb0a208
+
+cd ..
 
 cd jupyterlab
 pip install -e .
