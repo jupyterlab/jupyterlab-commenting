@@ -4,10 +4,15 @@
     --jp-image-nb-comment-icon: url('images/nbCommentIcon.png');
     --jp-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
     --jp-image-commenting-new-thread-icon: url('images/newThreadIcon.png');
+    --jp-image-chat-icon-blue: url('images/chatIconBlue.png');
 }
 
 .jp-ChatIcon {
     background-image: var(--jp-image-chat-icon);
+}
+
+.jp-ChatIconBlue {
+    background-image: var(--jp-image-chat-icon-blue);
 }
 
 .jp-NbCommentIcon {
