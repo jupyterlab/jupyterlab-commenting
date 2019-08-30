@@ -1,39 +1,44 @@
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
 
-import { ISignal, Signal } from '@phosphor/signaling';
+import { ISignal, Signal } from "@phosphor/signaling";
 
-import { CommentingStates, ICommentStates } from './states';
-import { IPerson, CommentIndicator } from './service';
-import { CommentsService } from './service';
+import { CommentingStates, ICommentStates } from "./states";
+import { IPerson, CommentIndicator } from "./service";
+import { CommentsService } from "./service";
+import { ICommentingServiceConnection } from "./service_connection";
 
 /**
  * Handles all interactions with data that is received. Interacts with CommentingStates
  * and sets values accordingly.
  */
 export class CommentingDataReceiver {
-  constructor(states: CommentingStates, browserFactory: IFileBrowserFactory) {
+  constructor(
+    states: CommentingStates,
+    browserFactory: IFileBrowserFactory,
+    service: ICommentingServiceConnection
+  ) {
     this._states = states;
 
     // Create CommentsService object
-    this._commentService = new CommentsService(browserFactory);
+    this._commentService = new CommentsService(browserFactory, service);
 
     // Initial states
     this.setState({
       creator: {},
       curTargetHasThreads: false,
-      expandedCard: ' ',
+      expandedCard: " ",
       myThreads: [],
       newThreadActive: false,
-      newThreadFile: ' ',
-      replyActiveCard: ' ',
+      newThreadFile: " ",
+      replyActiveCard: " ",
       response: {},
-      pastTarget: '',
+      pastTarget: "",
       showResolved: true,
-      sortState: 'latest',
+      sortState: "latest",
       userSet: false,
-      target: ' ',
+      target: " ",
       widgetMatchTarget: false,
-      isEditing: '',
+      isEditing: "",
       threadIdList: []
     });
 
@@ -61,9 +66,9 @@ export class CommentingDataReceiver {
    * Handles getting all comments from comments service that relate to the current target
    */
   getAllComments(): void {
-    let target = this._states.getState('target') as string;
-    let sortBy = this._states.getState('sortState') as string;
-    let idList = this._states.getState('threadIdList') as Array<string>;
+    let target = this._states.getState("target") as string;
+    let sortBy = this._states.getState("sortState") as string;
+    let idList = this._states.getState("threadIdList") as Array<string>;
 
     if (!target) {
       this._states.setState({ response: {}, curTargetHasThreads: false });
@@ -100,7 +105,7 @@ export class CommentingDataReceiver {
       target,
       threadId,
       value,
-      (this._states.getState('creator') as Object) as IPerson
+      (this._states.getState("creator") as Object) as IPerson
     );
 
     this._newDataReceived.emit(void 0);
@@ -133,7 +138,7 @@ export class CommentingDataReceiver {
    */
   putThreadEdit(threadId: string, value: string): void {
     this._commentService.editThread(
-      this._states.getState('target') as string,
+      this._states.getState("target") as string,
       threadId,
       value
     );
@@ -148,9 +153,9 @@ export class CommentingDataReceiver {
    */
   putThread(value: string): void {
     this._commentService.createThread(
-      this._states.getState('target') as string,
+      this._states.getState("target") as string,
       value,
-      (this._states.getState('creator') as Object) as IPerson
+      (this._states.getState("creator") as Object) as IPerson
     );
     this._newDataReceived.emit(void 0);
 
@@ -194,7 +199,7 @@ export class CommentingDataReceiver {
    * key: threadId, value CommentIndicator
    */
   getAllIndicatorValues(): { [key: string]: CommentIndicator } {
-    let target = this._states.getState('target') as string;
+    let target = this._states.getState("target") as string;
     return this._commentService.getAllIndicatorValues(target);
   }
 
@@ -213,7 +218,7 @@ export class CommentingDataReceiver {
    */
   deleteComment(threadId: string, index: number): void {
     this._commentService.deleteComment(
-      this._states.getState('target') as string,
+      this._states.getState("target") as string,
       threadId,
       index
     );
@@ -226,13 +231,13 @@ export class CommentingDataReceiver {
    * @param value Type: string - target to update to
    */
   setTarget(value: string) {
-    if (value === this._states.getState('target')) {
+    if (value === this._states.getState("target")) {
       return;
     }
     this._states.setState({
       target: value,
       newThreadActive: false,
-      expandedCard: ' '
+      expandedCard: " "
     });
     this._targetSet.emit(void 0);
   }
@@ -243,13 +248,13 @@ export class CommentingDataReceiver {
    * @param user Type: string - users github username
    */
   async setUserInfo(user: string) {
-    const response = await fetch('https://api.github.com/users/' + user);
+    const response = await fetch("https://api.github.com/users/" + user);
     const myJSON = await response.json();
 
     // If users does not have a name set, use username
     const name = myJSON.name === null ? myJSON.login : myJSON.name;
-    if (myJSON.message !== 'Not Found') {
-      if (!this._states.getState('userSet')) {
+    if (myJSON.message !== "Not Found") {
+      if (!this._states.getState("userSet")) {
         this._states.setState({
           creator: {
             name: name,
@@ -260,7 +265,7 @@ export class CommentingDataReceiver {
         });
       }
     } else {
-      window.alert('Username not found');
+      window.alert("Username not found");
     }
   }
 

@@ -1,22 +1,25 @@
-import '../style/index.css';
+import "../style/index.css";
 
 import {
   JupyterFrontEndPlugin,
   ILabShell,
   JupyterFrontEnd
-} from '@jupyterlab/application';
+} from "@jupyterlab/application";
 
-import { IEditorTracker } from '@jupyterlab/fileeditor';
+import { IEditorTracker } from "@jupyterlab/fileeditor";
 
-import { IDocumentManager } from '@jupyterlab/docmanager';
+import { IDocumentManager } from "@jupyterlab/docmanager";
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
 
-import { CommentingWidget } from './comments/commenting';
-import { CommentingStates } from './comments/states';
-import { CommentingDataProvider } from './comments/provider';
-import { CommentingDataReceiver } from './comments/receiver';
-import { CommentingIndicatorHandler } from './comments/indicator';
+import { ICommentingServiceConnection } from "./comments/service_connection";
+import { activateCommentingServiceConnection } from "./comments/service_connection";
+
+import { CommentingWidget } from "./comments/commenting";
+import { CommentingStates } from "./comments/states";
+import { CommentingDataProvider } from "./comments/provider";
+import { CommentingDataReceiver } from "./comments/receiver";
+import { CommentingIndicatorHandler } from "./comments/indicator";
 
 /**
  * CommentingUI
@@ -53,19 +56,20 @@ export function activate(
   labShell: ILabShell,
   tracker: IEditorTracker,
   docManager: IDocumentManager,
-  browserFactory: IFileBrowserFactory
+  browserFactory: IFileBrowserFactory,
+  service: ICommentingServiceConnection
 ) {
   // Create receiver object
-  receiver = new CommentingDataReceiver(states, browserFactory);
+  receiver = new CommentingDataReceiver(states, browserFactory, service);
 
   // Create CommentingUI React widget
   commentingUI = new CommentingWidget(provider, receiver);
-  commentingUI.id = 'jupyterlab-commenting:commentsUI';
-  commentingUI.title.iconClass = 'jp-ChatIcon jp-SideBar-tabIcon';
-  commentingUI.title.caption = 'Commenting';
+  commentingUI.id = "jupyterlab-commenting:commentsUI";
+  commentingUI.title.iconClass = "jp-ChatIcon jp-SideBar-tabIcon";
+  commentingUI.title.caption = "Commenting";
 
   // Add widget to the right area
-  labShell.add(commentingUI, 'right');
+  labShell.add(commentingUI, "right");
 
   // Create CommentingIndicatorHandler
   indicatorHandler = new CommentingIndicatorHandler(
@@ -104,12 +108,31 @@ export function activate(
 
 // creates extension
 const commentingExtension: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-commenting:commentsUI',
+  id: "jupyterlab-commenting:commentsUI",
   autoStart: true,
-  requires: [ILabShell, IEditorTracker, IDocumentManager, IFileBrowserFactory],
+  requires: [
+    ILabShell,
+    IEditorTracker,
+    IDocumentManager,
+    IFileBrowserFactory,
+    ICommentingServiceConnection
+  ],
   activate
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [commentingExtension];
+const commentServiceExtension: JupyterFrontEndPlugin<
+  ICommentingServiceConnection
+> = {
+  id: "jupyterlab-commenting-service-server",
+  autoStart: true,
+  requires: [],
+  provides: ICommentingServiceConnection,
+  activate: activateCommentingServiceConnection
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  commentingExtension,
+  commentServiceExtension
+];
 
 export default plugins;

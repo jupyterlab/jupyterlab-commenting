@@ -1,4 +1,5 @@
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
+import { ICommentingServiceConnection } from "./service_connection";
 
 /**
  * CommentsService
@@ -6,8 +7,12 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
  * Handles all the interactions with writing comments to commenting.json
  */
 export class CommentsService {
-  constructor(browserFactory: IFileBrowserFactory) {
+  constructor(
+    browserFactory: IFileBrowserFactory,
+    service: ICommentingServiceConnection
+  ) {
     this._browserFactory = browserFactory;
+    this._service = service;
 
     // Stores comments in memory
     this._commentsStore = {};
@@ -40,7 +45,7 @@ export class CommentsService {
     let created = new Date().toISOString();
 
     this._commentsStore[target].push({
-      id: 'anno/' + this._nextCommentId,
+      id: "anno/" + this._nextCommentId,
       total: 1,
       resolved: false,
       indicator: indicator || undefined,
@@ -57,6 +62,18 @@ export class CommentsService {
     this._nextCommentId++;
 
     this.writeJSON();
+
+    this._service.query("file/?target=" + target);
+    this._service.query(
+      "newThread/?target=" +
+        target +
+        "&value=" +
+        value +
+        "&created=" +
+        created +
+        "&creator=" +
+        creator.name
+    );
   }
 
   /**
@@ -86,6 +103,19 @@ export class CommentsService {
     thread.total++;
 
     this.writeJSON();
+
+    this._service.query(
+      "newComment/?target=" +
+        target +
+        "&thread_id=" +
+        threadId.split("/").pop() +
+        "&value=" +
+        value +
+        "&created=" +
+        created +
+        "&creator=" +
+        creator.name
+    );
   }
 
   /**
@@ -199,7 +229,7 @@ export class CommentsService {
       if (thread.indicator) {
         thread.indicator = indicators[key];
       } else {
-        thread['indicator'] = indicators[key];
+        thread["indicator"] = indicators[key];
       }
     });
 
@@ -224,13 +254,13 @@ export class CommentsService {
     }
 
     switch (sortBy) {
-      case 'latest':
+      case "latest":
         return this.sortByLatestReply(threads, target);
-      case 'date':
+      case "date":
         return this.sortByDateCreated(threads, target);
-      case 'mostReplies':
+      case "mostReplies":
         return this.sortByMostReplies(threads, target);
-      case 'idList':
+      case "idList":
         return this.sortByIdList(threads, target, threadIdList);
       default:
         return this.sortByLatestReply(threads, target);
@@ -383,11 +413,11 @@ export class CommentsService {
         .save(this._storePath, {
           name: this._storePath,
           content: initial,
-          type: 'file',
-          format: 'text'
+          type: "file",
+          format: "text"
         })
         .catch(err =>
-          console.error('Error on comments.json initial creation', err)
+          console.error("Error on comments.json initial creation", err)
         );
     });
   }
@@ -410,7 +440,7 @@ export class CommentsService {
           this._nextCommentId += data[key].length;
         });
       })
-      .catch(err => console.error('Error parsing comments.json', err));
+      .catch(err => console.error("Error parsing comments.json", err));
   }
 
   /**
@@ -426,17 +456,17 @@ export class CommentsService {
       .save(this._storePath, {
         name: this._storePath,
         content: newData,
-        type: 'file',
-        format: 'text'
+        type: "file",
+        format: "text"
       })
-      .catch(err => console.error('Error writing to comments.json', err));
+      .catch(err => console.error("Error writing to comments.json", err));
   }
 
   /**
    * @returns Type: string - returns the id of the newest comment thread
    */
   getLatestCommentId(): string {
-    return 'anno/' + this._nextCommentId;
+    return "anno/" + this._nextCommentId;
   }
 
   /**
@@ -457,8 +487,9 @@ export class CommentsService {
 
   private _browserFactory: IFileBrowserFactory;
   private _commentsStore: ICommentsStore;
+  private _service: ICommentingServiceConnection;
   private _nextCommentId: number;
-  private readonly _storePath = 'comments.json';
+  private readonly _storePath = "comments.json";
 }
 
 /**
@@ -606,5 +637,5 @@ export interface INotebookTextIndicator {
 
 export interface INotebookCellIndicator {
   index: string;
-  type: 'input' | 'output';
+  type: "input" | "output";
 }
