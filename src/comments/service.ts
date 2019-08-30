@@ -212,7 +212,11 @@ export class CommentsService {
    * @param target Type: string - path of file to get threads for
    * @param sortBy Type:
    */
-  getThreadsByTarget(target: string, sortBy?: string): Array<ICommentThread> {
+  getThreadsByTarget(
+    target: string,
+    sortBy?: string,
+    threadIdList?: string[]
+  ): Array<ICommentThread> {
     let threads = this._commentsStore[target];
 
     if (!threads) {
@@ -226,9 +230,28 @@ export class CommentsService {
         return this.sortByDateCreated(threads, target);
       case 'mostReplies':
         return this.sortByMostReplies(threads, target);
+      case 'idList':
+        return this.sortByIdList(threads, target, threadIdList);
       default:
         return this.sortByLatestReply(threads, target);
     }
+  }
+
+  sortByIdList(
+    threads: Array<ICommentThread>,
+    target: string,
+    threadIdList: Array<string>
+  ): Array<ICommentThread> {
+    let sorted = new Array<ICommentThread>();
+    threads.forEach(thread => {
+      threadIdList.forEach(id => {
+        if (thread.id === id) {
+          sorted.push(thread);
+        }
+      });
+    });
+    console.error(sorted, threadIdList, target);
+    return sorted;
   }
 
   /**
@@ -545,4 +568,43 @@ export interface ITextIndicator {
   };
 }
 
-export interface INotebookIndicator {}
+export type INotebookIndicator =
+  | INotebookCellIndicator
+  | INotebookTextIndicator;
+
+export interface INotebookTextIndicator {
+  /**
+   * Initial value, the very first indicator values and context
+   */
+  initial: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
+  };
+
+  /**
+   * The most recent positioning and context of the indicator
+   */
+  current: {
+    end: {
+      line: number;
+      column: number;
+    };
+    start: {
+      line: number;
+      column: number;
+    };
+    context: string;
+  };
+}
+
+export interface INotebookCellIndicator {
+  index: string;
+  type: 'input' | 'output';
+}

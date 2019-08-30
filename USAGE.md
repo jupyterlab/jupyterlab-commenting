@@ -86,6 +86,20 @@ To focus an indicator you can either click on the comment thread in the commenti
 
 ---
 
+## Commenting on Notebooks
+
+### Commenting on a specific cell
+
+Comments can be created on notebook cells.
+
+![](./gifs/usage-11.gif)
+
+To make a comment on a rendered cell, like a markdown cell you can click into the edit view and make a comment.
+
+![](./gifs/usage-12.gif)
+
+---
+
 ## Where do comments save?
 
 Currently comments are saved in a file that is generated in the root directory of your Jupyterlab enviroment in a file called **comments.json**. This file saves all your comments and indicators. The file can be shared and others can copy it to their file tree, or if they already have a comments.json file, they can copy the contents of the new one into their existing file.

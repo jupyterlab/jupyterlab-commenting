@@ -49,4 +49,5 @@ export type CommentingStateKeys =
   | 'curDocType'
   | 'latestIndicatorInfo'
   | 'widgetMatchTarget'
-  | 'isEditing';
+  | 'isEditing'
+  | 'threadIdList';

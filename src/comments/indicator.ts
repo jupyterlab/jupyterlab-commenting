@@ -50,6 +50,7 @@ export class CommentingIndicatorHandler {
         const promise = context.ready;
         promise
           .then(() => {
+            this.clearIndicatorWidget();
             if (
               context.contentsModel.type === 'file' &&
               context.contentsModel.mimetype &&
@@ -73,7 +74,6 @@ export class CommentingIndicatorHandler {
    * Adds indicator widget for text editor
    */
   addTextEditorIndicatorWidget(): void {
-    this.clearIndicatorWidget();
     const target = this._provider.getState('target') as string;
 
     if (target) {
@@ -96,14 +96,19 @@ export class CommentingIndicatorHandler {
    * Adds the indicator widget for notebooks
    */
   addNotebookIndicatorWidget(): void {
+    const target = this._provider.getState('target') as string;
+
     // Indicator widget for notebooks
     this._activeIndicatorWidget = new NotebookIndicators(
       this._app,
       this._labShell,
       this._provider,
-      this._receiver
+      this._receiver,
+      this._docManager,
+      target
     );
-    this._activeIndicatorWidget.id = 'jupyterlab-commenting:indicator:';
+    this._activeIndicatorWidget.id =
+      'jupyterlab-commenting:indicator:' + target;
     this._activeIndicatorWidget.activate();
   }
 

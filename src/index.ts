@@ -84,7 +84,7 @@ export function activate(
       receiver.setTarget(undefined);
       receiver.getAllComments();
     } else {
-      const context = docManager.contextForWidget(args.newValue);
+      const context = docManager.contextForWidget(widget);
 
       if (!context) {
         receiver.setTarget(undefined);

@@ -169,7 +169,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
   /**
    * Scrolls an indicator into view based on the given thread id
    *
-   * @param threadId - Type: string - id of thread to scroll into view
+   * @param threadId - Type: string - id of thread to scroll
    */
   scrollIntoView(threadId: string): void {
     const indicator = this._indicators[threadId];
@@ -479,7 +479,7 @@ export class TextEditorIndicator extends Widget implements IndicatorWidget {
    * @param sender CommentingWidget - the commentingUI
    * @param args - true if new thread created, false if canceled
    */
-  handleNewThreadCreated(sender: CommentingWidget, args: boolean) {
+  handleNewThreadCreated(sender: CommentingWidget, args: boolean): void {
     if (!args) {
       let nextId = this._receiver.getLatestCommentId();
       delete this._indicatorValues[nextId];

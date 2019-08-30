@@ -190,6 +190,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       iconClass: 'jp-Icon jp-PythonIcon'
     },
     {
+      extensions: ['.ipynb'],
+      mimeType: ['notebook'],
+      iconClass: 'jp-Icon jp-NotebookIcon'
+    },
+    {
       extensions: ['.json'],
       mimeTypes: ['application/json'],
       iconClass: 'jp-Icon jp-JSONIcon'
@@ -212,7 +217,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     {
       mimeTypes: ['text/x-yaml', 'text/yaml'],
       extensions: ['.yaml', '.yml'],
-      iconClass: 'jp-Icon jp-YamlIcon'
+      iconClass: 'jp-Icon jp-YAMLIcon'
     },
     {
       mimeTypes: ['image/svg+xml'],
