@@ -1,23 +1,23 @@
-import { JupyterFrontEnd, ILabShell } from "@jupyterlab/application";
+import { JupyterFrontEnd, ILabShell } from '@jupyterlab/application';
 
-import { IDocumentManager } from "@jupyterlab/docmanager";
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { NotebookPanel, Notebook } from "@jupyterlab/notebook";
+import { NotebookPanel, Notebook } from '@jupyterlab/notebook';
 
-import { DocumentRegistry, IDocumentWidget } from "@jupyterlab/docregistry";
+import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
-import { ICellModel, Cell } from "@jupyterlab/cells";
+import { ICellModel, Cell } from '@jupyterlab/cells';
 
-import { Message } from "@phosphor/messaging";
+import { Message } from '@phosphor/messaging';
 
-import { Widget } from "@phosphor/widgets";
+import { Widget } from '@phosphor/widgets';
 
-import { commentingUI, indicatorHandler } from "..";
-import { IndicatorWidget } from "./indicator";
-import { CommentingDataProvider } from "./provider";
-import { CommentingDataReceiver } from "./receiver";
-import { CommentingWidget } from "./commenting";
-import { ICommentThread } from "./service";
+import { commentingUI, indicatorHandler } from '..';
+import { IndicatorWidget } from './indicator';
+import { CommentingDataProvider } from './provider';
+import { CommentingDataReceiver } from './receiver';
+import { CommentingWidget } from './commenting';
+import { ICommentThread } from './service';
 
 export class NotebookIndicators extends Widget implements IndicatorWidget {
   constructor(
@@ -113,7 +113,7 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
    * @param threadId Type: string - threadID of thread to expand
    */
   focusThread(threadId: string): void {
-    if (this._provider.getState("expandedCard") !== threadId) {
+    if (this._provider.getState('expandedCard') !== threadId) {
       commentingUI.setExpandedCard(threadId);
       this.putIndicators();
     }
@@ -156,11 +156,11 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
     let metadata = cell.metadata;
 
-    if (!metadata.has("comments")) {
+    if (!metadata.has('comments')) {
       return 0;
     }
 
-    let threads = cell.metadata.get("comments");
+    let threads = cell.metadata.get('comments');
 
     return threads.length;
   }
@@ -179,30 +179,30 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
     let cellNodes = panel.layout.parent.node.childNodes;
 
     cellNodes.forEach((child: ChildNode, index: number) => {
-      let button = document.createElement("div");
+      let button = document.createElement('div');
 
       button.className =
         panel.activeCellIndex === index
-          ? this._provider.getState("newThreadActive")
+          ? this._provider.getState('newThreadActive')
             ? this._cellIndexClicked
-              ? "jp-Icon jp-ChatIconBlue"
-              : "jp-Icon jp-NbCommentIcon"
-            : "jp-Icon jp-NbCommentIcon"
-          : "";
+              ? 'jp-Icon jp-ChatIconBlue'
+              : 'jp-Icon jp-NbCommentIcon'
+            : 'jp-Icon jp-NbCommentIcon'
+          : '';
 
       button.hidden = panel.activeCellIndex !== index;
 
-      button.style.minWidth = "20px";
-      button.style.minHeight = "20px";
-      button.style.backgroundSize = "20px";
-      button.style.padding = "4px";
-      button.style.cssFloat = "right";
-      button.style.cursor = this._provider.getState("newThreadActive")
-        ? ""
-        : "pointer";
+      button.style.minWidth = '20px';
+      button.style.minHeight = '20px';
+      button.style.backgroundSize = '20px';
+      button.style.padding = '4px';
+      button.style.cssFloat = 'right';
+      button.style.cursor = this._provider.getState('newThreadActive')
+        ? ''
+        : 'pointer';
 
       button.id =
-        "nb-commenting-create-button-" + this._uniqueId() + "/" + index;
+        'nb-commenting-create-button-' + this._uniqueId() + '/' + index;
 
       // Cell element node
       let insertPosition =
@@ -210,8 +210,8 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
       insertPosition.before(button);
 
-      button.addEventListener("click", () => {
-        if (this._provider.getState("newThreadActive")) {
+      button.addEventListener('click', () => {
+        if (this._provider.getState('newThreadActive')) {
           return;
         }
 
@@ -219,13 +219,13 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
         let panel = this._panelWidget.content as any; // Should be NotebookPanel
 
-        let id = button.id.split("/").pop();
+        let id = button.id.split('/').pop();
         this._cellIndexClicked = Number(id);
 
         panel.activeCellIndex = this._cellIndexClicked;
 
-        button.className = "jp-Icon jp-ChatIconBlue";
-        button.style.cursor = "";
+        button.className = 'jp-Icon jp-ChatIconBlue';
+        button.style.cursor = '';
       });
 
       this._createThreadButtons.push(button);
@@ -239,15 +239,15 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
       let id = this._getCellIndexFromId(element.id);
 
       if (
-        !this._provider.getState("newThreadActive") &&
+        !this._provider.getState('newThreadActive') &&
         panel.activeCellIndex === id
       ) {
         element.hidden = false;
-        element.className = "jp-Icon jp-NbCommentIcon";
+        element.className = 'jp-Icon jp-NbCommentIcon';
       }
 
       if (panel.activeCellIndex !== id) {
-        element.className = "";
+        element.className = '';
         element.hidden = true;
       }
     });
@@ -286,18 +286,18 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
     let cell: ChildNode = cellNodes[index];
 
-    let indicator = document.createElement("div");
+    let indicator = document.createElement('div');
 
-    indicator.className = "jp-Icon jp-ChatIcon";
-    indicator.style.minWidth = "20px";
-    indicator.style.minHeight = "20px";
-    indicator.style.backgroundSize = "20px";
-    indicator.style.padding = "10px";
-    indicator.style.cssFloat = "right";
-    indicator.style.textAlign = "center";
-    indicator.style.fontWeight = "bold";
+    indicator.className = 'jp-Icon jp-ChatIcon';
+    indicator.style.minWidth = '20px';
+    indicator.style.minHeight = '20px';
+    indicator.style.backgroundSize = '20px';
+    indicator.style.padding = '10px';
+    indicator.style.cssFloat = 'right';
+    indicator.style.textAlign = 'center';
+    indicator.style.fontWeight = 'bold';
 
-    indicator.id = "nb-commenting-indicator-" + this._uniqueId() + "/" + index;
+    indicator.id = 'nb-commenting-indicator-' + this._uniqueId() + '/' + index;
 
     cell.childNodes[1].childNodes[1].firstChild.appendChild(indicator);
 
@@ -337,12 +337,12 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
       let nextCommentId = this._receiver
         .getLatestCommentId()
-        .split("/")
+        .split('/')
         .pop();
 
-      let latestCommentId = "anno/" + (Number(nextCommentId) - 1);
+      let latestCommentId = 'anno/' + (Number(nextCommentId) - 1);
 
-      let threads = this._provider.getState("response") as Array<
+      let threads = this._provider.getState('response') as Array<
         ICommentThread
       >;
 
@@ -356,14 +356,14 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
       let metadata = cell.metadata;
 
-      if (metadata.has("comments")) {
-        let curThreads = metadata.get("comments") as Array<{}>;
+      if (metadata.has('comments')) {
+        let curThreads = metadata.get('comments') as Array<{}>;
 
         curThreads.push(thread);
 
-        cell.metadata.set("comments", curThreads);
+        cell.metadata.set('comments', curThreads);
       } else {
-        cell.metadata.set("comments", [thread]);
+        cell.metadata.set('comments', [thread]);
       }
 
       this.putIndicators();
@@ -383,7 +383,7 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
     let cells = panel.model.cells;
 
     for (let i = 0; i < cells.length; i++) {
-      cells.get(i).metadata.delete("comments");
+      cells.get(i).metadata.delete('comments');
     }
   }
 
@@ -399,7 +399,7 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
   }
 
   private _getCellIndexFromId(id: string): number {
-    return Number(id.split("/").pop());
+    return Number(id.split('/').pop());
   }
 
   private _app: JupyterFrontEnd;

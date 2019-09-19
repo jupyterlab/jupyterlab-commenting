@@ -20,6 +20,22 @@ async def root():
     return {"message": "Fastapi"}
 
 
+@app.get("/getAllComments/")
+async def getAllComments():
+    tables = db.table_names()
+
+    all_comments = []
+
+    for target in tables:
+        temp = {}
+
+        temp[target] = db[target].rows
+
+        all_comments.append(temp)
+
+    return {"comments": all_comments}
+
+
 @app.get("/file/")
 async def getByTarget(target: str):
     tables = db.table_names()
@@ -41,61 +57,33 @@ async def getByTarget(target: str):
         return {"table": target}
 
 
-@app.get("/newThread/")
-async def createNewThread(target: str, value: str, created: str, creator: str,  indicator: dict = None):
+@app.get("/saveComments/")
+async def saveComments(comments: str, target: str):
     table = db[target]
 
-    id = 0
+    threads = json.loads(comments)
 
-    for row in table.rows:
-        id += 1
+    for thread in threads["comments"]:
+        id = thread["id"]
+        total = thread["total"]
+        resolved = thread["resolved"]
 
-    body = [
-        {
-            "id": 0,
-            "created": created,
-            "creator": creator,
-            "edited": False,
-            "value": value
-        }
-    ]
+        try:
+            indicator = thread["indicator"]
+        except KeyError:
+            indicator = ''
 
-    # Convert dict to str and change seperators to use no whitespaces
-    body_trimmed = json.dumps(body, separators=(',', ':'))
+        # body = json.loads(thread["body"])
+        body = thread["body"]
 
-    table.insert({
-        "id": id,
-        "total": 1,
-        "resolved": False,
-        "indicator": indicator,
-        "body": body_trimmed
-    })
+        # body_trimmed = json.dumps(body, separators=(',', ':'))
 
-    return {"created": table.rows}
+        table.upsert({
+            "id": id,
+            "total": total,
+            "resolved": resolved,
+            "indicator": indicator,
+            "body": body
+        }, pk="id")
 
-
-@app.get("/newComment/")
-async def createNewComment(target: str, thread_id: int, value: str, created: str, creator: str):
-    table = db[target]
-
-    thread = table.get(thread_id)
-
-    body = json.loads(thread['body'])
-
-    total_comments = len(body)
-
-    new_comment = {
-        "id": total_comments,
-        "created": created,
-        "creator": creator,
-        "edited": False,
-        "value": value
-    }
-
-    body.append(new_comment)
-
-    new_body = json.dumps(body, separators=(',', ':'))
-
-    table.update(thread_id, {"body": new_body})
-
-    return {"Message": thread}
+    return {"Comments to save": "no"}

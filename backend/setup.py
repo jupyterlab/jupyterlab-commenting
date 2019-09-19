@@ -36,7 +36,7 @@ setuptools.setup(
             'commenting-service = jupyterlab_commenting_service_server.service:fastapi'
         ]
     },
-    install_requires=['jupyter-server-proxy', 'fastapi[all]'],
+    install_requires=['jupyter-server-proxy', 'fastapi[all]', 'datasette'],
     package_data=dict(extra_files),
     include_package_data=True
 )

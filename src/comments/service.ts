@@ -1,5 +1,4 @@
-import { IFileBrowserFactory } from "@jupyterlab/filebrowser";
-import { ICommentingServiceConnection } from "./service_connection";
+import { ICommentingServiceConnection } from './service_connection';
 
 /**
  * CommentsService
@@ -7,11 +6,7 @@ import { ICommentingServiceConnection } from "./service_connection";
  * Handles all the interactions with writing comments to commenting.json
  */
 export class CommentsService {
-  constructor(
-    browserFactory: IFileBrowserFactory,
-    service: ICommentingServiceConnection
-  ) {
-    this._browserFactory = browserFactory;
+  constructor(service: ICommentingServiceConnection) {
     this._service = service;
 
     // Stores comments in memory
@@ -20,8 +15,7 @@ export class CommentsService {
     // Next comment id
     this._nextCommentId = 0;
 
-    this.createJSONFile();
-    this.loadJSON();
+    this.loadComments();
   }
 
   /**
@@ -45,7 +39,7 @@ export class CommentsService {
     let created = new Date().toISOString();
 
     this._commentsStore[target].push({
-      id: "anno/" + this._nextCommentId,
+      id: 'anno/' + this._nextCommentId,
       total: 1,
       resolved: false,
       indicator: indicator || undefined,
@@ -60,20 +54,6 @@ export class CommentsService {
     });
 
     this._nextCommentId++;
-
-    this.writeJSON();
-
-    this._service.query("file/?target=" + target);
-    this._service.query(
-      "newThread/?target=" +
-        target +
-        "&value=" +
-        value +
-        "&created=" +
-        created +
-        "&creator=" +
-        creator.name
-    );
   }
 
   /**
@@ -101,21 +81,6 @@ export class CommentsService {
     });
 
     thread.total++;
-
-    this.writeJSON();
-
-    this._service.query(
-      "newComment/?target=" +
-        target +
-        "&thread_id=" +
-        threadId.split("/").pop() +
-        "&value=" +
-        value +
-        "&created=" +
-        created +
-        "&creator=" +
-        creator.name
-    );
   }
 
   /**
@@ -130,8 +95,6 @@ export class CommentsService {
 
     thread.body.splice(index, 1);
     thread.total--;
-
-    this.writeJSON();
   }
 
   /**
@@ -155,8 +118,6 @@ export class CommentsService {
     commentBody.value = value;
     commentBody.edited = true;
     commentBody.created = created;
-
-    this.writeJSON();
   }
 
   /**
@@ -174,8 +135,6 @@ export class CommentsService {
     threadBody.value = value;
     threadBody.edited = true;
     threadBody.created = created;
-
-    this.writeJSON();
   }
 
   /**
@@ -189,8 +148,6 @@ export class CommentsService {
     let thread = this.getThread(target, threadId);
 
     thread.resolved = state;
-
-    this.writeJSON();
   }
 
   /**
@@ -229,11 +186,9 @@ export class CommentsService {
       if (thread.indicator) {
         thread.indicator = indicators[key];
       } else {
-        thread["indicator"] = indicators[key];
+        thread['indicator'] = indicators[key];
       }
     });
-
-    this.writeJSON();
   }
 
   /**
@@ -254,13 +209,13 @@ export class CommentsService {
     }
 
     switch (sortBy) {
-      case "latest":
+      case 'latest':
         return this.sortByLatestReply(threads, target);
-      case "date":
+      case 'date':
         return this.sortByDateCreated(threads, target);
-      case "mostReplies":
+      case 'mostReplies':
         return this.sortByMostReplies(threads, target);
-      case "idList":
+      case 'idList':
         return this.sortByIdList(threads, target, threadIdList);
       default:
         return this.sortByLatestReply(threads, target);
@@ -398,75 +353,57 @@ export class CommentsService {
     return sorted;
   }
 
-  /**
-   * Creates comments.json
-   */
-  createJSONFile(): void {
-    let contents = this._browserFactory.defaultBrowser.model.manager.services
-      .contents;
+  saveComments(target: string): void {
+    console.log('SAVED', target);
 
-    // Attempt to get 'comments.json', if failure, create it
-    contents.get(this._storePath).catch(err => {
-      let initial = JSON.stringify(this._commentsStore);
+    if (!this._commentsStore[target]) {
+      return;
+    }
 
-      contents
-        .save(this._storePath, {
-          name: this._storePath,
-          content: initial,
-          type: "file",
-          format: "text"
-        })
-        .catch(err =>
-          console.error("Error on comments.json initial creation", err)
-        );
-    });
+    let comments = JSON.stringify({ comments: this._commentsStore[target] });
+
+    this._service
+      .query('saveComments/?comments=' + comments + '&target=' + target)
+      .then(r => console.log(r.json()));
   }
 
   /**
    * Loads the contents of comments.json into memory
    */
-  loadJSON(): void {
-    let contents = this._browserFactory.defaultBrowser.model.manager.services
-      .contents;
+  loadComments(): void {
+    // this._service.query('file/?target=' + target).then(response => {
+    //   console.log('Response', response);
+    console.log('Loading comments...');
 
-    contents
-      .get(this._storePath)
-      .then(file => {
-        let data = JSON.parse(file.content);
-
-        this._commentsStore = data;
-
-        Object.keys(data).forEach(key => {
-          this._nextCommentId += data[key].length;
+    this._service
+      .query('getAllComments/')
+      .then(response => response.json())
+      .then(comments => {
+        comments['comments'].forEach(threads => {
+          console.log('threads', threads);
+          Object.keys(threads).forEach(target => {
+            threads[target].forEach(thread => {
+              thread['body'] = JSON.parse(thread['body']);
+            });
+          });
         });
+        console.log(comments);
+        this._commentsStore = comments.comments;
+
+        Object.keys(this._commentsStore).forEach(key => {
+          this._nextCommentId += this._commentsStore[key].length;
+        });
+
+        console.log('commentsStore', this._commentsStore);
       })
-      .catch(err => console.error("Error parsing comments.json", err));
-  }
-
-  /**
-   * Saves comment store to comments.json file
-   */
-  writeJSON(): void {
-    let contents = this._browserFactory.defaultBrowser.model.manager.services
-      .contents;
-
-    let newData = JSON.stringify(this._commentsStore);
-
-    contents
-      .save(this._storePath, {
-        name: this._storePath,
-        content: newData,
-        type: "file",
-        format: "text"
-      })
-      .catch(err => console.error("Error writing to comments.json", err));
+      .catch();
   }
 
   /**
    * @returns Type: string - returns the id of the newest comment thread
    */
   getLatestCommentId(): string {
-    return "anno/" + this._nextCommentId;
+    return 'anno/' + this._nextCommentId;
   }
 
   /**
@@ -485,11 +422,10 @@ export class CommentsService {
     }
   }
 
-  private _browserFactory: IFileBrowserFactory;
   private _commentsStore: ICommentsStore;
   private _service: ICommentingServiceConnection;
   private _nextCommentId: number;
-  private readonly _storePath = "comments.json";
+  private readonly _storePath = 'comments.json';
 }
 
 /**
@@ -637,5 +573,5 @@ export interface INotebookTextIndicator {
 
 export interface INotebookCellIndicator {
   index: string;
-  type: "input" | "output";
+  type: 'input' | 'output';
 }

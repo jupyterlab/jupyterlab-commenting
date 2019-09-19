@@ -46,6 +46,13 @@ export class CommentingIndicatorHandler {
     if (curWidget) {
       const context = this._docManager.contextForWidget(curWidget);
 
+      // Connect to save signal of widget to save comments on file save
+      context.saveState.connect((sender, args) => {
+        if (args === 'started') {
+          this._receiver.saveComments(path);
+        }
+      }, this);
+
       if (context) {
         const promise = context.ready;
         promise
