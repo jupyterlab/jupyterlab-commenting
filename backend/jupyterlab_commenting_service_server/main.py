@@ -8,7 +8,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 database = os.path.join(path, 'comments.db')
 
 try:
-    open(database)
+    open(database, "w+")
 except FileNotFoundError as f:
     print('The file %s could not be found or opened' % (f.filename))
 

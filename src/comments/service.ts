@@ -354,8 +354,6 @@ export class CommentsService {
   }
 
   saveComments(target: string): void {
-    console.log('SAVED', target);
-
     if (!this._commentsStore[target]) {
       return;
     }
@@ -364,15 +362,13 @@ export class CommentsService {
 
     this._service
       .query('saveComments/?comments=' + comments + '&target=' + target)
-      .then(r => console.log(r.json()));
+      .catch();
   }
 
   /**
    * Loads the contents of comments.json into memory
    */
   loadComments(): void {
-    // this._service.query('file/?target=' + target).then(response => {
-    //   console.log('Response', response);
     console.log('Loading comments...');
 
     this._service
@@ -384,14 +380,11 @@ export class CommentsService {
             thread['body'] = JSON.parse(thread['body']);
           });
         });
-        console.log(comments);
         this._commentsStore = comments.comments;
 
         Object.keys(this._commentsStore).forEach(key => {
           this._nextCommentId += this._commentsStore[key].length;
         });
-
-        console.log('commentsStore', this._commentsStore);
       })
       .catch();
   }
