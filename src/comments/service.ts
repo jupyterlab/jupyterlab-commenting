@@ -379,12 +379,9 @@ export class CommentsService {
       .query('getAllComments/')
       .then(response => response.json())
       .then(comments => {
-        comments['comments'].forEach(threads => {
-          console.log('threads', threads);
-          Object.keys(threads).forEach(target => {
-            threads[target].forEach(thread => {
-              thread['body'] = JSON.parse(thread['body']);
-            });
+        Object.keys(comments['comments']).forEach(target => {
+          comments.comments[target].forEach(thread => {
+            thread['body'] = JSON.parse(thread['body']);
           });
         });
         console.log(comments);

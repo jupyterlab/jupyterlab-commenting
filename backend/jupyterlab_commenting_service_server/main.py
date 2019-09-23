@@ -23,15 +23,10 @@ async def root():
 @app.get("/getAllComments/")
 async def getAllComments():
     tables = db.table_names()
-
-    all_comments = []
+    all_comments = {}
 
     for target in tables:
-        temp = {}
-
-        temp[target] = db[target].rows
-
-        all_comments.append(temp)
+        all_comments[target] = db[target].rows
 
     return {"comments": all_comments}
 
