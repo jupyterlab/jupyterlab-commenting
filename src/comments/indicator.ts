@@ -138,9 +138,11 @@ export class CommentingIndicatorHandler {
    * Handles when the target changes
    */
   handleTargetChanged() {
+    const target = this._provider.getState('target') as string;
     // Clear past widget
     this.clearIndicatorWidget();
     this.setIndicatorWidget();
+    this._receiver.saveComments(target);
   }
 
   /**

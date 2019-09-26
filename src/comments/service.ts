@@ -377,7 +377,13 @@ export class CommentsService {
       .then(comments => {
         Object.keys(comments['comments']).forEach(target => {
           comments.comments[target].forEach(thread => {
+            // Parse body json string into json object
             thread['body'] = JSON.parse(thread['body']);
+
+            // If there is an indicator parse json string into json object
+            if (thread['indicator']) {
+              thread['indicator'] = JSON.parse(thread['indicator']);
+            }
           });
         });
         this._commentsStore = comments.comments;
@@ -386,7 +392,7 @@ export class CommentsService {
           this._nextCommentId += this._commentsStore[key].length;
         });
       })
-      .catch();
+      .catch(e => console.error('error loading comments', e));
   }
 
   /**
