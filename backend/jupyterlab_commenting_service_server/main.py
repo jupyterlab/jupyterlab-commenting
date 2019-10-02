@@ -3,7 +3,7 @@ import json
 import sqlite_utils
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(openapi_prefix="/commenting-service")
 path = os.path.dirname(os.path.abspath(__file__))
 database = os.path.join(path, 'comments.db')
 db = sqlite_utils.Database(database)
