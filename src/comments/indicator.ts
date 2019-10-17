@@ -28,6 +28,17 @@ export class CommentingIndicatorHandler {
 
     // Called when state 'target' is changed
     this._receiver.targetSet.connect(this.handleTargetChanged, this);
+
+    // Save comments before refresh
+    window.addEventListener('beforeunload', evt => {
+      let path = this._provider.getState('target') as string;
+
+      this._receiver.saveComments(path);
+
+      evt.returnValue = '';
+
+      return null;
+    });
   }
 
   /**
@@ -39,6 +50,8 @@ export class CommentingIndicatorHandler {
     if (!path) {
       return;
     }
+
+    this._receiver.saveComments(path);
 
     const curWidget = this._docManager.findWidget(path);
 

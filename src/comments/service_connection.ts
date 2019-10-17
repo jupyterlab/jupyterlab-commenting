@@ -1,12 +1,12 @@
-import { Token } from "@phosphor/coreutils";
+import { Token } from '@phosphor/coreutils';
 
-import { PageConfig } from "@jupyterlab/coreutils";
+import { PageConfig } from '@jupyterlab/coreutils';
 
-import { JupyterFrontEnd } from "@jupyterlab/application";
+import { JupyterFrontEnd } from '@jupyterlab/application';
 
 export const ICommentingServiceConnection = new Token<
   ICommentingServiceConnection
->("@jupyterlab/commenting-service:ICommentingServiceConnection");
+>('@jupyterlab/commenting-service:ICommentingServiceConnection');
 
 export interface ICommentingServiceConnection {
   query(database: string): Promise<Response>;
@@ -16,17 +16,14 @@ class CommentingServiceConnection implements ICommentingServiceConnection {
   serviceUrl: string;
 
   constructor() {
-    console.log("Starting commenting service", PageConfig);
+    console.log('Starting commenting service', PageConfig);
 
     let baseUrl = PageConfig.getBaseUrl();
 
-    this.serviceUrl = baseUrl + "commenting-service/";
+    this.serviceUrl = baseUrl + 'commenting-service/';
 
     fetch(this.serviceUrl);
-    fetch(baseUrl + "comments/");
-
-    console.log("Commenting API:", this.serviceUrl);
-    console.log("Commenting Datasette:", baseUrl + "comments");
+    fetch(baseUrl + 'comments/');
   }
 
   query(request: string): Promise<Response> {
