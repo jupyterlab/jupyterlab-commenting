@@ -12,6 +12,9 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
+import { ICommentingServiceConnection } from './comments/service_connection';
+import { activateCommentingServiceConnection } from './comments/service_connection';
+
 import { CommentingWidget } from './comments/commenting';
 import { CommentingStates } from './comments/states';
 import { CommentingDataProvider } from './comments/provider';
@@ -53,10 +56,11 @@ export function activate(
   labShell: ILabShell,
   tracker: IEditorTracker,
   docManager: IDocumentManager,
-  browserFactory: IFileBrowserFactory
+  browserFactory: IFileBrowserFactory,
+  service: ICommentingServiceConnection
 ) {
   // Create receiver object
-  receiver = new CommentingDataReceiver(states, browserFactory);
+  receiver = new CommentingDataReceiver(states, service, docManager);
 
   // Create CommentingUI React widget
   commentingUI = new CommentingWidget(provider, receiver);
@@ -106,10 +110,29 @@ export function activate(
 const commentingExtension: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-commenting:commentsUI',
   autoStart: true,
-  requires: [ILabShell, IEditorTracker, IDocumentManager, IFileBrowserFactory],
+  requires: [
+    ILabShell,
+    IEditorTracker,
+    IDocumentManager,
+    IFileBrowserFactory,
+    ICommentingServiceConnection
+  ],
   activate
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [commentingExtension];
+const commentServiceExtension: JupyterFrontEndPlugin<
+  ICommentingServiceConnection
+> = {
+  id: 'jupyterlab-commenting-service-server',
+  autoStart: true,
+  requires: [],
+  provides: ICommentingServiceConnection,
+  activate: activateCommentingServiceConnection
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  commentingExtension,
+  commentServiceExtension
+];
 
 export default plugins;

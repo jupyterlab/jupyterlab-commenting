@@ -28,6 +28,17 @@ export class CommentingIndicatorHandler {
 
     // Called when state 'target' is changed
     this._receiver.targetSet.connect(this.handleTargetChanged, this);
+
+    // Save comments before refresh
+    window.addEventListener('beforeunload', evt => {
+      let path = this._provider.getState('target') as string;
+
+      this._receiver.saveComments(path);
+
+      evt.returnValue = '';
+
+      return null;
+    });
   }
 
   /**
@@ -40,11 +51,20 @@ export class CommentingIndicatorHandler {
       return;
     }
 
+    this._receiver.saveComments(path);
+
     const curWidget = this._docManager.findWidget(path);
 
     // If widget is active, add indicator
     if (curWidget) {
       const context = this._docManager.contextForWidget(curWidget);
+
+      // Connect to save signal of widget to save comments on file save
+      context.saveState.connect((sender, args) => {
+        if (args === 'started') {
+          this._receiver.saveComments(path);
+        }
+      }, this);
 
       if (context) {
         const promise = context.ready;
@@ -131,9 +151,11 @@ export class CommentingIndicatorHandler {
    * Handles when the target changes
    */
   handleTargetChanged() {
+    const target = this._provider.getState('target') as string;
     // Clear past widget
     this.clearIndicatorWidget();
     this.setIndicatorWidget();
+    this._receiver.saveComments(target);
   }
 
   /**

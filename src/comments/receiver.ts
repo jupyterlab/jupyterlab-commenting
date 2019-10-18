@@ -1,21 +1,26 @@
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
-
 import { ISignal, Signal } from '@phosphor/signaling';
+
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { CommentingStates, ICommentStates } from './states';
 import { IPerson, CommentIndicator } from './service';
 import { CommentsService } from './service';
+import { ICommentingServiceConnection } from './service_connection';
 
 /**
  * Handles all interactions with data that is received. Interacts with CommentingStates
  * and sets values accordingly.
  */
 export class CommentingDataReceiver {
-  constructor(states: CommentingStates, browserFactory: IFileBrowserFactory) {
+  constructor(
+    states: CommentingStates,
+    service: ICommentingServiceConnection,
+    docManager: IDocumentManager
+  ) {
     this._states = states;
 
     // Create CommentsService object
-    this._commentService = new CommentsService(browserFactory);
+    this._commentService = new CommentsService(service);
 
     // Initial states
     this.setState({
@@ -235,6 +240,15 @@ export class CommentingDataReceiver {
       expandedCard: ' '
     });
     this._targetSet.emit(void 0);
+  }
+
+  /**
+   * Saves comments
+   *
+   * @param target Type: string - target to save comments for
+   */
+  saveComments(target: string): void {
+    this._commentService.saveComments(target);
   }
 
   /**
