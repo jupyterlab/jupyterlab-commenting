@@ -428,7 +428,6 @@ export class CommentsService {
   private _commentsStore: ICommentsStore;
   private _service: ICommentingServiceConnection;
   private _nextCommentId: number;
-  private readonly _storePath = 'comments.json';
 }
 
 /**

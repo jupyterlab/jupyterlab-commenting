@@ -9,17 +9,17 @@ import { JupyterFrontEnd, ILabShell } from '@jupyterlab/application';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { NotebookPanel, Notebook } from '@jupyterlab/notebook';
+import { NotebookPanel } from '@jupyterlab/notebook';
 
 import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
-import { ICellModel, Cell } from '@jupyterlab/cells';
+import { ICellModel } from '@jupyterlab/cells';
 
 import { Message } from '@phosphor/messaging';
 
 import { Widget } from '@phosphor/widgets';
 
-import { commentingUI, indicatorHandler } from '..';
+import { commentingUI } from '..';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
