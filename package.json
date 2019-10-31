@@ -1,62 +1,67 @@
 {
-    "name": "@jupyterlab/commenting-extension",
-    "version": "0.2.1",
-    "description": "A JupyterLab extension to support commenting and annotation.",
-    "keywords": [
-        "jupyter",
-        "jupyterlab",
-        "jupyterlab-extension"
-    ],
-    "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
-    "bugs": {
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
-    },
-    "license": "BSD-3-Clause",
-    "author": "",
-    "files": [
-        "lib/**",
-        "style/**",
-        "*.md",
-        "gifs/**"
-    ],
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "style": "style/index.css",
-    "scripts": {
-        "build": "tsc",
-        "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
-        "prepare": "npm run clean && npm run build",
-        "watch": "tsc -w"
-    },
-    "dependencies": {
-        "@jupyterlab/application": "^1.0.0",
-        "@jupyterlab/apputils": "^1.0.0",
-        "@jupyterlab/codemirror": "^1.0.0",
-        "@jupyterlab/cells": "^1.0.0",
-        "@jupyterlab/docmanager": "^1.0.0",
-        "@jupyterlab/docregistry": "^1.0.0",
-        "@jupyterlab/filebrowser": "^1.0.0",
-        "@jupyterlab/fileeditor": "^1.0.0",
-        "@jupyterlab/notebook": "^1.0.0",
-        "@phosphor/disposable": "^1.2.0",
-        "@phosphor/messaging": "^1.2.3",
-        "@phosphor/signaling": "^1.2.3",
-        "@phosphor/widgets": "^1.8.0",
-        "codemirror": "~5.47.0",
-        "react": "~16.8.4"
-    },
-    "devDependencies": {
-        "rimraf": "~2.6.2",
-        "typescript": "~3.5.1"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "jupyterlab": {
-        "extension": true
-    }
+  "name": "@jupyterlab/commenting-extension",
+  "version": "0.2.1",
+  "description": "A JupyterLab extension to support commenting and annotation.",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
+  "bugs": {
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "",
+  "files": [
+    "lib/**",
+    "style/**",
+    "*.md",
+    "gifs/**"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
+    "lint:css": "stylelint *.css --fix --config ./etc/stylelint/.stylelintrc.json",
+    "lint:css:check": "stylelint *.css --config ./etc/stylelint/.stylelintrc.json",
+    "prepare": "npm run clean && npm run build",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^1.0.0",
+    "@jupyterlab/apputils": "^1.0.0",
+    "@jupyterlab/codemirror": "^1.0.0",
+    "@jupyterlab/cells": "^1.0.0",
+    "@jupyterlab/docmanager": "^1.0.0",
+    "@jupyterlab/docregistry": "^1.0.0",
+    "@jupyterlab/filebrowser": "^1.0.0",
+    "@jupyterlab/fileeditor": "^1.0.0",
+    "@jupyterlab/notebook": "^1.0.0",
+    "@phosphor/disposable": "^1.2.0",
+    "@phosphor/messaging": "^1.2.3",
+    "@phosphor/signaling": "^1.2.3",
+    "@phosphor/widgets": "^1.8.0",
+    "codemirror": "~5.47.0",
+    "react": "~16.8.4"
+  },
+  "devDependencies": {
+    "rimraf": "~2.6.2",
+    "stylelint": "^11.0.0",
+    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-standard": "^19.0.0",
+    "typescript": "~3.5.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true
+  }
 }
