@@ -32,11 +32,10 @@ describe('JupyterLab', () => {
     await sleep(3000);
   });
 
-  it('should show TODO', async () => {
+  it('should show a commenting window', async () => {
     expect.assertions(2);
-    await expect(page).toClick('[title="Data Explorer"]');
-    await expect(page).toMatchElement('.jl-explorer-heading', {
-      text: 'Datasets',
+    await expect(page).toClick('[title="Commenting"]');
+    await expect(page).toMatchElement('.jp-commenting-window', {
       visible: true
     } as any);
   });
