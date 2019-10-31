@@ -20,8 +20,5 @@
     "strictNullChecks": false,
     "target": "es2017"
   },
-  "include": [
-    "src/*",
-    "src/**/*"
-  ]
+  "include": ["src/*", "src/**/*"]
 }

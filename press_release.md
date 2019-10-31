@@ -4,7 +4,6 @@
 
 ## JupyterLab Commenting
 
-
 ### JupyterLab Commenting helps you coordinate with your team on code and data.
 
 JupyterLab, the next generation of Jupyter notebook software, is one step closer to becoming a _fully collaborative_ tool for data science, machine learning, and computational research. The new Commenting extension can now be used by teams to ask questions, delegate tasks, address issues, request edits, make decisions, and ultimately _to resolve_ problems as a team. Comments the team find particularly _useful_ can be memorialized as **_annotations_**.
@@ -19,4 +18,4 @@ All interactions are designed to be quick and concise. Only comments with visibl
 
 When JupyterLab’s real-time collaborative editing feature is completed, this commenting system will be incorporated into it. In the meantime it will work independently (working example [here](https://mybinder.org/v2/gh/Quansight/rich-context-demo-1.git/commenting-test)). If users are connected to the same server, a new thread or comment created by one user will immediately appear to all other users connected to the same server, and comment target indicators will update as well. Thus, comments are _created_ and _resolved_ with a real-time feel for users.
 
-This extension unlocks the exciting new ability to comment on code and data within JupyterLab.  Teams can now more easily coordinate their efforts to resolve issues together, without leaving the JupyterLab application. Speed, efficiently, quality of work, and user satisfaction are positively impacted. Go download the JupyterLab Commenting extension today!
+This extension unlocks the exciting new ability to comment on code and data within JupyterLab. Teams can now more easily coordinate their efforts to resolve issues together, without leaving the JupyterLab application. Speed, efficiently, quality of work, and user satisfaction are positively impacted. Go download the JupyterLab Commenting extension today!

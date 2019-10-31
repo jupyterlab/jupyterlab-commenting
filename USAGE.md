@@ -12,17 +12,17 @@ Once logged in, you are able to do a variety of things.
 
 ---
 
-- **[General Usage](general-usage)**
-  - [Creating a comment thread](#creating-a-comment-thread)
-  - [Resolving a thread](#resolving-a-thread)
-  - [Edit a comment](#edit-a-comment)
-  - [Deleting comments](#deleting-comments)
-  - [Filtering and sorting threads](#filtering-and-sorting-threads)
-- **[Commenting on text files](#commenting-on-text-files)**
-  - [Entire Line](#entire-line)
-  - [Specific selection](#specific-selection)
-  - [Focus indicator](#focus-indicator)
-- **[Where do comments save?](#where-do-comments-save)**
+-   **[General Usage](general-usage)**
+    -   [Creating a comment thread](#creating-a-comment-thread)
+    -   [Resolving a thread](#resolving-a-thread)
+    -   [Edit a comment](#edit-a-comment)
+    -   [Deleting comments](#deleting-comments)
+    -   [Filtering and sorting threads](#filtering-and-sorting-threads)
+-   **[Commenting on text files](#commenting-on-text-files)**
+    -   [Entire Line](#entire-line)
+    -   [Specific selection](#specific-selection)
+    -   [Focus indicator](#focus-indicator)
+-   **[Where do comments save?](#where-do-comments-save)**
 
 ---
 

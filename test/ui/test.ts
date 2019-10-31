@@ -32,7 +32,7 @@ describe('JupyterLab', () => {
     await sleep(3000);
   });
 
-  it("should show TODO", async () => {
+  it('should show TODO', async () => {
     expect.assertions(2);
     await expect(page).toClick('[title="Data Explorer"]');
     await expect(page).toMatchElement('.jl-explorer-heading', {

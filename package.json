@@ -31,7 +31,8 @@
     "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
     "lint:css": "stylelint **/*.css --fix --config ./etc/stylelint/.stylelintrc.json",
     "lint:css:check": "stylelint **/*.css --config ./etc/stylelint/.stylelintrc.json",
-    "prepare": "npm run clean && npm run build",
+    "prettier": "prettier --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
+    "prettier:check": "prettier --list-different '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
     "watch": "tsc -w"
   },
   "dependencies": {
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "rimraf": "~2.6.2",
+    "prettier": "^1.18.2",
     "stylelint": "^11.0.0",
     "stylelint-config-prettier": "^6.0.0",
     "stylelint-config-standard": "^19.0.0",
