@@ -29,8 +29,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
-    "lint:css": "stylelint *.css --fix --config ./etc/stylelint/.stylelintrc.json",
-    "lint:css:check": "stylelint *.css --config ./etc/stylelint/.stylelintrc.json",
+    "lint:css": "stylelint **/*.css --fix --config ./etc/stylelint/.stylelintrc.json",
+    "lint:css:check": "stylelint **/*.css --config ./etc/stylelint/.stylelintrc.json",
     "prepare": "npm run clean && npm run build",
     "watch": "tsc -w"
   },

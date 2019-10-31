@@ -37,7 +37,7 @@
 }
 
 
-/* Header Options*/
+/* Header Options */
 
 .jp-commenting-header-options-dropdown-item {
     display: block;
@@ -137,12 +137,6 @@
     outline: 0;
 }
 
-.jp-commenting-button-blue:disabled:hover {
-    background: var(--jp-layout-color1);
-    color: var(--jp-layout-color2);
-    outline: 0;
-}
-
 .jp-commenting-button-blue:hover {
     background: var(--jp-layout-color2);
     outline: 0;
@@ -157,6 +151,12 @@
     outline: 0;
 }
 
+.jp-commenting-button-blue:disabled:hover {
+    background: var(--jp-layout-color1);
+    color: var(--jp-layout-color2);
+    outline: 0;
+}
+
 .jp-commenting-button-resolved {
     background: var(--jp-layout-color2);
 }
@@ -168,8 +168,6 @@
 .jp-commenting-button-resolved:active {
     background: var(--md-grey-500);
 }
-
-.jp-commenting-clickable-text {}
 
 .jp-commenting-clickable-text:hover {
     color: var(--md-grey-500) !important;
