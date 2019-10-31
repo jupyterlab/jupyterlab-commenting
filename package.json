@@ -1,7 +1,7 @@
 {
     "name": "@jupyterlab/commenting-extension",
     "version": "0.2.1",
-    "description": "Commenting and annotation for JupyterLab",
+    "description": "A JupyterLab extension to support commenting and annotation.",
     "keywords": [
         "jupyter",
         "jupyterlab",
