@@ -28,9 +28,6 @@ class CommentingServiceConnection implements ICommentingServiceConnection {
     let baseUrl = PageConfig.getBaseUrl();
 
     this.serviceUrl = baseUrl + 'commenting-service/';
-
-    fetch(this.serviceUrl);
-    fetch(baseUrl + 'comments/');
   }
 
   query(request: string): Promise<Response> {

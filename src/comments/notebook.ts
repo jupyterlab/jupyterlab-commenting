@@ -131,7 +131,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
    *
    * @param threadId - Type: string - id of thread to scroll
    */
-  scrollIntoView(threadId: string): void {}
+  scrollIntoView(threadId: string): void {
+    // Do nothing...
+  }
 
   /**
    * Adds all indicators to the current widget
@@ -175,7 +177,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
   /**
    * Handles clearing all the indicators from the current widget
    */
-  clearAllIndicators(): void {}
+  clearAllIndicators(): void {
+    // Do nothing...
+  }
 
   /**
    * Adds new/create new comment buttons to the notebook widget
