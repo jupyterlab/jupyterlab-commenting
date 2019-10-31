@@ -9,3 +9,5 @@ package-lock.json
 tsconfig.tsbuildinfo
 comments.json
 *.tgz
+yarn.lock
+package-lock.json
