@@ -43,7 +43,7 @@ setuptools.setup(
     },
     install_requires=[
         'datasette~=0.30.1',
-        'fastapi~=0.42.0',
+        'fastapi[all]~=0.42.0',
         'jupyter-server-proxy~=1.1.0',
         'sqlite_utils~=1.11',
         'uvicorn~=0.8.4'
