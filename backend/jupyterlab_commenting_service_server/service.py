@@ -32,7 +32,7 @@ def start():
             '--cors'
         ],
         'timeout': 60,
-        'port': 40000
+        'port': 0  # 40000
     }
 
 
@@ -52,6 +52,6 @@ def fastapi():
             '--reload'
         ],
         'timeout': 60,
-        'port': 30000,
+        'port': 0,  # 30000
         'absolute_url': False
     }
