@@ -6,264 +6,257 @@
 */
 
 :root {
-    --jp-image-back-arrow: url('images/backButton.png');
-    --jp-image-chat-icon: url('images/chatIcon.png');
-    --jp-image-nb-comment-icon: url('images/nbCommentIcon.png');
-    --jp-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
-    --jp-image-commenting-new-thread-icon: url('images/newThreadIcon.png');
-    --jp-image-chat-icon-blue: url('images/chatIconBlue.png');
+	--jp-image-back-arrow: url('images/backButton.png');
+	--jp-image-chat-icon: url('images/chatIcon.png');
+	--jp-image-nb-comment-icon: url('images/nbCommentIcon.png');
+	--jp-image-nb-comment-indicator-icon: url('images/nbThreadIndicator.png');
+	--jp-image-commenting-new-thread-icon: url('images/newThreadIcon.png');
+	--jp-image-chat-icon-blue: url('images/chatIconBlue.png');
 }
 
 .jp-ChatIcon {
-    background-image: var(--jp-image-chat-icon);
+	background-image: var(--jp-image-chat-icon);
 }
 
 .jp-ChatIconBlue {
-    background-image: var(--jp-image-chat-icon-blue);
+	background-image: var(--jp-image-chat-icon-blue);
 }
 
 .jp-NbCommentIcon {
-    background-image: var(--jp-image-nb-comment-icon);
+	background-image: var(--jp-image-nb-comment-icon);
 }
 
 .jp-NbIndicatorIcon {
-    background-image: var(--jp-image-nb-comment-indicator-icon);
+	background-image: var(--jp-image-nb-comment-indicator-icon);
 }
 
 .jp-commenting-window {
-    background: var(--jp-layout-color1);
-    font-family: var(--jp-content-font-family);
-    height: 100%;
+	background: var(--jp-layout-color1);
+	font-family: var(--jp-content-font-family);
+	height: 100%;
 }
 
-
-/* Header Options*/
+/* Header Options */
 
 .jp-commenting-header-options-dropdown-item {
-    display: block;
-    padding: 0.25rem 1.5rem;
-    clear: both;
-    font-size: var(--jp-content-font-size1);
-    color: var(--jp-ui-font-color1);
-    text-align: inherit;
-    white-space: nowrap;
-    background: var(--jp-layout-color1);
-    border: 0;
+	display: block;
+	padding: 0.25rem 1.5rem;
+	clear: both;
+	font-size: var(--jp-content-font-size1);
+	color: var(--jp-ui-font-color1);
+	text-align: inherit;
+	white-space: nowrap;
+	background: var(--jp-layout-color1);
+	border: 0;
 }
 
 .jp-commenting-header-options-dropdown-item.jp-mod-selected {
-    background: var(--jp-brand-color1);
-    color: var(--jp-ui-inverse-font-color0);
-    text-decoration-line: none;
+	background: var(--jp-brand-color1);
+	color: var(--jp-ui-inverse-font-color0);
+	text-decoration-line: none;
 }
 
 .jp-commenting-header-options-dropdown-item:hover:not(.jp-mod-selected) {
-    background: var(--jp-layout-color2);
-    color: var(--jp-ui-font-color1);
-    text-decoration-line: none;
+	background: var(--jp-layout-color2);
+	color: var(--jp-ui-font-color1);
+	text-decoration-line: none;
 }
 
 .jp-commenting-header-options-dropdown-menu {
-    position: absolute;
-    top: inherit;
-    right: 0;
-    left: auto;
-    z-index: 1000;
-    display: none;
-    float: left;
-    text-align: left;
-    list-style: none;
-    background-color: var(--jp-ui-inverse-font-color0);
-    background-clip: padding-box;
-    border: 1px solid var(--jp-input-border-color);
-    border-radius: var(--jp-border-radius);
+	position: absolute;
+	top: inherit;
+	right: 0;
+	left: auto;
+	z-index: 1000;
+	display: none;
+	float: left;
+	text-align: left;
+	list-style: none;
+	background-color: var(--jp-ui-inverse-font-color0);
+	background-clip: padding-box;
+	border: 1px solid var(--jp-input-border-color);
+	border-radius: var(--jp-border-radius);
 }
 
 .jp-commenting-header-options-dropdown-menu.show {
-    display: block;
+	display: block;
 }
 
 .jp-commenting-header-options-area {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid var(--jp-border-color1);
-    box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	border-top: 1px solid var(--jp-border-color1);
+	box-sizing: border-box;
 }
-
 
 /* Buttons */
 
 .jp-commenting-button-red {
-    background: var(--jp-layout-color1);
-    color: #e57373;
-    font-size: var(--jp-content-font-size0);
-    font-family: var(--jp-content-font-family);
-    line-height: var(--jp-content-line-height);
-    border-radius: var(--jp-border-radius);
-    box-shadow: none;
-    border: none;
-    outline: 0;
+	background: var(--jp-layout-color1);
+	color: #e57373;
+	font-size: var(--jp-content-font-size0);
+	font-family: var(--jp-content-font-family);
+	line-height: var(--jp-content-line-height);
+	border-radius: var(--jp-border-radius);
+	box-shadow: none;
+	border: none;
+	outline: 0;
 }
 
 .jp-commenting-button-red:hover {
-    background: var(--jp-layout-color2);
-    outline: 0;
+	background: var(--jp-layout-color2);
+	outline: 0;
 }
 
 .jp-commenting-button-red:active {
-    background: var(--jp-layout-color3);
-    outline: 0;
+	background: var(--jp-layout-color3);
+	outline: 0;
 }
 
 .jp-commenting-button-red:focus {
-    outline: 0;
+	outline: 0;
 }
 
 .jp-commenting-button-blue {
-    background: var(--jp-layout-color1);
-    color: #2196f3;
-    outline: 0;
-    font-size: var(--jp-content-font-size0);
-    font-family: var(--jp-content-font-family);
-    line-height: var(--jp-content-line-height);
-    border-radius: var(--jp-border-radius);
-    border: none;
-    box-shadow: none;
+	background: var(--jp-layout-color1);
+	color: #2196f3;
+	outline: 0;
+	font-size: var(--jp-content-font-size0);
+	font-family: var(--jp-content-font-family);
+	line-height: var(--jp-content-line-height);
+	border-radius: var(--jp-border-radius);
+	border: none;
+	box-shadow: none;
 }
 
 .jp-commenting-button-blue:disabled {
-    background: var(--jp-layout-color1);
-    color: var(--jp-layout-color2);
-    outline: 0;
-}
-
-.jp-commenting-button-blue:disabled:hover {
-    background: var(--jp-layout-color1);
-    color: var(--jp-layout-color2);
-    outline: 0;
+	background: var(--jp-layout-color1);
+	color: var(--jp-layout-color2);
+	outline: 0;
 }
 
 .jp-commenting-button-blue:hover {
-    background: var(--jp-layout-color2);
-    outline: 0;
+	background: var(--jp-layout-color2);
+	outline: 0;
 }
 
 .jp-commenting-button-blue:active {
-    background: var(--jp-layout-color3);
-    outline: 0;
+	background: var(--jp-layout-color3);
+	outline: 0;
 }
 
 .jp-commenting-button-blue:focus {
-    outline: 0;
+	outline: 0;
+}
+
+.jp-commenting-button-blue:disabled:hover {
+	background: var(--jp-layout-color1);
+	color: var(--jp-layout-color2);
+	outline: 0;
 }
 
 .jp-commenting-button-resolved {
-    background: var(--jp-layout-color2);
+	background: var(--jp-layout-color2);
 }
 
 .jp-commenting-button-resolved:hover {
-    background: var(--jp-layout-color3);
+	background: var(--jp-layout-color3);
 }
 
 .jp-commenting-button-resolved:active {
-    background: var(--md-grey-500);
+	background: var(--md-grey-500);
 }
-
-.jp-commenting-clickable-text {}
 
 .jp-commenting-clickable-text:hover {
-    color: var(--md-grey-500) !important;
+	color: var(--md-grey-500) !important;
 }
-
 
 /* Threads */
 
 .jp-commenting-thread-area {
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--jp-border-radius);
-    border: 1px solid var(--jp-border-color2);
-    box-sizing: border-box;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-    margin-top: 4px;
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--jp-border-radius);
+	border: 1px solid var(--jp-border-color2);
+	box-sizing: border-box;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	margin-top: 4px;
 }
 
 .jp-commenting-thread-area:hover {
-    box-shadow: var(--jp-elevation-z4);
+	box-shadow: var(--jp-elevation-z4);
 }
 
 .jp-commenting-thread-area-no-hover {
-    display: flex;
-    flex-direction: column;
-    border-radius: var(--jp-border-radius);
-    border: 1px solid var(--jp-border-color2);
-    box-sizing: border-box;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--jp-border-radius);
+	border: 1px solid var(--jp-border-color2);
+	box-sizing: border-box;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-
 
 /* New Thread */
 
 .jp-newThreadIcon {
-    background-image: var(--jp-image-commenting-new-thread-icon);
-    width: 10px;
-    height: 10px;
-    margin: 4px;
-    padding: 8px;
-    background-repeat: no-repeat;
-    background-size: contain;
+	background-image: var(--jp-image-commenting-new-thread-icon);
+	width: 10px;
+	height: 10px;
+	margin: 4px;
+	padding: 8px;
+	background-repeat: no-repeat;
+	background-size: contain;
 }
 
 .jp-commenting-new-thread-button {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    border-radius: var(--jp-border-radius);
-    border: 1px solid var(--jp-border-color2);
-    box-sizing: border-box;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	border-radius: var(--jp-border-radius);
+	border: 1px solid var(--jp-border-color2);
+	box-sizing: border-box;
 }
 
 .jp-commenting-new-thread-button:hover {
-    box-shadow: var(--jp-elevation-z6);
+	box-shadow: var(--jp-elevation-z6);
 }
 
 .jp-commenting-new-thread-label {
-    display: flex;
-    flex-grow: 2;
-    white-space: nowrap;
-    overflow: hidden;
-    font-size: 13px;
-    color: var(--jp-ui-font-color1);
-    font-weight: bold;
-    text-overflow: ellipsis;
-    padding: 8px;
+	display: flex;
+	flex-grow: 2;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 13px;
+	color: var(--jp-ui-font-color1);
+	font-weight: bold;
+	text-overflow: ellipsis;
+	padding: 8px;
 }
-
 
 /* Text Area */
 
 .jp-commenting-text-area {
-    border-color: var(--jp-input-border-color);
-    border-radius: var(--jp-border-radius);
-    border-width: var(--jp-border-width);
-    background-color: var(--jp-input-background);
-    height: 100%;
-    width: 100%;
-    font-size: var(--jp-content-font-size0);
-    font-family: var(--jp-content-font-family);
-    color: var(--jp-ui-font-color1);
-    line-height: normal;
-    padding: 4px;
-    resize: none;
-    box-sizing: border-box;
+	border-color: var(--jp-input-border-color);
+	border-radius: var(--jp-border-radius);
+	border-width: var(--jp-border-width);
+	background-color: var(--jp-input-background);
+	height: 100%;
+	width: 100%;
+	font-size: var(--jp-content-font-size0);
+	font-family: var(--jp-content-font-family);
+	color: var(--jp-ui-font-color1);
+	line-height: normal;
+	padding: 4px;
+	resize: none;
+	box-sizing: border-box;
 }
 
 .jp-commenting-text-area:hover {
-    background-color: var(--jp-input-hover-background);
+	background-color: var(--jp-input-hover-background);
 }
 
 .jp-commenting-text-area:focus {
-    background-color: var(--jp-input-active-background);
-    border-color: var(--jp-input-active-border-color);
-    box-shadow: var(--jp-input-box-shadow);
+	background-color: var(--jp-input-active-background);
+	border-color: var(--jp-input-active-border-color);
+	box-shadow: var(--jp-input-box-shadow);
 }

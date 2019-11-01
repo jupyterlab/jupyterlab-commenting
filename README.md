@@ -21,7 +21,7 @@ Check out the [Usage Guide](./USAGE.md) to learn about the features this extensi
 
 ## Prerequisites
 
-- JupyterLab
+-   JupyterLab
 
 ## Installation
 
@@ -46,15 +46,15 @@ JupyterLab Commenting Extension is part of [Project Jupyter](http://jupyter.org/
 
 Current maintainers of this project are listed in alphabetical order, with affiliation, and main areas of contribution:
 
-- Brian Granger, Cal Poly (co-creator, strategy, vision, management, UI/UX design,
-  architecture).
-- Igor Derke, Quansight (general development, extensions)
-- Ivan Ogasawara, Quansight (general development, extensions)
-- Jacob Houssian, Quansight (general development, extensions)
-- Katherine Oliphant, Quansight (general development, extensions)
-- Ryan Henning, Quansight (management)
-- Saul Shanabrook, Quansight (general development, extensions)
-- Tim George, Cal Poly (UI/UX design, strategy, management, user needs analysis)
+-   Brian Granger, Cal Poly (co-creator, strategy, vision, management, UI/UX design,
+    architecture).
+-   Igor Derke, Quansight (general development, extensions)
+-   Ivan Ogasawara, Quansight (general development, extensions)
+-   Jacob Houssian, Quansight (general development, extensions)
+-   Katherine Oliphant, Quansight (general development, extensions)
+-   Ryan Henning, Quansight (management)
+-   Saul Shanabrook, Quansight (general development, extensions)
+-   Tim George, Cal Poly (UI/UX design, strategy, management, user needs analysis)
 
 ---
 

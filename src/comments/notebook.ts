@@ -9,17 +9,17 @@ import { JupyterFrontEnd, ILabShell } from '@jupyterlab/application';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { NotebookPanel, Notebook } from '@jupyterlab/notebook';
+import { NotebookPanel } from '@jupyterlab/notebook';
 
 import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
-import { ICellModel, Cell } from '@jupyterlab/cells';
+import { ICellModel } from '@jupyterlab/cells';
 
 import { Message } from '@phosphor/messaging';
 
 import { Widget } from '@phosphor/widgets';
 
-import { commentingUI, indicatorHandler } from '..';
+import { commentingUI } from '..';
 import { IndicatorWidget } from './indicator';
 import { CommentingDataProvider } from './provider';
 import { CommentingDataReceiver } from './receiver';
@@ -131,7 +131,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
    *
    * @param threadId - Type: string - id of thread to scroll
    */
-  scrollIntoView(threadId: string): void {}
+  scrollIntoView(threadId: string): void {
+    // Do nothing...
+  }
 
   /**
    * Adds all indicators to the current widget
@@ -175,7 +177,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
   /**
    * Handles clearing all the indicators from the current widget
    */
-  clearAllIndicators(): void {}
+  clearAllIndicators(): void {
+    // Do nothing...
+  }
 
   /**
    * Adds new/create new comment buttons to the notebook widget

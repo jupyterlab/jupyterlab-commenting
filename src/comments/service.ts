@@ -399,7 +399,7 @@ export class CommentsService {
           this._nextCommentId += this._commentsStore[key].length;
         });
       })
-      .catch(e => console.error('error loading comments', e));
+      .catch(e => console.error('error loading comments', e.message));
   }
 
   /**
@@ -428,7 +428,6 @@ export class CommentsService {
   private _commentsStore: ICommentsStore;
   private _service: ICommentingServiceConnection;
   private _nextCommentId: number;
-  private readonly _storePath = 'comments.json';
 }
 
 /**

@@ -1,62 +1,111 @@
 {
-    "name": "@jupyterlab/commenting-extension",
-    "version": "0.2.1",
-    "description": "Commenting and annotation for JupyterLab",
-    "keywords": [
-        "jupyter",
-        "jupyterlab",
-        "jupyterlab-extension"
-    ],
-    "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
-    "bugs": {
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
-    },
-    "license": "BSD-3-Clause",
-    "author": "",
-    "files": [
-        "lib/**",
-        "style/**",
-        "*.md",
-        "gifs/**"
-    ],
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "style": "style/index.css",
-    "scripts": {
-        "build": "tsc",
-        "clean": "rimraf lib && rm tsconfig.tsbuildinfo || true",
-        "prepare": "npm run clean && npm run build",
-        "watch": "tsc -w"
-    },
-    "dependencies": {
-        "@jupyterlab/application": "^1.0.0",
-        "@jupyterlab/apputils": "^1.0.0",
-        "@jupyterlab/codemirror": "^1.0.0",
-        "@jupyterlab/cells": "^1.0.0",
-        "@jupyterlab/docmanager": "^1.0.0",
-        "@jupyterlab/docregistry": "^1.0.0",
-        "@jupyterlab/filebrowser": "^1.0.0",
-        "@jupyterlab/fileeditor": "^1.0.0",
-        "@jupyterlab/notebook": "^1.0.0",
-        "@phosphor/disposable": "^1.2.0",
-        "@phosphor/messaging": "^1.2.3",
-        "@phosphor/signaling": "^1.2.3",
-        "@phosphor/widgets": "^1.8.0",
-        "codemirror": "~5.47.0",
-        "react": "~16.8.4"
-    },
-    "devDependencies": {
-        "rimraf": "~2.6.2",
-        "typescript": "~3.5.1"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "jupyterlab": {
-        "extension": true
+  "name": "@jupyterlab/commenting-extension",
+  "version": "0.2.1",
+  "description": "A JupyterLab extension to support commenting and annotation.",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/jupyterlab/jupyterlab-commenting",
+  "bugs": {
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlab/jupyterlab-commenting.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "",
+  "files": [
+    "lib/**",
+    "style/**",
+    "*.md",
+    "gifs/**"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "scripts": {
+    "all": "jlpm run clean && jlpm run build && jlpm run build:jupyter",
+    "all:watch": "jlpm run clean && jlpm run build && jlpm run build:jupyter:watch",
+    "build": "jlpm run build:dev",
+    "build:dev": "jlpm install && jlpm run clean:packages && jlpm run build:packages && jlpm run link:packages && jupyter labextension list",
+    "build:jupyter": "jupyter lab build && jupyter lab",
+    "build:jupyter:watch": "jupyter lab build && jupyter lab --watch",
+    "build:packages": "tsc --build",
+    "build:watch": "tsc --build --watch --listEmittedFiles",
+    "clean": "jlpm run clean:jupyter && jlpm clean:packages && jlpm clean:node",
+    "clean:jupyter": "jlpm run uninstall:extensions && jlpm run unlink:packages && jupyter lab clean",
+    "clean:node": "rimraf node_modules",
+    "clean:packages": "rimraf lib tsconfig.tsbuildinfo",
+    "link": "jlpm run link:packages",
+    "link:packages": "jupyter labextension link ./ --no-build",
+    "lint": "jlpm run prettier && jlpm run lint:css && jlpm run lint:typescript",
+    "lint:check": "jlpm run prettier:check && jlpm run lint:css:check && jlpm run lint:typescript:check",
+    "lint:css": "stylelint **/*.css --fix --config ./etc/stylelint/.stylelintrc.json",
+    "lint:css:check": "stylelint **/*.css --config ./etc/stylelint/.stylelintrc.json",
+    "lint:typescript": "tslint --fix -c ./etc/tslint/tslint.json --project tsconfig.json '**/*{.ts,.tsx}'",
+    "lint:typescript:check": "tslint -c ./etc/tslint/tslint.json --project tsconfig.json '**/*{.ts,.tsx}'",
+    "prepublishOnly": "npm run clean && npm install && npm run build:packages",
+    "prettier": "prettier --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
+    "prettier:check": "prettier --list-different '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
+    "rebuild:packages": "jlpm run clean:packages && jlpm run build:packages",
+    "test": "env JEST_PUPPETEER_CONFIG=./etc/jest/jest-puppeteer.config.js jest --runInBand --config ./etc/jest/jest.config.js",
+    "test:debug": "env HEADLESS=false SLOWMO=true jlpm test",
+    "uninstall:extensions": "jupyter labextension uninstall --all --no-build",
+    "unlink": "jlpm run unlink:packages",
+    "unlink:packages": "jupyter labextension unlink ./ --no-build || echo 'Unlink command failed, but continuing...'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged --config ./etc/lint-staged/lint-staged.config.js"
     }
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^1.0.0",
+    "@jupyterlab/apputils": "^1.0.0",
+    "@jupyterlab/codemirror": "^1.0.0",
+    "@jupyterlab/cells": "^1.0.0",
+    "@jupyterlab/docmanager": "^1.0.0",
+    "@jupyterlab/docregistry": "^1.0.0",
+    "@jupyterlab/filebrowser": "^1.0.0",
+    "@jupyterlab/fileeditor": "^1.0.0",
+    "@jupyterlab/notebook": "^1.0.0",
+    "@phosphor/disposable": "^1.2.0",
+    "@phosphor/messaging": "^1.2.3",
+    "@phosphor/signaling": "^1.2.3",
+    "@phosphor/widgets": "^1.8.0",
+    "codemirror": "~5.47.0",
+    "react": "~16.8.4"
+  },
+  "devDependencies": {
+    "@rws-air/jestscreenshot": "^3.0.3",
+    "@types/expect-puppeteer": "^3.3.2",
+    "@types/jest": "^24.0.19",
+    "@types/jest-environment-puppeteer": "^4.3.1",
+    "@types/puppeteer": "^1.20.2",
+    "husky": "^3.0.9",
+    "jest": "^24.9.0",
+    "jest-circus": "^24.9.0",
+    "jest-puppeteer": "^4.3.0",
+    "lint-staged": "^9.4.2",
+    "prettier": "^1.18.2",
+    "puppeteer": "^2.0.0",
+    "rimraf": "~2.6.2",
+    "stylelint": "^11.0.0",
+    "stylelint-config-prettier": "^6.0.0",
+    "stylelint-config-standard": "^19.0.0",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "~3.5.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true
+  }
 }

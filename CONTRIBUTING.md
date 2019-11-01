@@ -38,7 +38,6 @@ jupyter labextension install . --no-build
 After the install completes, open a second terminal. Run these commands to activate the `jupyterlab-commenting`
 environment and to start a JupyterLab instance in watch mode so that it will keep up with our changes as we make them.
 
-
 ```bash
 conda activate jupyterlab-commenting
 jupyter lab --watch

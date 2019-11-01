@@ -24,11 +24,15 @@ def start():
 
     return {
         'command': [
-            'datasette', 'serve', os.path.join(
-                path, 'comments.db'), '-p', '{port}', '--cors'
+            'datasette',
+            'serve',
+            database,
+            '-p',
+            '{port}',
+            '--cors'
         ],
         'timeout': 60,
-        'port': 40000
+        'port': 0  # 40000
     }
 
 
@@ -38,10 +42,16 @@ def fastapi():
 
     return {
         'command': [
-            'uvicorn', 'main:app', '--host', '0.0.0.0',
-            '--port', '{port}', '--proxy-headers', '--reload'
+            'uvicorn',
+            'main:app',
+            '--host',
+            '0.0.0.0',
+            '--port',
+            '{port}',
+            '--proxy-headers',
+            '--reload'
         ],
         'timeout': 60,
-        'port': 30000,
+        'port': 0,  # 30000
         'absolute_url': False
     }

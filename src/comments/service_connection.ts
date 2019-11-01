@@ -29,8 +29,9 @@ class CommentingServiceConnection implements ICommentingServiceConnection {
 
     this.serviceUrl = baseUrl + 'commenting-service/';
 
-    fetch(this.serviceUrl);
-    fetch(baseUrl + 'comments/');
+    // NOTE: by attempting to access the following URIs, we start the commenting service backend...
+    fetch(this.serviceUrl); // tslint:disable-line
+    fetch(baseUrl + 'comments/'); // tslint:disable-line
   }
 
   query(request: string): Promise<Response> {
