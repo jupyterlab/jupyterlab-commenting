@@ -25,7 +25,8 @@ jobs:
         with:
           node-version: "10.x"
       - run: python -m pip install --upgrade pip
-      - run: pip install jupyterlab jupyterlab-commenting-service
+      - run: pip install jupyterlab
+      - run: cd backend && pip install -e .
       - run: jlpm run build
       - run: jupyter lab build --debug-log-path log.txt
       - if: failure()
