@@ -42,9 +42,10 @@ setuptools.setup(
         ]
     },
     install_requires=[
-        'jupyter-server-proxy~=1.1.0',
-        'fastapi~=0.42.0',
         'datasette~=0.30.1',
+        'fastapi~=0.42.0',
+        'jupyter-server-proxy~=1.1.0',
+        'sqlite_utils~=1.11',
         'uvicorn~=0.8.4'
     ],
     package_data=dict(extra_files),
