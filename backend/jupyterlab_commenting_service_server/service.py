@@ -24,8 +24,9 @@ def start():
 
     return {
         'command': [
-            'datasette', 'serve', os.path.join(
-                path, 'comments.db'), '-p', '{port}', '--cors'
+            'datasette', 'serve', os.path.normpath(
+                os.path.join(path, 'comments.db')
+            ), '-p', '{port}', '--cors'
         ],
         'timeout': 60,
         'port': 40000
