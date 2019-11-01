@@ -29,7 +29,7 @@ describe('JupyterLab', () => {
     await page.goto('http://localhost:8080/lab?reset');
 
     // NOTE: depending on system resource constraints, this may NOT be enough time for JupyterLab to load and get "settled", so to speak. If CI tests begin inexplicably failing due to timeout failures, may want to consider increasing the sleep duration...
-    await sleep(3000);
+    await sleep(5000);
   });
 
   it('should show a commenting window', async () => {
