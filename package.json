@@ -21,7 +21,7 @@
     "lib/**",
     "style/**",
     "*.md",
-    "gifs/**"
+    "docs/**"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
