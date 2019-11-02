@@ -191,7 +191,7 @@ export class NewThreadCard extends React.Component<
     },
     'jp-commenting-text-input-area': {
       display: 'flex',
-      padding: '4px',
+      padding: '8px',
       width: '95%',
       height: '80px'
     },

@@ -203,9 +203,9 @@ export class NotebookIndicators extends Widget implements IndicatorWidget {
 
       button.hidden = panel.activeCellIndex !== index;
 
-      button.style.minWidth = '20px';
-      button.style.minHeight = '20px';
-      button.style.backgroundSize = '20px';
+      button.style.minWidth = '16px';
+      button.style.minHeight = '16px';
+      button.style.backgroundSize = '16px';
       button.style.padding = '4px';
       button.style.cssFloat = 'right';
       button.style.cursor = this._provider.getState('newThreadActive')

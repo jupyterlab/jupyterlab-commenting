@@ -332,11 +332,13 @@ export class AppHeaderOptions extends React.Component<
       minWidth: '52px',
 
       textAlign: 'right' as 'right',
-      paddingLeft: '4px'
+      paddingLeft: '8px',
+      paddingRight: '8px'
     },
     'jp-commenting-header-options-showResolved-label-enable': {
       fontSize: 'var(--jp-ui-font-size1)',
-      color: 'var(--jp-ui-font-color1)'
+      color: 'var(--jp-ui-font-color1)',
+      fontWeight: '600'
     },
     'jp-commenting-header-options-showResolved-label-disable': {
       fontSize: 'var(--jp-ui-font-size1)',
@@ -350,7 +352,7 @@ export class AppHeaderOptions extends React.Component<
       height: '24px',
       display: 'flex',
       flexDirection: 'row' as 'row',
-      borderLeft: '1px solid var(--jp-border-color1)',
+      borderLeft: '1px solid var(--jp-border-color2)',
       width: '50%',
       minWidth: '50px',
       flexShrink: 1
@@ -365,7 +367,7 @@ export class AppHeaderOptions extends React.Component<
       whiteSpace: 'nowrap' as 'nowrap',
 
       height: '24px',
-      paddingLeft: '4px',
+      paddingLeft: '8px',
       paddingRight: '4px',
       minWidth: '10px',
       width: '100%'
