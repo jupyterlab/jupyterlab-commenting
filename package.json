@@ -52,6 +52,7 @@
     "prepublishOnly": "npm run clean && npm install && npm run build:packages",
     "prettier": "prettier --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
     "prettier:check": "prettier --list-different '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}' --config ./etc/prettier/.prettierrc --ignore-path ./etc/prettier/.prettierignore",
+    "rebuild:backend": "jlpm run clean:backend && jlpm run build:backend",
     "rebuild:packages": "jlpm run clean:packages && jlpm run build:packages",
     "test": "env JEST_PUPPETEER_CONFIG=./etc/jest/jest-puppeteer.config.js jest --runInBand --config ./etc/jest/jest.config.js",
     "test:debug": "env HEADLESS=false SLOWMO=true jlpm test",
