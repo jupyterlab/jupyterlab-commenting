@@ -8,6 +8,5 @@
 set -o errexit
 set -o xtrace
 
-pip install -e ./backend
 jlpm run build
 jupyter labextension install .
