@@ -4,9 +4,9 @@
 
 The commenting panel is located on the right side panel on Jupyter's main area.
 
-![](./gifs/usage-1.gif)
+![](./img/usage-1.gif)
 
-When opened for the first time it will ask for you github username to know who is commenting. This uses the [public GitHub API](https://developer.github.com/v3/) to get your name and profile image.
+When opened for the first time it will ask for you GitHub username to know who is commenting. This uses the [public GitHub API](https://developer.github.com/v3/) to retrieve your name and profile image.
 
 Once logged in, you are able to do a variety of things.
 
@@ -30,31 +30,31 @@ Once logged in, you are able to do a variety of things.
 
 ### Creating a comment thread
 
-![](./gifs/usage-2.gif)
+![](./img/usage-2.gif)
 
 Once signed in, you can create a comment thread by clicking on `New Comment Thread`. Once the thread is created others can reply to your thread.
 
 ### Resolving a thread
 
-![](./gifs/usage-3.gif)
+![](./img/usage-3.gif)
 
 Threads can be resolved by clicking on the `Resolve` button. A thread can be re-opened by clicking on the `Re-open` button.
 
 ### Edit a comment
 
-![](./gifs/usage-4.gif)
+![](./img/usage-4.gif)
 
 Clicking on a comment thread will expand the conversation and enable the option to edit by hovering over a comment and clicking on the edit button.
 
 ### Deleting comments
 
-![](./gifs/usage-5.gif)
+![](./img/usage-5.gif)
 
 In the same way as editing, once a thread is expanded you can delete a comment with the delete button.
 
 ### Filtering and sorting threads
 
-![](./gifs/usage-6.gif)
+![](./img/usage-6.gif)
 
 By using the drop-down on the top, you can sort comment threads. The show resolved check-box can be used to filter resolved threads.
 
@@ -66,11 +66,11 @@ To comment on a text file, you can either select exactly what you want to commen
 
 ### Entire line
 
-![](./gifs/usage-7.gif)
+![](./img/usage-7.gif)
 
 ### Specific selection
 
-![](./gifs/usage-8.gif)
+![](./img/usage-8.gif)
 
 ### Focus indicator
 
@@ -78,11 +78,11 @@ To focus an indicator you can either click on the comment thread in the commenti
 
 #### Indicator focus
 
-![](./gifs/usage-9.gif)
+![](./img/usage-9.gif)
 
 #### Thread focus
 
-![](./gifs/usage-10.gif)
+![](./img/usage-10.gif)
 
 ---
 
@@ -92,14 +92,14 @@ To focus an indicator you can either click on the comment thread in the commenti
 
 Comments can be created on notebook cells.
 
-![](./gifs/usage-11.gif)
+![](./img/usage-11.gif)
 
-To make a comment on a rendered cell, like a markdown cell you can click into the edit view and make a comment.
+To make a comment on a rendered cell, like a Markdown cell you can click into the edit view and make a comment.
 
-![](./gifs/usage-12.gif)
+![](./img/usage-12.gif)
 
 ---
 
 ## Where do comments save?
 
-Currently comments are saved in a file that is generated in the root directory of your Jupyterlab enviroment in a file called **comments.json**. This file saves all your comments and indicators. The file can be shared and others can copy it to their file tree, or if they already have a comments.json file, they can copy the contents of the new one into their existing file.
+Currently, comments are saved in a generated file named `comments.db`. This file saves all your comments and indicators. The file can be shared and others can copy it to their file tree.
