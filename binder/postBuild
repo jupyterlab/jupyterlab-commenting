@@ -8,6 +8,5 @@
 set -o errexit
 set -o xtrace
 
-jlpm install
 pip install -e ./backend
 jlpm run build
