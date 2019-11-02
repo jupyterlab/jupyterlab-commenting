@@ -26,7 +26,6 @@ jobs:
           node-version: "10.x"
       - run: python -m pip install --upgrade pip
       - run: pip install jupyterlab
-      - run: pip install -e ./backend
       - run: jlpm run build
       - run: jupyter lab build --debug-log-path log.txt
       - if: failure()
