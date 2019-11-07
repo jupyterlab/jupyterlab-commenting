@@ -30,14 +30,6 @@ If you have ideas or questions, feel free to open an issue, or, if you feel like
 
 We try to keep the current issues relevant and matched to relevant milestones.
 
-<!-- links -->
-
-[badge-stability]: https://img.shields.io/badge/stability-experimental-red.svg
-[badge-binder]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab
-
-<!-- /.links -->
-
 ## Feature Roadmap
 
 -   [ ] Opening a new thread...
@@ -66,3 +58,11 @@ We try to keep the current issues relevant and matched to relevant milestones.
         -   Thread opened date
         -   Unresolved
         -   Unread
+
+<!-- links -->
+
+[badge-stability]: https://img.shields.io/badge/stability-experimental-red.svg
+[badge-binder]: https://mybinder.org/badge_logo.svg
+[binder]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab
+
+<!-- /.links -->
