@@ -85,7 +85,7 @@
 .jp-commenting-header-options-area {
 	display: flex;
 	flex-direction: column;
-	border-top: 1px solid var(--jp-border-color1);
+	border-top: 1px solid var(--jp-border-color2);
 	box-sizing: border-box;
 }
 
@@ -180,11 +180,12 @@
 	border: 1px solid var(--jp-border-color2);
 	box-sizing: border-box;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
-	margin-top: 4px;
+	margin-top: 8px;
+	padding: 8px;
 }
 
 .jp-commenting-thread-area:hover {
-	box-shadow: var(--jp-elevation-z4);
+	box-shadow: var(--jp-elevation-z2);
 }
 
 .jp-commenting-thread-area-no-hover {
@@ -194,6 +195,8 @@
 	border: 1px solid var(--jp-border-color2);
 	box-sizing: border-box;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	margin-top: 8px;
+	padding: 8px;
 }
 
 /* New Thread */
@@ -208,17 +211,25 @@
 	background-size: contain;
 }
 
+.jp-comment-new-thread-icon {
+	width: 16px;
+	height: 16px;
+	margin-right: 8px;
+	background-size: 16px auto;
+}
+
 .jp-commenting-new-thread-button {
 	display: flex;
 	justify-content: space-between;
 	flex-direction: row;
-	border-radius: var(--jp-border-radius);
+	border-radius: 4px;
 	border: 1px solid var(--jp-border-color2);
 	box-sizing: border-box;
+	padding: 8px;
 }
 
 .jp-commenting-new-thread-button:hover {
-	box-shadow: var(--jp-elevation-z6);
+	box-shadow: var(--jp-elevation-z2);
 }
 
 .jp-commenting-new-thread-label {
@@ -228,9 +239,9 @@
 	overflow: hidden;
 	font-size: 13px;
 	color: var(--jp-ui-font-color1);
-	font-weight: bold;
 	text-overflow: ellipsis;
-	padding: 8px;
+	line-height: 20px;
+	height: 20px;
 }
 
 /* Text Area */

@@ -73,7 +73,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
       overflowX: 'hidden' as 'hidden',
       boxSizing: 'border-box' as 'border-box',
       justifyContent: 'center',
-      padding: '4px'
+      padding: '8px'
     },
     'jp-commenting-body-area-expanded': {
       width: '100%',
@@ -82,7 +82,7 @@ export class AppBody extends React.Component<IAppBodyProps> {
       overflowX: 'hidden' as 'hidden',
       boxSizing: 'border-box' as 'border-box',
       justifyContent: 'center',
-      padding: '4px'
+      padding: '8px'
     }
   };
 }

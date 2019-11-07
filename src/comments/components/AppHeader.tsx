@@ -67,11 +67,11 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
     return (
       <div style={this.styles['jp-commenting-app-header-area']}>
         <div style={this.styles['jp-commenting-header-area']}>
-          <div style={this.styles['jp-commenting-back-arrow-area']}>
-            {this.props.cardExpanded && this.props.target !== undefined
-              ? this.getBackButton()
-              : ''}
-          </div>
+          {this.props.cardExpanded && this.props.target !== undefined && (
+            <div style={this.styles['jp-commenting-back-arrow-area']}>
+              {this.getBackButton()}
+            </div>
+          )}
           {this.getAppHeader(this.props.target)}
         </div>
         {this.shouldRenderOptions()}
@@ -272,7 +272,7 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       display: 'flex',
       flexShrink: 1,
       flexDirection: 'row' as 'row',
-      padding: '4px',
+      padding: '8px',
       minWidth: '52px'
     },
     'jp-commenting-back-arrow-area': {
@@ -293,7 +293,6 @@ export class AppHeader extends React.Component<IAppHeaderProps> {
       display: 'flex',
       flexDirection: 'row' as 'row',
       minWidth: '52px',
-      paddingLeft: '8px',
       flexShrink: 1
     },
     'jp-commenting-header-target-icon-area': {

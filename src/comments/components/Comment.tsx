@@ -423,14 +423,13 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
       display: 'flex',
       flexDirection: 'row' as 'row',
       boxSizing: 'border-box' as 'border-box',
-      padding: '4px',
-      background: 'var(--jp-layout-color1)'
+      background: 'var(--jp-layout-color1)',
+      marginBottom: '8px'
     },
     'jp-commenting-annotation-upper-area-resolved': {
       display: 'flex',
       flexDirection: 'row' as 'row',
       boxSizing: 'border-box' as 'border-box',
-      padding: '4px',
       background: 'var(--jp-layout-color2)'
     },
     'jp-commenting-annotation-info-area': {
@@ -439,7 +438,6 @@ export class Comment extends React.Component<ICommentProps, ICommentStates> {
       flexShrink: 1,
       minWidth: '52px',
       width: '100%',
-      paddingLeft: '4px',
       boxSizing: 'border-box' as 'border-box'
     },
     'jp-commenting-annotation-photo-area': {

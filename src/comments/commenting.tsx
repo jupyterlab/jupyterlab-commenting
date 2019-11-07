@@ -248,7 +248,7 @@ export class CommentingWidget extends ReactWidget {
         className="jp-commenting-new-thread-button"
         onClick={() => this.setNewThreadActive(true)}
       >
-        <span className="jp-newThreadIcon jp-Icon" />
+        <span className="jp-comment-new-thread-icon jp-Icon jp-NbCommentIcon" />
         <span className="jp-commenting-new-thread-label">Start New Thread</span>
       </div>
     );
