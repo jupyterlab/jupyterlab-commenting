@@ -9,4 +9,4 @@ set -o errexit
 set -o xtrace
 
 jlpm run build
-jupyter labextension install .
+jupyter lab build

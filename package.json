@@ -37,7 +37,7 @@
     "build:packages": "tsc --build",
     "build:watch": "tsc --build --watch --listEmittedFiles",
     "clean": "jlpm run clean:jupyter && jlpm clean:packages && jlpm clean:backend && jlpm clean:node",
-    "clean:backend": "pip uninstall jupyterlab-commenting-service-server",
+    "clean:backend": "pip uninstall --yes jupyterlab-commenting-service-server",
     "clean:jupyter": "jlpm run uninstall:extensions && jlpm run unlink:packages && jupyter lab clean",
     "clean:node": "rimraf node_modules",
     "clean:packages": "rimraf lib tsconfig.tsbuildinfo",

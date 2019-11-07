@@ -34,34 +34,35 @@ We try to keep the current issues relevant and matched to relevant milestones.
 
 [badge-stability]: https://img.shields.io/badge/stability-experimental-red.svg
 [badge-binder]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/master?urlpath=lab
+[binder]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab
 
 <!-- /.links -->
 
 ## Feature Roadmap
-- [ ] Opening a new thread...
-    - [ ] on files in the file broswer.
-    - [ ] on files open in the main work area.
-    - [ ] on datasets in the data registry.
-    - [ ] on a cell in a tabular dataset.
-    - [ ] on a range of cells in a tabular dataset.
-    - [ ] on character in a notebook cell input.
-    - [ ] on a notebook cell output. 
-    - [ ] on a text selecting in a text file.
-    - [ ] on a single line of code in a text file.
-- [ ] Replying to a thread.
-- [ ] Resolving a thread.
-- [ ] Deleting a thread.
-- [ ] Promoting a thread to the 'knowledge graph'.
-    - [ ] Promoting an individual comment to the 'knowledge graph'.
-- [ ] Import an existing comment store.
-- [ ] Export a comment store.
-- [ ] Filter/Sort
-    - [ ] Only show comments with targets on screen
-    - [ ] Filter by target type
-    - [ ] Show all comments
-    - [ ] Sort by
-        - Recently edited
-        - Thread opened date
-        - Unresolved
-        - Unread
+
+-   [ ] Opening a new thread...
+    -   [ ] on files in the file broswer.
+    -   [ ] on files open in the main work area.
+    -   [ ] on datasets in the data registry.
+    -   [ ] on a cell in a tabular dataset.
+    -   [ ] on a range of cells in a tabular dataset.
+    -   [ ] on character in a notebook cell input.
+    -   [ ] on a notebook cell output.
+    -   [ ] on a text selecting in a text file.
+    -   [ ] on a single line of code in a text file.
+-   [ ] Replying to a thread.
+-   [ ] Resolving a thread.
+-   [ ] Deleting a thread.
+-   [ ] Promoting a thread to the 'knowledge graph'.
+    -   [ ] Promoting an individual comment to the 'knowledge graph'.
+-   [ ] Import an existing comment store.
+-   [ ] Export a comment store.
+-   [ ] Filter/Sort
+    -   [ ] Only show comments with targets on screen
+    -   [ ] Filter by target type
+    -   [ ] Show all comments
+    -   [ ] Sort by
+        -   Recently edited
+        -   Thread opened date
+        -   Unresolved
+        -   Unread
