@@ -19,7 +19,7 @@ This JupyterLab extension
 
 ## Installation
 
-First, install the commenting service server extension,
+First, install the commenting service JupyterLab server extension,
 
 ```bash
 $ pip install jupyterlab-commenting-service
