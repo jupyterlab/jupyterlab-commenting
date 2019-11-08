@@ -20,8 +20,8 @@ This JupyterLab extension
 ## Installation
 
 ```bash
-pip install jupyterlab-commenting-service
-jupyter labextension install @jupyterlab/commenting-extension
+$ pip install jupyterlab-commenting-service
+$ jupyter labextension install @jupyterlab/commenting-extension
 ```
 
 ## Usage
