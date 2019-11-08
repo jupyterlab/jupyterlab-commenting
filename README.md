@@ -43,7 +43,7 @@ See the [Usage Guide](./docs/usage.md) to learn more about what features this ex
 
 This repository is in active development, and we welcome collaboration. For development guidance, please consult the [development guide](./docs/development.md).
 
-If you have ideas or questions, feel free to open an issue, or, if you feel like getting your hands dirty, feel free to consult the project [roadmap](./ROADMAP.md) and/or tackle an existing issue by contributing a pull request.
+If you have ideas or questions, feel free to open an issue, or, if you feel like getting your hands dirty, feel free to consult the project [roadmap](./ROADMAP.md) or tackle an existing issue by contributing a pull request.
 
 We try to keep the current issues relevant and matched to relevant milestones.
 
