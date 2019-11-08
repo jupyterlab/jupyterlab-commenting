@@ -2,17 +2,10 @@
 
 ![Stability Experimental][badge-stability]
 
-To experiment with the extension in a live notebook,
+To experiment with the extension in a live notebook environment,
 
 -   stable version: [![Binder (stable)][badge-binder]][binder-stable]
 -   latest master: [![Binder (latest)][badge-binder]][binder-master]
-
-To install,
-
-```bash
-pip install jupyterlab-commenting-service
-jupyter labextension install @jupyterlab/commenting-extension
-```
 
 This JupyterLab extension
 
@@ -23,6 +16,13 @@ This JupyterLab extension
 -   Check out the project vision in the ["Press Release from the Future"](./press_release.md)!
 
 ![Annotating notebook cells](https://raw.githubusercontent.com/jupyterlab/jupyterlab-commenting/master/docs/img/usage-11.gif)
+
+## Installation
+
+```bash
+pip install jupyterlab-commenting-service
+jupyter labextension install @jupyterlab/commenting-extension
+```
 
 ## Usage
 
