@@ -1,7 +1,13 @@
 # JupyterLab Commenting and Annotation
 
 ![Stability Experimental][badge-stability]
-[![Binder][badge-binder]][binder]
+
+To experiment with the extension in a live notebook,
+
+-   stable version: [![Binder (stable)][badge-binder]][binder-stable]
+-   latest master: [![Binder (latest)][badge-binder]][binder-master]
+
+To install,
 
 ```bash
 pip install jupyterlab-commenting-service
@@ -63,6 +69,7 @@ We try to keep the current issues relevant and matched to relevant milestones.
 
 [badge-stability]: https://img.shields.io/badge/stability-experimental-red.svg
 [badge-binder]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab
+[binder-stable]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
+[binder-master]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/master?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
 
 <!-- /.links -->
