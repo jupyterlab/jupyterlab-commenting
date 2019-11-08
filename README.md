@@ -7,9 +7,9 @@ To experiment with the extension in a live notebook environment,
 -   stable version: [![Binder (stable)][badge-binder]][binder-stable]
 -   latest master: [![Binder (latest)][badge-binder]][binder-master]
 
-This JupyterLab extension
+This [JupyterLab][jupyterlab] extension
 
--   allows commenting on JupyterLab notebook cells and within text documents.
+-   allows commenting on [JupyterLab][jupyterlab] notebook cells and within text documents.
 -   allows for comment resolution and editing.
 -   supports filtering and sorting comments.
 -   exposes a comment viewer in a dedicated comment window.
@@ -17,15 +17,19 @@ This JupyterLab extension
 
 ![Annotating notebook cells](https://raw.githubusercontent.com/jupyterlab/jupyterlab-commenting/master/docs/img/usage-11.gif)
 
+## Prerequisites
+
+-   [JupyterLab][jupyterlab] (version >= 1.0.0)
+
 ## Installation
 
-First, install the commenting service JupyterLab server extension,
+First, install the commenting service [JupyterLab][jupyterlab] server extension,
 
 ```bash
 $ pip install jupyterlab-commenting-service
 ```
 
-Then install the frontend JupyterLab extension,
+Then install the frontend [JupyterLab][jupyterlab] extension,
 
 ```bash
 $ jupyter labextension install @jupyterlab/commenting-extension
@@ -78,5 +82,6 @@ We try to keep the current issues relevant and matched to relevant milestones.
 [badge-binder]: https://mybinder.org/badge_logo.svg
 [binder-stable]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
 [binder-master]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/master?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
+[jupyterlab]: https://github.com/jupyterlab/jupyterlab
 
 <!-- /.links -->
