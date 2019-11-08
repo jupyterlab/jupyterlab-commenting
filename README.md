@@ -4,8 +4,8 @@
 
 To experiment with the extension in a live notebook environment,
 
--   stable version: [![Binder (stable)][badge-binder]][binder-stable]
--   latest master: [![Binder (latest)][badge-binder]][binder-master]
+-   latest release (stable version): [![Binder (stable)][badge-binder]][binder-stable]
+-   latest master (bleeding edge): [![Binder (latest)][badge-binder]][binder-master]
 
 This [JupyterLab][jupyterlab] extension
 
