@@ -15,9 +15,9 @@ import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
 import { ICellModel } from '@jupyterlab/cells';
 
-import { Message } from '@phosphor/messaging';
+import { Message } from '@lumino/messaging';
 
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 import { commentingUI } from '..';
 import { IndicatorWidget } from './indicator';

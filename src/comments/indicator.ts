@@ -9,7 +9,7 @@ import { ILabShell, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 import { CommentingDataProvider } from './provider';
 import { TextEditorIndicator } from './text';
