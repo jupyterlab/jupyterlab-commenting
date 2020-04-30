@@ -127,9 +127,7 @@ const commentingExtension: JupyterFrontEndPlugin<void> = {
   activate
 };
 
-const commentServiceExtension: JupyterFrontEndPlugin<
-  ICommentingServiceConnection
-> = {
+const commentServiceExtension: JupyterFrontEndPlugin<ICommentingServiceConnection> = {
   id: 'jupyterlab-commenting-service-server',
   autoStart: true,
   requires: [],
