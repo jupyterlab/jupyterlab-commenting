@@ -9,7 +9,7 @@ import * as React from 'react';
 
 import { IPerson } from '../service';
 import { CommentingWidget } from '../commenting';
-import { Signal } from '@phosphor/signaling';
+import { Signal } from '@lumino/signaling';
 
 interface INewThreadCardProps {
   /**

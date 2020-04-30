@@ -15,11 +15,11 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import { IDocumentWidget, DocumentRegistry } from '@jupyterlab/docregistry';
 
-import { Widget } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
-import { Message } from '@phosphor/messaging';
+import { Message } from '@lumino/messaging';
 
-import { IDisposable } from '@phosphor/disposable';
+import { IDisposable } from '@lumino/disposable';
 
 import { TextMarker, Editor, EditorChangeLinkedList } from 'codemirror';
 

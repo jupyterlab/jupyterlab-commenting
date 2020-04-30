@@ -164,9 +164,9 @@ export class AppHeaderOptions extends React.Component<
             type="checkbox"
             id="controls"
             onClick={() =>
-              this.setResolvedState(document.getElementById(
-                'controls'
-              ) as HTMLInputElement)
+              this.setResolvedState(
+                document.getElementById('controls') as HTMLInputElement
+              )
             }
             className={'bp3-checkbox'}
             disabled={
