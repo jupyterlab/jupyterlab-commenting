@@ -19,7 +19,7 @@ This [JupyterLab][jupyterlab] extension
 
 ## Prerequisites
 
--   [JupyterLab][jupyterlab] (version >= 1.0.0)
+-   [JupyterLab][jupyterlab] (version >= 2.0.0)
 
 ## Installation
 
@@ -51,7 +51,7 @@ We try to keep the current issues relevant and matched to relevant milestones.
 
 [badge-stability]: https://img.shields.io/badge/stability-experimental-red.svg
 [badge-binder]: https://mybinder.org/badge_logo.svg
-[binder-stable]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/196cfd8d9012334cef45196b895f8ad1cef499d5?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
+[binder-stable]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/b9bf77296ec56e247bb88795c1e7fe02e9de8b9b?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
 [binder-master]: https://mybinder.org/v2/gh/jupyterlab/jupyterlab-commenting/master?urlpath=lab%2Ftree%2Fnotebooks%2Fdemo.ipynb
 [jupyterlab]: https://github.com/jupyterlab/jupyterlab
 
