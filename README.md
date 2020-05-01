@@ -19,7 +19,7 @@ This [JupyterLab][jupyterlab] extension
 
 ## Prerequisites
 
--   [JupyterLab][jupyterlab] (version >= 1.0.0)
+-   [JupyterLab][jupyterlab] (version >= 2.0.0)
 
 ## Installation
 
