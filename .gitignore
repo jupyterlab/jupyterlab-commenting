@@ -20,3 +20,4 @@ comments.db
 *.tgz
 yarn.lock
 package-lock.json
+dist/

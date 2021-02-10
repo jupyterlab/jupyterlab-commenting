@@ -27,7 +27,7 @@ extra_files = get_path_files(path)
 
 setuptools.setup(
     name="jupyterlab-commenting-service-server",
-    version='0.1',
+    version='0.3.1',
     license='BSD-3-Clause',
     author='CalPoly/Quansight',
     author_email='jupyterlab@localhost',
