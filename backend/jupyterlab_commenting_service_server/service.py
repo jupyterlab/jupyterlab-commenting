@@ -18,7 +18,8 @@ def start():
     database = os.path.join(path, 'comments.db')
 
     try:
-        open(database, "w+")
+        with open(database, "w+") as f:
+            pass
     except FileNotFoundError as f:
         print('The file %s could not be found or opened' % (f.filename))
 
@@ -38,7 +39,6 @@ def start():
 
 def fastapi():
     path = os.path.dirname(os.path.abspath(__file__))
-    os.chdir(path)
 
     return {
         'command': [
@@ -49,7 +49,9 @@ def fastapi():
             '--port',
             '{port}',
             '--proxy-headers',
-            '--reload'
+            '--reload',
+            '--app-dir',
+            path
         ],
         'timeout': 60,
         'port': 0,  # 30000
